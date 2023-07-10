@@ -1,11 +1,10 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -18,5 +17,11 @@ public class HongUserController {
     public ResponseEntity<Long> insert(@RequestBody HongUserDTO hongUserDTO){
         Long userUid = hongUserService.joinUser(hongUserDTO);
         return ResponseEntity.ok(userUid);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<HongUser> loginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        HongUser user = principalDetails.getUser();
+        return ResponseEntity.ok(user);
     }
 }
