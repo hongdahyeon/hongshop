@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -15,6 +17,7 @@ public class HongUserController {
 
     @PostMapping("/user")
     public ResponseEntity<Long> insert(@RequestBody HongUserDTO hongUserDTO){
+        System.out.println("hongUserDTO = " + hongUserDTO);
         Long userUid = hongUserService.joinUser(hongUserDTO);
         return ResponseEntity.ok(userUid);
     }
@@ -23,5 +26,11 @@ public class HongUserController {
     public ResponseEntity<HongUser> loginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
         HongUser user = principalDetails.getUser();
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/userById")
+    public ResponseEntity<HongUserVO> getUserById(String userId){
+        HongUserVO hongUserByUserId = hongUserService.getHongUserByUserId(userId);
+        return ResponseEntity.ok(hongUserByUserId);
     }
 }

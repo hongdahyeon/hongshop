@@ -9,4 +9,9 @@ public class HongUserVO {
 
     private String userId;
     private HongUserRole role;
+
+    public HongUserVO(String userId, HongUserRole hongUserRole){
+        this.userId = userId;
+        this.role = hongUserRole;
+    }
 }

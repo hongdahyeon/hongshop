@@ -1,9 +1,6 @@
 package hongshop.hongshop.domain.user.impl;
 
-import hongshop.hongshop.domain.user.HongUser;
-import hongshop.hongshop.domain.user.HongUserDTO;
-import hongshop.hongshop.domain.user.HongUserRepository;
-import hongshop.hongshop.domain.user.HongUserService;
+import hongshop.hongshop.domain.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,9 @@ public class HongUserServiceImpl implements HongUserService {
     @Transactional(readOnly = false)
     public Long joinUser(HongUserDTO hongUserDTO) {
 
+        Optional<HongUser> byUserId = hongUserRepository.findByUserId(hongUserDTO.getUserId());
+        if(!byUserId.isEmpty()) throw new IllegalArgumentException("id is already used");
+
         String encodePassword = passwordEncoder.encode(hongUserDTO.getPassword());
         HongUser hongUser = HongUser.hongUserInsertBuilder()
                 .userId(hongUserDTO.getUserId())
@@ -38,5 +38,11 @@ public class HongUserServiceImpl implements HongUserService {
     public Optional<HongUser> getHongUser(String userId) {
         System.out.println("userId = " + userId);
         return hongUserRepository.findByUserId(userId);
+    }
+
+    @Override
+    public HongUserVO getHongUserByUserId(String userId) {
+        HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return new HongUserVO(hongUser.getUserId(), hongUser.getRole());
     }
 }
