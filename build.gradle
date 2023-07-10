@@ -32,6 +32,14 @@ dependencies {
 
 	// security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// StringEscapeUtils | html tag substitution
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
+	implementation 'org.apache.commons:commons-text:1.10.0'
+
+	// https://mvnrepository.com/artifact/commons-io/commons-io
+	implementation 'commons-io:commons-io:2.11.0'
+
 }
 
 tasks.named('test') {
