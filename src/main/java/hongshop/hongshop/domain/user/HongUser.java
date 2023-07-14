@@ -1,6 +1,9 @@
 package hongshop.hongshop.domain.user;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -15,7 +18,7 @@ public class HongUser {
     @Column(name = "hong_user_id")
     private Long id;
 
-    @Column(name="userId")
+    @Column(name="user_id")
     private String userId;
 
     @Column(name = "password")
@@ -23,13 +26,18 @@ public class HongUser {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private HongUserRole role;
+    private HongRoleType role;
+
+    @Column(name = "address")
+    @Embedded
+    private Address address;
 
 
     @Builder(builderMethodName = "hongUserInsertBuilder")
-    public HongUser(String userId, String password, HongUserRole role){
+    public HongUser(String userId, String password, HongRoleType role, Address address){
         this.userId = userId;
         this.password = password;
         this.role = role;
+        this.address = address;
     }
 }
