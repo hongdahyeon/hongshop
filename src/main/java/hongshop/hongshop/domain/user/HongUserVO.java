@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.domain.base.Address;
 import lombok.Getter;
 import lombok.Setter;
 

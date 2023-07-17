@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.user.impl;
 
+import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

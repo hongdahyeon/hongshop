@@ -1,4 +1,4 @@
-package hongshop.hongshop.domain.user;
+package hongshop.hongshop.domain.base;
 
 import lombok.AccessLevel;
 import lombok.Getter;
