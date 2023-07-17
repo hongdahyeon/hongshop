@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
  * @version 1.0.0
  * @date 2023-06-17
  * @summary
- *               참고 ; https://chlee21.tistory.com/190
  **/
 
 @Configuration

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 /**
- * @fileName HongUserController
+ * @fileName HongUserRestController
  * @author dahyeon
  * @version 1.0.0
  * @date 2023-07-17
