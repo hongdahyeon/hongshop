@@ -3,12 +3,19 @@ package hongshop.hongshop.domain.answer.impl;
 import hongshop.hongshop.domain.answer.*;
 import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.domain.post.HongPostRepository;
-import hongshop.hongshop.domain.post.HongPostVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+/**
+ * @fileName HongAnswerServiceImpl
+ * @author dahyeon
+ * @version 1.0.0
+ * @date 2023-07-17
+ * @summary
+ **/
 
 @Service
 @RequiredArgsConstructor

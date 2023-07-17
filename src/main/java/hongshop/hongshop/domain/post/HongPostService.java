@@ -1,5 +1,7 @@
 package hongshop.hongshop.domain.post;
 
+import hongshop.hongshop.domain.answer.HongAnswerVO;
+
 import java.util.List;
 
 /**
@@ -16,9 +18,12 @@ public interface HongPostService {
 
     List<HongPostVO> list();
 
+    HongPostVO postWithAnswer(Long id);
+
     HongPostVO show(Long id);
 
     void update(HongPostDTO hongPostDTO, Long id);
 
     void delete(Long id);
+
 }

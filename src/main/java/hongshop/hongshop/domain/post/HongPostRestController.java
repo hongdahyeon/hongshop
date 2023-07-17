@@ -49,6 +49,14 @@ public class HongPostRestController {
         return ResponseEntity.ok(show);
     }
 
+    @GetMapping("/postWithAnswer/{id}")
+    @Operation(summary = "get post view with answer list", description = "단건 게시글 조회 & 댓글 리스트")
+    @ApiDocumentResponse
+    public ResponseEntity<HongPostVO> showWithAnswer(@PathVariable Long id){
+        HongPostVO hongPostVO = hongPostService.postWithAnswer(id);
+        return ResponseEntity.ok(hongPostVO);
+    }
+
     @PutMapping("/post/{id}")
     @Operation(summary = "update post", description = "게시글 업데이트")
     @ApiDocumentResponse

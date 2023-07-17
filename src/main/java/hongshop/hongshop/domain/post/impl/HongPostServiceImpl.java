@@ -1,5 +1,8 @@
 package hongshop.hongshop.domain.post.impl;
 
+import hongshop.hongshop.domain.answer.HongAnswer;
+import hongshop.hongshop.domain.answer.HongAnswerRepository;
+import hongshop.hongshop.domain.answer.HongAnswerVO;
 import hongshop.hongshop.domain.post.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ import java.util.List;
 public class HongPostServiceImpl implements HongPostService {
 
     private final HongPostRepository hongPostRepository;
+    private final HongAnswerRepository hongAnswerRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -41,6 +45,14 @@ public class HongPostServiceImpl implements HongPostService {
     public List<HongPostVO> list() {
         List<HongPost> all = hongPostRepository.findAll();
         return all.stream().map(HongPostVO::new).toList();
+    }
+
+    @Override
+    public HongPostVO postWithAnswer(Long id) {
+        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
+        List<HongAnswer> allByHongPostId = hongAnswerRepository.findAllByHongPostId(id);
+        List<HongAnswerVO> listOfAnswer = allByHongPostId.stream().map(HongAnswerVO::new).toList();
+        return new HongPostVO(hongPost, listOfAnswer);
     }
 
     @Override

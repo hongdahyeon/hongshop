@@ -5,10 +5,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+/**
+ * @fileName HongAnswerRepository
+ * @author dahyeon
+ * @version 1.0.0
+ * @date 2023-07-17
+ * @summary
+ **/
 
 @RestController
 @RequiredArgsConstructor
