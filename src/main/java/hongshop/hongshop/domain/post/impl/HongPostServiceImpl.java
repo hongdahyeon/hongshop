@@ -4,11 +4,14 @@ import hongshop.hongshop.domain.answer.HongAnswer;
 import hongshop.hongshop.domain.answer.HongAnswerRepository;
 import hongshop.hongshop.domain.answer.HongAnswerVO;
 import hongshop.hongshop.domain.post.*;
+import hongshop.hongshop.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -73,5 +76,16 @@ public class HongPostServiceImpl implements HongPostService {
     public void delete(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         hongPost.deletePost();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateReadCnt(Long id, HttpServletRequest req, HttpServletResponse res) {
+        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
+        String cookie = CookieUtil.getCookie(req, id.toString());
+        if(cookie == null){
+            CookieUtil.createCookie(res, id.toString(), String.format("[%s]", id), 60);
+            hongPost.updateReadCnt();
+        }
     }
 }

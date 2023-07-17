@@ -36,11 +36,15 @@ public class HongPost extends BaseEntity {
     @Column(name = "delete_yn")
     private String deleteYn;
 
+    @Column(name = "read_cnt")
+    private Integer readCnt;
+
     @Builder(builderMethodName = "hongPostInsertBuilder")
     public HongPost(String title, String content) {
         this.title = title;
         this.content = content;
         this.deleteYn = "N";
+        this.readCnt = 0;
     }
 
     public void updatePost(HongPostDTO hongPostDTO){
@@ -50,5 +54,9 @@ public class HongPost extends BaseEntity {
 
     public void deletePost(){
         this.deleteYn = "Y";
+    }
+
+    public void updateReadCnt(){
+        this.readCnt = this.readCnt + 1;
     }
 }

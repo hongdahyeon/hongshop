@@ -21,18 +21,21 @@ public class HongPostVO {
     private String title;
     private String content;
     private String deleteYn;
+    private Integer readCnt;
     private List<HongAnswerVO> answerVOList = new ArrayList<>();
 
     public HongPostVO(HongPost hongPost){
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
+        this.readCnt = hongPost.getReadCnt();
     }
 
     public HongPostVO(HongPost hongPost, List<HongAnswerVO> answerVOList){
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
+        this.readCnt = hongPost.getReadCnt();
         this.answerVOList = answerVOList;
     }
 }

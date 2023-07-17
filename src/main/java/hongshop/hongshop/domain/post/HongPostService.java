@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.post;
 
-import hongshop.hongshop.domain.answer.HongAnswerVO;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -25,5 +25,7 @@ public interface HongPostService {
     void update(HongPostDTO hongPostDTO, Long id);
 
     void delete(Long id);
+
+    void updateReadCnt(Long id, HttpServletRequest req, HttpServletResponse res);
 
 }
