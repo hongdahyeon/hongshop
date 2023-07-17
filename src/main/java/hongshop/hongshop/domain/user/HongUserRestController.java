@@ -2,12 +2,14 @@ package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
+import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 /**
@@ -29,24 +31,24 @@ public class HongUserRestController {
     @PostMapping("/user")
     @Operation(summary = "insert user", description = "회원가입")
     @ApiDocumentResponse
-    public ResponseEntity<Long> insert(@RequestBody HongUserDTO hongUserDTO){
+    public Response insert(@Valid @RequestBody HongUserDTO hongUserDTO){
         Long userUid = hongUserService.joinUser(hongUserDTO);
-        return ResponseEntity.ok(userUid);
+        return Response.ok(userUid);
     }
 
     @GetMapping("/user")
     @Operation(summary = "get login user", description = "로그인한 회원 정보 가져오기")
     @ApiDocumentResponse
-    public ResponseEntity<HongUser> loginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public Response loginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
         HongUser user = principalDetails.getUser();
-        return ResponseEntity.ok(user);
+        return Response.ok(user);
     }
 
     @GetMapping("/userById")
     @Operation(summary = "get user info by userId", description = "회원 아이디로 정보 가져오기")
     @ApiDocumentResponse
-    public ResponseEntity<HongUserVO> getUserById(String userId){
+    public Response getUserById(String userId){
         HongUserVO hongUserByUserId = hongUserService.getHongUserByUserId(userId);
-        return ResponseEntity.ok(hongUserByUserId);
+        return Response.ok(hongUserByUserId);
     }
 }

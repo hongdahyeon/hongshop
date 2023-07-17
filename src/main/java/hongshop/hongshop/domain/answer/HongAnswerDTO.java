@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.answer;
 
 import lombok.Getter;
 import lombok.Setter;
+import javax.validation.constraints.NotNull;
 
 /**
  * @fileName HongAnswerDTO
@@ -14,6 +15,8 @@ import lombok.Setter;
 @Getter @Setter
 public class HongAnswerDTO {
 
+    @NotNull
     private String content;
+    @NotNull
     private Long hongPostId;
 }

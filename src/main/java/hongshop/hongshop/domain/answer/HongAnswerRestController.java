@@ -1,12 +1,13 @@
 package hongshop.hongshop.domain.answer;
 
 import hongshop.hongshop.global.response.ApiDocumentResponse;
+import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,49 +29,49 @@ public class HongAnswerRestController {
     @GetMapping("/answer")
     @Operation(summary = "get answer list", description = "전체 답변 리스트 가져오기")
     @ApiDocumentResponse
-    public ResponseEntity<List<HongAnswerVO>> list(){
+    public Response list(){
         List<HongAnswerVO> list = hongAnswerService.list();
-        return ResponseEntity.ok(list);
+        return Response.ok(list);
     }
 
     @GetMapping("/answerByPost/{id}")
     @Operation(summary = "get answer list by PostId", description = "게시글의 답변 리스트 가져오기")
     @ApiDocumentResponse
-    public ResponseEntity<List<HongAnswerVO>> list(@PathVariable Long id){
+    public Response list(@PathVariable Long id){
         List<HongAnswerVO> list = hongAnswerService.listByHongPostId(id);
-        return ResponseEntity.ok(list);
+        return Response.ok(list);
     }
 
     @PostMapping("/answer")
     @Operation(summary = "insert answer", description = "답변 저장")
     @ApiDocumentResponse
-    public ResponseEntity<Long> save(@RequestBody HongAnswerDTO hongAnswerDTO){
+    public Response save(@Valid @RequestBody HongAnswerDTO hongAnswerDTO){
         Long joinId = hongAnswerService.join(hongAnswerDTO);
-        return ResponseEntity.ok(joinId);
+        return Response.ok(joinId);
     }
 
     @GetMapping("/answer/{id}")
     @Operation(summary = "get answer view", description = "단건 답변 조회")
     @ApiDocumentResponse
-    public ResponseEntity<HongAnswerVO> show(@PathVariable Long id){
+    public Response show(@PathVariable Long id){
         HongAnswerVO show = hongAnswerService.show(id);
-        return ResponseEntity.ok(show);
+        return Response.ok(show);
     }
 
 
     @PutMapping("/answer/{id}")
     @Operation(summary = "update answer", description = "답변 업데이트")
     @ApiDocumentResponse
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody HongAnswerDTO hongAnswerDTO){
+    public Response update(@PathVariable Long id, @Valid @RequestBody HongAnswerDTO hongAnswerDTO){
         hongAnswerService.update(hongAnswerDTO, id);
-        return ResponseEntity.ok("updated");
+        return Response.ok("updated");
     }
 
     @DeleteMapping("/answer/{id}")
     @Operation(summary = "delete answer", description = "답변 삭제")
     @ApiDocumentResponse
-    public ResponseEntity<String> delete(@PathVariable Long id){
+    public Response delete(@PathVariable Long id){
         hongAnswerService.delete(id);
-        return ResponseEntity.ok("deleted");
+        return Response.ok("deleted");
     }
 }

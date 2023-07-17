@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.post;
 
 import lombok.Getter;
 import lombok.Setter;
+import javax.validation.constraints.NotNull;
 
 /**
  * @fileName HongPostDTO
@@ -15,6 +16,8 @@ import lombok.Setter;
 @Getter @Setter
 public class HongPostDTO {
 
+    @NotNull
     private String title;
+    @NotNull
     private String content;
 }

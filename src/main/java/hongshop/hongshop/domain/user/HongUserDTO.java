@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.user;
 
 import lombok.Getter;
 import lombok.Setter;
+import javax.validation.constraints.NotNull;
 
 /**
  * @fileName HongUserDTO
@@ -14,11 +15,17 @@ import lombok.Setter;
 @Getter @Setter
 public class HongUserDTO {
 
+    @NotNull
     private String userId;
+    @NotNull
     private String password;
+
     private HongRoleType role;
 
+    @NotNull
     private String city;
+    @NotNull
     private String street;
+    @NotNull
     private String zipcode;
 }
