@@ -3,6 +3,15 @@ package hongshop.hongshop.domain.user;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @fileName HongUserVO
+ * @author dahyeon
+ * @version 1.0.0
+ * @date 2023-07-17
+ * @summary 사용자에게 hong user에 대한 데이터를 보여줄때 entity가 아닌 vo를 이용한다.
+ **/
+
+
 @Getter
 @Setter
 public class HongUserVO {

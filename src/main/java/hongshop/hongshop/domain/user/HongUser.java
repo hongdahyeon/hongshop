@@ -7,6 +7,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * @fileName HongUser
+ * @author dahyeon
+ * @version 1.0.0
+ * @date 2023-07-17
+ * @summary  'hong_user' 엔티티
+ **/
+
 @Entity
 @Table(name="hong_user")
 @Getter

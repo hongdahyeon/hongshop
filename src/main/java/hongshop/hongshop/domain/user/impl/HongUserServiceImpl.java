@@ -9,6 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * @fileName HongUserServiceImpl
+ * @author dahyeon
+ * @version 1.0.0
+ * @date 2023-07-17
+ * @summary  사용자 service Impl
+ **/
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
