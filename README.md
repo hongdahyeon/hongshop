@@ -25,3 +25,4 @@
     - 응답 코드값 enum으로 선언
     - IllegalArgumentException에 대한 handler 지정 -> BAD_REQUEST 반환
     - validation 처리
+* commit20 : category 테이블 추가 (23/07/17)
