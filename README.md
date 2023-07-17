@@ -20,3 +20,8 @@
 * commit16 : post 테이블 추가 (23/07/17)
 * commit17 : answer 테이블 추가 (23/07/17)
 * commit18 : 단건 게시글 조회 시, 답변 리스트 함께 조회 (23/07/17)
+* commit19 (23/07/17)
+    - 응답 형식 ResponseEntity에서 Response 형태로 변환
+    - 응답 코드값 enum으로 선언
+    - IllegalArgumentException에 대한 handler 지정 -> BAD_REQUEST 반환
+    - validation 처리
