@@ -18,3 +18,4 @@
 * commit13,14 : HongUserController 이름 HongUserRestController로 바꾸고, swagger 어노테이션 붙이기 (23/07/17)
 * commit15 : Address 클래스 위치 변경 (23/07/17)
 * commit16 : post 테이블 추가 (23/07/17)
+* commit17 : answer 테이블 추가 (23/07/17)
