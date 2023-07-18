@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+* @fileName HongProductRestController
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-18
+* @summary
+**/
+
 @RestController
 @Tag(name = "product rest controller", description = "상품 Rest 컨트롤러")
 @RequestMapping("/api")

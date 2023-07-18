@@ -9,6 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+* @fileName HongProductServiceImpl
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-18
+* @summary
+**/
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

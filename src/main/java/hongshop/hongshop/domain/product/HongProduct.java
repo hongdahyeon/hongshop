@@ -8,6 +8,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+* @fileName HongProduct
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-18
+* @summary
+**/
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "hong_product")
