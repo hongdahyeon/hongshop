@@ -44,3 +44,4 @@
 * commit33 : cart 테이블 생성 (23/07/18)
 * commit34 : 게시글 저장 -> file-group-id 유무로 나누어 저장
     - 만일, fileGroupId가 있다면 해당 fileGroupId를 갖는 파일들의 fileState SAVED로 변경
+* commit25 : post 엔티티 builder 수정 (23/07/18)
