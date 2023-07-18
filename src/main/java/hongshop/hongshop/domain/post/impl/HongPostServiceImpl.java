@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.post.impl;
 import hongshop.hongshop.domain.answer.HongAnswer;
 import hongshop.hongshop.domain.answer.HongAnswerRepository;
 import hongshop.hongshop.domain.answer.HongAnswerVO;
+import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.post.*;
 import hongshop.hongshop.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +31,27 @@ public class HongPostServiceImpl implements HongPostService {
 
     private final HongPostRepository hongPostRepository;
     private final HongAnswerRepository hongAnswerRepository;
+    private final HongFileService hongFileService;
 
     @Override
     @Transactional(readOnly = false)
     public Long join(HongPostDTO hongPostDTO) {
 
-        HongPost hongPost = HongPost.hongPostInsertBuilder()
-                .title(hongPostDTO.getTitle())
-                .content(hongPostDTO.getContent())
-                .build();
+        HongPost hongPost = null;
+        if(hongPostDTO.getFileGroupId() == null) {
+
+             hongPost = HongPost.hongPostInsertBuilder()
+                    .title(hongPostDTO.getTitle())
+                    .content(hongPostDTO.getContent())
+                    .build();
+        }else {
+            hongFileService.updateFileState(hongPostDTO.getFileGroupId());
+            hongPost = HongPost.hongPostwithFileGroupInsertBuilder()
+                    .title(hongPostDTO.getTitle())
+                    .content(hongPostDTO.getContent())
+                    .fileGroupId(hongPostDTO.getFileGroupId())
+                    .build();
+        }
 
         HongPost save = hongPostRepository.save(hongPost);
         return save.getId();

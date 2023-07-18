@@ -30,8 +30,8 @@ public class HongPost extends BaseEntity {
     private String title;
     private String content;
 
-    @Column(name = "file_id")
-    private Long fileId;
+    @Column(name = "file_group_id")
+    private Long fileGroupId;
 
     @Column(name = "delete_yn")
     private String deleteYn;
@@ -43,6 +43,15 @@ public class HongPost extends BaseEntity {
     public HongPost(String title, String content) {
         this.title = title;
         this.content = content;
+        this.deleteYn = "N";
+        this.readCnt = 0;
+    }
+
+    @Builder(builderMethodName = "hongPostwithFileGroupInsertBuilder")
+    public HongPost(String title, String content, Long fileGroupId) {
+        this.title = title;
+        this.content = content;
+        this.fileGroupId = fileGroupId;
         this.deleteYn = "N";
         this.readCnt = 0;
     }

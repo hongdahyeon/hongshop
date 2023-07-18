@@ -81,4 +81,8 @@ public class HongFile extends BaseEntity {
         this.downCnt = this.downCnt + 1;
     }
 
+    public void updateFileState(){
+        this.fileState = FileState.SAVED;
+    }
+
 }

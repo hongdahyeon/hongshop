@@ -20,4 +20,5 @@ public class HongPostDTO {
     private String title;
     @NotNull
     private String content;
+    private Long fileGroupId;
 }

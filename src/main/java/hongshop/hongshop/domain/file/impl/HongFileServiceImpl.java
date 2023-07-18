@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -79,7 +80,7 @@ public class HongFileServiceImpl implements HongFileService {
 
             params.put("id", save.getId());
             params.put("fileState", save.getFileState());
-            params.put("fileGroup", hongFileGroup.getId());
+            params.put("fileGroupId", hongFileGroup.getId());
 
         } catch (IOException e) {
             FileUtils.deleteQuietly(targetFile);
@@ -108,5 +109,14 @@ public class HongFileServiceImpl implements HongFileService {
         updateDownCnt(id);              // 1. update donwload count
         hongFileLogService.save(id);    // 2. save log of file
         return view(id);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateFileState(Long fileGroupId) {
+        List<HongFile> fileList = hongFileRepository.findAllByHongFileGroupId(fileGroupId);
+        for (HongFile hongFile : fileList) {
+            hongFile.updateFileState();
+        }
     }
 }

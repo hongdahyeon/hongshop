@@ -22,4 +22,6 @@ public interface HongFileService {
 
     HongFileVO download(Long id);
 
+    void updateFileState(Long fileGroupId);
+
 }
