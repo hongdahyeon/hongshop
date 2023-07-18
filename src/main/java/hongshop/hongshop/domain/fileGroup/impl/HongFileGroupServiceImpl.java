@@ -36,4 +36,18 @@ public class HongFileGroupServiceImpl implements HongFileGroupService {
         List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
         return new HongFileGroupVO(fileGroup, listOfFileVO);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public HongFileGroup saveFileGroup() {
+        HongFileGroup fileGroup = HongFileGroup.hongFileGroupInsertBuilder()
+                .deleteYn("N")
+                .build();
+        return fileGroupRepository.save(fileGroup);
+    }
+
+    @Override
+    public HongFileGroup findFileGroup(Long id) {
+        return fileGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no file group"));
+    }
 }

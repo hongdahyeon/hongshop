@@ -43,7 +43,7 @@ public class HongProduct {
     @Column(name = "product_stock")
     private Integer productStock;
 
-    @Builder(builderMethodName = "hongPostInsertBuilder")
+    @Builder(builderMethodName = "hongProductInsertBuilder")
     public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice, Integer productStock) {
         this.hongCategory = hongCategory;
         this.productName = productName;

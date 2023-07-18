@@ -11,4 +11,7 @@ package hongshop.hongshop.domain.fileGroup;
 public interface HongFileGroupService {
     HongFileGroupVO list(Long id);
 
+    HongFileGroup saveFileGroup();
+
+    HongFileGroup findFileGroup(Long id);
 }

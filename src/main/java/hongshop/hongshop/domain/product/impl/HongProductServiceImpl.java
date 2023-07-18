@@ -31,7 +31,7 @@ public class HongProductServiceImpl implements HongProductService {
 
         HongCategory hongCategory = hongCategoryRepository.findById(hongProductDTO.getHongCategoryId()).orElseThrow(() -> new IllegalArgumentException("there is no category"));
 
-        HongProduct hongProduct = HongProduct.hongPostInsertBuilder()
+        HongProduct hongProduct = HongProduct.hongProductInsertBuilder()
                 .hongCategory(hongCategory)
                 .productName(hongProductDTO.getProductName())
                 .productCnt(hongProductDTO.getProductCnt())

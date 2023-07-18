@@ -1,8 +1,11 @@
 package hongshop.hongshop.domain.file.impl;
 
-import hongshop.hongshop.domain.file.*;
+import hongshop.hongshop.domain.file.HongFile;
+import hongshop.hongshop.domain.file.HongFileRepository;
+import hongshop.hongshop.domain.file.HongFileService;
+import hongshop.hongshop.domain.file.HongFileVO;
 import hongshop.hongshop.domain.fileGroup.HongFileGroup;
-import hongshop.hongshop.domain.fileGroup.HongFileGroupRepository;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileLog.HongFileLogService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
@@ -31,7 +34,7 @@ import java.util.UUID;
 public class HongFileServiceImpl implements HongFileService {
 
     private final HongFileRepository hongFileRepository;
-    private final HongFileGroupRepository hongFileGroupRepository;
+    private final HongFileGroupService hongFileGroupService;
     private final HongFileLogService hongFileLogService;
 
     @Override
@@ -55,12 +58,9 @@ public class HongFileServiceImpl implements HongFileService {
 
             // hong file group save
             HongFileGroup hongFileGroup = null;
-            if(fileGroupId != null) hongFileGroup = hongFileGroupRepository.findById(fileGroupId).get();
+            if(fileGroupId != null) hongFileGroup = hongFileGroupService.findFileGroup(fileGroupId);
             else {
-                 HongFileGroup fileGroup = HongFileGroup.hongFileGroupInsertBuilder()
-                    .description("")
-                    .build();
-                hongFileGroup = hongFileGroupRepository.save(fileGroup);
+                hongFileGroup = hongFileGroupService.saveFileGroup();
             }
 
             // save file
@@ -103,6 +103,7 @@ public class HongFileServiceImpl implements HongFileService {
     }
 
     @Override
+    @Transactional(readOnly = false)
     public HongFileVO download(Long id) {
         updateDownCnt(id);              // 1. update donwload count
         hongFileLogService.save(id);    // 2. save log of file

@@ -27,10 +27,11 @@ public class HongFileGroup extends BaseEntity {
     @Column(name = "hong_file_group_id")
     private Long id;
 
-    private String description;
+    @Column(name = "delete_yn")
+    private String deleteYn;
 
     @Builder(builderMethodName = "hongFileGroupInsertBuilder")
-    public HongFileGroup(String description) {
-        this.description = description;
+    public HongFileGroup(String deleteYn){
+        this.deleteYn = deleteYn;
     }
 }

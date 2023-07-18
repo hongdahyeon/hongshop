@@ -19,12 +19,10 @@ import java.util.List;
 public class HongFileGroupVO {
 
     private Long id;
-    private String description;
     private List<HongFileVO> fileVOList = new ArrayList<>();
 
     public HongFileGroupVO(HongFileGroup hongFileGroup, List<HongFileVO> fileVOList) {
         this.id = hongFileGroup.getId();
-        this.description = hongFileGroup.getDescription();
         this.fileVOList = fileVOList;
     }
 }
