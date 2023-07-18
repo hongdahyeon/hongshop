@@ -26,3 +26,4 @@
     - IllegalArgumentException에 대한 handler 지정 -> BAD_REQUEST 반환
     - validation 처리
 * commit20 : category 테이블 추가 (23/07/17)
+* commit21 : 게시글 조회수 증가 -> using cookie (23/07/17)
