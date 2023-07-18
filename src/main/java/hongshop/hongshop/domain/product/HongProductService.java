@@ -18,6 +18,10 @@ public interface HongProductService {
 
     HongProductVO view(Long id);
 
+    HongProduct productInfo(Long id);
+
     void update(HongProductDTO hongProductDTO, Long id);
+
+    void updateStockCnt(Integer orderCnt, HongProduct hongProduct);
 
 }
