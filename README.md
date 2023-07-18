@@ -29,3 +29,4 @@
 * commit21 : 게시글 조회수 증가 -> using cookie (23/07/17)
 * commit22 : 파일 업로드 & 다운로드 로직 구현 (23/07/18)
 * commit23 : Rest 컨트롤러 정보 swagger에 등록 (23/07/18)
+* commit24 : product 테이블 추가 (23/07/18)
