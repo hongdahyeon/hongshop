@@ -44,7 +44,7 @@ public class HongOrderServiceImpl implements HongOrderService {
         // 1. first you need to make order
         HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
                 .hongUser(hongUser)
-                .orderStatus(OrderStatus.READY)
+                .orderStatus(OrderStatus.CHARGED)
                 .orderDate(TimeUtil.nowDate())
                 .build();
         saveOrder = hongOrderRepository.save(saveOrder);
