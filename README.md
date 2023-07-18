@@ -38,3 +38,5 @@
       - 만약 재고가 없다면, throw와 함께 주문이 안된다.
 * commit29 : commit12에 대해 바꿈. redirect가 아니라 권한 처리로 login page로 전환 (23/07/18)
 * commit30 : fileGroupId 부분 하드 코딩 수정
+* commit31 : fileGroup & file 부분 오류 수정 및 동작 기능 변경
+      - fileServiceImpl에서 진행하던 fileGroup 관련 save, findById를 fileGroupServiceImpl 단으로 이동시킴
