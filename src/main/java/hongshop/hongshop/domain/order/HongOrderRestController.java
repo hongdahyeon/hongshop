@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Tag(name = "order rest controller", description = "주문 Rest 컨트롤러")
+@Tag(name = "hong order rest controller", description = "주문 Rest 컨트롤러")
 @RequiredArgsConstructor
 public class HongOrderRestController {
 

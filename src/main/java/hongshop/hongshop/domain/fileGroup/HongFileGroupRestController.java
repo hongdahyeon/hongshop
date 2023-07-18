@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "file group rest controller", description = "파일 그룹 Rest 컨트롤러")
+@Tag(name = "hong file group rest controller", description = "파일 그룹 Rest 컨트롤러")
 @RequestMapping("/api")
 public class HongFileGroupRestController {
 

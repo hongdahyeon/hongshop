@@ -18,7 +18,7 @@ import java.util.List;
 **/
 
 @RestController
-@Tag(name = "product rest controller", description = "상품 Rest 컨트롤러")
+@Tag(name = "hong product rest controller", description = "상품 Rest 컨트롤러")
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class HongProductRestController {

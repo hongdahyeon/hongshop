@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "file log rest controller", description = "파일 로그 Rest 컨트롤러")
+@Tag(name = "hong file log rest controller", description = "파일 로그 Rest 컨트롤러")
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class HongFileLogRestController {
