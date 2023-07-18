@@ -32,7 +32,7 @@ public class SecurityConfig  {
                                 .antMatchers("/login").permitAll()                                  // 로그인 페이지의 경우 모두 접근 가능
                                 .antMatchers("/user/**").access("hasRole('ROLE_USER')")     // "/user/"로 시작하는 모든 url은 "ROLE_USER"의 역할을 갖은 사용자만 액세스 가능
                                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")   // "/admin/"로 시작하는 모든 url은 "ROLE_ADMIN"의 역할을 갖은 사용자만 액세스 가능
-                                .anyRequest().permitAll()                                             // 앞선 패턴들을 제외한 다른 요청들은 모두에게 허용
+                                .anyRequest().authenticated()                                             // 앞선 패턴들을 제외한 다른 요청들은 모두에게 허용
                         )
                 .formLogin(formLoginConfigurer ->
                         formLoginConfigurer

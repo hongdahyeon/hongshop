@@ -19,8 +19,8 @@ public class HomeController {
     }
 
     @GetMapping({"/", ""})
-    public String index(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        if(principalDetails == null) return "/login";
+    public String index(){
+//        if(principalDetails == null) return "/login";
         return "index";
     }
 }
