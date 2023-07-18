@@ -10,4 +10,5 @@ package hongshop.hongshop.domain.fileLog;
 
 public interface HongFileLogService {
     Long save(Long fileId);
+
 }

@@ -1,7 +1,9 @@
 package hongshop.hongshop.domain.file;
 
 import hongshop.hongshop.domain.fileLog.HongFileLogService;
+import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -36,12 +38,16 @@ public class HongFileRestController {
     private final HongFileService hongFileService;
 
     @PostMapping(value = "/uploadFile", produces = "application/json")
+    @Operation(summary = "upload file", description = "파일 업로드")
+    @ApiDocumentResponse
     public Response uploadFile(@RequestParam("file") MultipartFile multipartFile, Long fileGroupId){
         Map<String, Object> map = hongFileService.saveFile(multipartFile, fileGroupId);
         return Response.ok(map);
     }
 
     @GetMapping("/downloadFile/{id}")
+    @Operation(summary = "download file", description = "파일 다운로드")
+    @ApiDocumentResponse
     public ResponseEntity<ByteArrayResource> download(@PathVariable Long id) throws IOException {
         HongFileVO view = hongFileService.download(id);
         File tempFile = Paths.get(view.getFilePath()).toFile();
