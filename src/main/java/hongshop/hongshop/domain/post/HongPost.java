@@ -40,14 +40,6 @@ public class HongPost extends BaseEntity {
     private Integer readCnt;
 
     @Builder(builderMethodName = "hongPostInsertBuilder")
-    public HongPost(String title, String content) {
-        this.title = title;
-        this.content = content;
-        this.deleteYn = "N";
-        this.readCnt = 0;
-    }
-
-    @Builder(builderMethodName = "hongPostwithFileGroupInsertBuilder")
     public HongPost(String title, String content, Long fileGroupId) {
         this.title = title;
         this.content = content;

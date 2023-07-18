@@ -1,9 +1,10 @@
 package hongshop.hongshop.domain.post.impl;
 
-import hongshop.hongshop.domain.answer.HongAnswer;
-import hongshop.hongshop.domain.answer.HongAnswerRepository;
+import hongshop.hongshop.domain.answer.HongAnswerService;
 import hongshop.hongshop.domain.answer.HongAnswerVO;
 import hongshop.hongshop.domain.file.HongFileService;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupVO;
 import hongshop.hongshop.domain.post.*;
 import hongshop.hongshop.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,9 @@ import java.util.List;
 public class HongPostServiceImpl implements HongPostService {
 
     private final HongPostRepository hongPostRepository;
-    private final HongAnswerRepository hongAnswerRepository;
+    private final HongAnswerService hongAnswerService;
     private final HongFileService hongFileService;
+    private final HongFileGroupService hongFileGroupService;
 
     @Override
     @Transactional(readOnly = false)
@@ -46,13 +48,12 @@ public class HongPostServiceImpl implements HongPostService {
                     .build();
         }else {
             hongFileService.updateFileState(hongPostDTO.getFileGroupId());
-            hongPost = HongPost.hongPostwithFileGroupInsertBuilder()
+            hongPost = HongPost.hongPostInsertBuilder()
                     .title(hongPostDTO.getTitle())
                     .content(hongPostDTO.getContent())
                     .fileGroupId(hongPostDTO.getFileGroupId())
                     .build();
         }
-
         HongPost save = hongPostRepository.save(hongPost);
         return save.getId();
     }
@@ -66,9 +67,15 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostVO postWithAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        List<HongAnswer> allByHongPostId = hongAnswerRepository.findAllByHongPostId(id);
-        List<HongAnswerVO> listOfAnswer = allByHongPostId.stream().map(HongAnswerVO::new).toList();
+        List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         return new HongPostVO(hongPost, listOfAnswer);
+    }
+
+    @Override
+    public HongPostVO postWithFile(Long id) {
+        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
+        HongFileGroupVO list = hongFileGroupService.list(hongPost.getFileGroupId());
+        return new HongPostVO(hongPost, list);
     }
 
     @Override

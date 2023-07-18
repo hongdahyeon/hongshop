@@ -20,6 +20,8 @@ public interface HongPostService {
 
     HongPostVO postWithAnswer(Long id);
 
+    HongPostVO postWithFile(Long id);
+
     HongPostVO show(Long id);
 
     void update(HongPostDTO hongPostDTO, Long id);

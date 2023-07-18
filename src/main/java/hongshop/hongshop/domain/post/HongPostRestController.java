@@ -58,6 +58,14 @@ public class HongPostRestController {
         return Response.ok(hongPostVO);
     }
 
+    @GetMapping("/postWithFile/{id}")
+    @Operation(summary = "get post view with file list", description = "단건 게시글 조ㅗ히 & 파일 리스트")
+    @ApiDocumentResponse
+    public Response showWithFile(@PathVariable Long id){
+        HongPostVO hongPostVO = hongPostService.postWithFile(id);
+        return Response.ok(hongPostVO);
+    }
+
     @PutMapping("/post/{id}")
     @Operation(summary = "update post", description = "게시글 업데이트")
     @ApiDocumentResponse

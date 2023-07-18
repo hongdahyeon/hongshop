@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.post;
 
 import hongshop.hongshop.domain.answer.HongAnswerVO;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupVO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,8 @@ public class HongPostVO {
     private String content;
     private String deleteYn;
     private Integer readCnt;
-    private List<HongAnswerVO> answerVOList = new ArrayList<>();
+    private List<HongAnswerVO> answerList = new ArrayList<>();
+    private HongFileGroupVO file;
 
     public HongPostVO(HongPost hongPost){
         this.title = hongPost.getTitle();
@@ -36,6 +38,14 @@ public class HongPostVO {
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
         this.readCnt = hongPost.getReadCnt();
-        this.answerVOList = answerVOList;
+        this.answerList = answerVOList;
+    }
+
+    public HongPostVO(HongPost hongPost, HongFileGroupVO file){
+        this.title = hongPost.getTitle();
+        this.content = hongPost.getContent();
+        this.deleteYn = hongPost.getDeleteYn();
+        this.readCnt = hongPost.getReadCnt();
+        this.file = file;
     }
 }
