@@ -36,6 +36,7 @@ public class HongProductServiceImpl implements HongProductService {
                 .productName(hongProductDTO.getProductName())
                 .productCnt(hongProductDTO.getProductCnt())
                 .productPrice(hongProductDTO.getProductPrice())
+                .productStock(hongProductDTO.getProductCnt())
                 .build();
 
         HongProduct save = hongProductRepository.save(hongProduct);

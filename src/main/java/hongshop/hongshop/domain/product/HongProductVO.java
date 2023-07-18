@@ -18,11 +18,13 @@ public class HongProductVO {
     private String productName;
     private Integer productCnt;
     private Integer productPrice;
+    private Integer productStock;
 
     public HongProductVO(HongProduct hongProduct) {
         this.categoryName = hongProduct.getHongCategory().getCategoryName();
         this.productName = hongProduct.getProductName();
         this.productCnt = hongProduct.getProductCnt();
         this.productPrice = hongProduct.getProductPrice();
+        this.productStock = hongProduct.getProductStock();
     }
 }

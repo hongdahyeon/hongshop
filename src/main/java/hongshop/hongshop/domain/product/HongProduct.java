@@ -40,12 +40,16 @@ public class HongProduct {
     @Column(name = "product_price")
     private Integer productPrice;
 
+    @Column(name = "product_stock")
+    private Integer productStock;
+
     @Builder(builderMethodName = "hongPostInsertBuilder")
-    public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice) {
+    public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice, Integer productStock) {
         this.hongCategory = hongCategory;
         this.productName = productName;
         this.productCnt = productCnt;
         this.productPrice = productPrice;
+        this.productStock = productCnt;
     }
 
     public void updateProduct(HongProductDTO hongProductDTO){
