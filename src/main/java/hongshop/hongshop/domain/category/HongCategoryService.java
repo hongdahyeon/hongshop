@@ -16,7 +16,11 @@ public interface HongCategoryService {
 
     List<HongCategoryVO> list();
 
+    List<HongCategoryVO> listWithProduct();
+
     HongCategoryVO show(Long id);
+
+    HongCategoryVO showWithProduct(Long id);
 
     void update(HongCategoryDTO hongCategoryDTO, Long id);
 

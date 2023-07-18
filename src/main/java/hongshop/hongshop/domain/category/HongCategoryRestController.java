@@ -35,6 +35,14 @@ public class HongCategoryRestController {
         return Response.ok(list);
     }
 
+    @GetMapping("/category-product")
+    @Operation(summary = "get category list with product", description = "물품 카테고리 & 물품들 리스트 가져오기")
+    @ApiDocumentResponse
+    public Response listWithProduct(){
+        List<HongCategoryVO> list = hongCategoryService.listWithProduct();
+        return Response.ok(list);
+    }
+
     @PostMapping("/category")
     @Operation(summary = "insert category", description = "카테고리 저장")
     @ApiDocumentResponse
@@ -48,6 +56,14 @@ public class HongCategoryRestController {
     @ApiDocumentResponse
     public Response view(@PathVariable Long id){
         HongCategoryVO show = hongCategoryService.show(id);
+        return Response.ok(show);
+    }
+
+    @GetMapping("/category-product/{id}")
+    @Operation(summary = "get category&product view", description = "물품 카테고리&물품들 단건 조회")
+    @ApiDocumentResponse
+    public Response viewWithProduct(@PathVariable Long id){
+        HongCategoryVO show = hongCategoryService.showWithProduct(id);
         return Response.ok(show);
     }
 

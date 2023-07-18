@@ -1,6 +1,9 @@
 package hongshop.hongshop.domain.category.impl;
 
 import hongshop.hongshop.domain.category.*;
+import hongshop.hongshop.domain.product.HongProduct;
+import hongshop.hongshop.domain.product.HongProductRepository;
+import hongshop.hongshop.domain.product.HongProductVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import java.util.List;
 public class HongCategoryServiceImpl implements HongCategoryService {
 
     private final HongCategoryRepository hongCategoryRepository;
+    private final HongProductRepository hongProductRepository;
 
     @Override
     public Long join(HongCategoryDTO hongCategoryDTO) {
@@ -42,9 +46,27 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     }
 
     @Override
+    public List<HongCategoryVO> listWithProduct() {
+        List<HongCategory> all = hongCategoryRepository.findAll();
+        return all.stream().map(category -> {
+            List<HongProduct> productList = hongProductRepository.findAllByHongCategoryId(category.getId());
+            List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
+            return new HongCategoryVO(category, list);
+        }).toList();
+    }
+
+    @Override
     public HongCategoryVO show(Long id) {
         HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
         return new HongCategoryVO(hongCategory);
+    }
+
+    @Override
+    public HongCategoryVO showWithProduct(Long id) {
+        HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
+        List<HongProduct> productList = hongProductRepository.findAllByHongCategoryId(id);
+        List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
+        return new HongCategoryVO(hongCategory, list);
     }
 
     @Override

@@ -1,7 +1,11 @@
 package hongshop.hongshop.domain.category;
 
+import hongshop.hongshop.domain.product.HongProductVO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @fileName HongCategoryVO
@@ -16,6 +20,13 @@ public class HongCategoryVO {
 
     private String categoryName;
     private String description;
+    private List<HongProductVO> productVOList = new ArrayList<>();
+
+    public HongCategoryVO(HongCategory hongCategory, List<HongProductVO> productVOList) {
+        this.categoryName = hongCategory.getCategoryName();
+        this.description = hongCategory.getDescription();
+        this.productVOList = productVOList;
+    }
 
     public HongCategoryVO(HongCategory hongCategory) {
         this.categoryName = hongCategory.getCategoryName();
