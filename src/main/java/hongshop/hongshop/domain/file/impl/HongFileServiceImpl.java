@@ -55,7 +55,7 @@ public class HongFileServiceImpl implements HongFileService {
 
             // hong file group save
             HongFileGroup hongFileGroup = null;
-            if(fileGroupId != null) hongFileGroup = hongFileGroupRepository.findById(10L).get();
+            if(fileGroupId != null) hongFileGroup = hongFileGroupRepository.findById(fileGroupId).get();
             else {
                  HongFileGroup fileGroup = HongFileGroup.hongFileGroupInsertBuilder()
                     .description("")
