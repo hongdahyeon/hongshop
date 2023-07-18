@@ -20,12 +20,12 @@ public class HongCategoryVO {
 
     private String categoryName;
     private String description;
-    private List<HongProductVO> productVOList = new ArrayList<>();
+    private List<HongProductVO> productList = new ArrayList<>();
 
     public HongCategoryVO(HongCategory hongCategory, List<HongProductVO> productVOList) {
         this.categoryName = hongCategory.getCategoryName();
         this.description = hongCategory.getDescription();
-        this.productVOList = productVOList;
+        this.productList = productVOList;
     }
 
     public HongCategoryVO(HongCategory hongCategory) {
