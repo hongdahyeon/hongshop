@@ -37,3 +37,4 @@
       - 주문에 따라 product 테이블의 재고 컬럼도 변한다.
       - 만약 재고가 없다면, throw와 함께 주문이 안된다.
 * commit29 : commit12에 대해 바꿈. redirect가 아니라 권한 처리로 login page로 전환 (23/07/18)
+* commit30 : fileGroupId 부분 하드 코딩 수정
