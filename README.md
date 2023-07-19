@@ -49,3 +49,5 @@
 * commit37 : 배송 테이블 생성 (23/07/19)
     - 1개 배송 = 1개의 주문
 * commit38 : 코드 수정
+* commit39 : 기본적인 css, js 파일 추가
+* commit40 : layout 구현 및 기본적인 login 화면 구현
