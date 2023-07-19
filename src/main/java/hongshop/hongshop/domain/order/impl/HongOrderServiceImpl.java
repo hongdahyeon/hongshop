@@ -1,5 +1,7 @@
 package hongshop.hongshop.domain.order.impl;
 
+import hongshop.hongshop.domain.deliver.HongDeliverDTO;
+import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.order.*;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailVO;
@@ -36,6 +38,7 @@ public class HongOrderServiceImpl implements HongOrderService {
     private final HongOrderRepository hongOrderRepository;
     private final HongOrderDetailService hongOrderDetailService;
     private final HongProductService hongProductService;
+    private final HongDeliverService hongDeliverService;
 
     @Override
     @Transactional(readOnly = false)
@@ -65,8 +68,10 @@ public class HongOrderServiceImpl implements HongOrderService {
 
             // 4. update product removing stock
             hongProductService.updateStockCnt(hongOrderDTO.getOrderCnt(), product);
-
         }
+
+        // 5. finally save deliver
+        hongDeliverService.join(new HongDeliverDTO(hongUser.getAddress()), saveOrder);
 
         return saveOrder.getId();
     }
