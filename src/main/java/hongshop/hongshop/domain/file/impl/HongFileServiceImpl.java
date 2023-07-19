@@ -26,7 +26,9 @@ import java.util.UUID;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary  (*) saveFile : 파일 업로드 시 동작되는 메서드로, 파일을 저장하고 기본 정보를 저장한다.
+ *                         이때 파일 상태는 'PROCESS'로 저장된다.
+ *                         -> 후에 게시글 및 다른 정보와 함께 최종 저장될 때 파일 상태는 'SAVED'로 변하게 된다.
 **/
 
 @Service

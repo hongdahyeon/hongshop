@@ -1,6 +1,5 @@
 package hongshop.hongshop.domain.order.impl;
 
-import hongshop.hongshop.domain.deliver.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.order.*;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
@@ -71,7 +70,7 @@ public class HongOrderServiceImpl implements HongOrderService {
         }
 
         // 5. finally save deliver
-        hongDeliverService.join(new HongDeliverDTO(hongUser.getAddress()), saveOrder);
+        hongDeliverService.join(hongUser.getAddress(), saveOrder);
 
         return saveOrder.getId();
     }

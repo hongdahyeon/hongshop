@@ -1,12 +1,19 @@
 package hongshop.hongshop.domain.deliver;
 
+import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+/**
+* @fileName HongDeliverRestController
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-19
+* @summary
+**/
 
 @RestController
 @RequiredArgsConstructor
@@ -17,8 +24,18 @@ public class HongDeliverRestController {
     private final HongDeliverService hongDeliverService;
 
     @GetMapping("/deliver/{id}")
+    @Operation(summary = "get deliver view", description = "배송 리스트 가져오기")
+    @ApiDocumentResponse
     public Response view(@PathVariable Long id){
         HongDeliverVO view = hongDeliverService.view(id);
         return Response.ok(view);
+    }
+
+    @PutMapping("/deliver/{id}")
+    @Operation(summary = "update deliver", description = "배송 정보 업데이트")
+    @ApiDocumentResponse
+    public Response update(@PathVariable Long id, @RequestBody HongDeliverDTO hongDeliverDTO){
+        hongDeliverService.update(hongDeliverDTO, id);
+        return Response.ok("updated");
     }
 }

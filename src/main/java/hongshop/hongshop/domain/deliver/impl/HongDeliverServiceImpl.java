@@ -7,6 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+* @fileName HongDeliverServiceImpl
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-19
+* @summary
+**/
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -16,11 +24,11 @@ public class HongDeliverServiceImpl implements HongDeliverService {
 
     @Override
     @Transactional(readOnly = false)
-    public Long join(HongDeliverDTO hongDeliverDTO, HongOrder hongOrder) {
+    public Long join(Address address, HongOrder hongOrder) {
         HongDeliver hongDeliver = HongDeliver.hongDeliverInsertBuilder()
                 .hongOrder(hongOrder)
                 .deliverStatus(DeliverStatus.AWAIT)
-                .address(new Address(hongDeliverDTO.getCity(), hongDeliverDTO.getStreet(), hongDeliverDTO.getZipcode()))
+                .address(address)
                 .build();
 
         HongDeliver save = hongDeliverRepository.save(hongDeliver);
@@ -35,7 +43,8 @@ public class HongDeliverServiceImpl implements HongDeliverService {
 
     @Override
     @Transactional(readOnly = false)
-    public void update(HongDeliverDTO hongDeliverDTO) {
-
+    public void update(HongDeliverDTO hongDeliverDTO, Long id) {
+        HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
+        hongDeliver.updateDeliver(hongDeliverDTO);
     }
 }

@@ -44,4 +44,8 @@ public class HongDeliver {
         this.deliverStatus = deliverStatus;
         this.address = address;
     }
+
+    public void updateDeliver(HongDeliverDTO hongDeliverDTO){
+        this.address = new Address(hongDeliverDTO.getCity(), hongDeliverDTO.getStreet(), hongDeliverDTO.getZipcode());
+    }
 }

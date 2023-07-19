@@ -27,6 +27,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     private final HongProductRepository hongProductRepository;
 
     @Override
+    @Transactional(readOnly = false)
     public Long join(HongCategoryDTO hongCategoryDTO) {
 
         HongCategory hongCategory = HongCategory.hongCategoryInsertBuilder()
@@ -39,7 +40,6 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     }
 
     @Override
-    @Transactional(readOnly = false)
     public List<HongCategoryVO> list() {
         List<HongCategory> all = hongCategoryRepository.findAll();
         return all.stream().map(HongCategoryVO::new).toList();

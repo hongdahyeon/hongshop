@@ -1,18 +1,19 @@
 package hongshop.hongshop.domain.deliver;
 
-import hongshop.hongshop.domain.base.Address;
 import lombok.Getter;
 import lombok.Setter;
+
+/**
+* @fileName HongDeliverDTO
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-19
+* @summary
+**/
 
 @Getter @Setter
 public class HongDeliverDTO {
     private String city;
     private String street;
     private String zipcode;
-
-    public HongDeliverDTO(Address address) {
-        this.city = address.getCity();
-        this.street = address.getStreet();
-        this.zipcode = address.getZipcode();
-    }
 }

@@ -1,10 +1,17 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.base.Address;
-import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
+
+/**
+* @fileName HongDeliverVO
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-07-19
+* @summary
+**/
 
 @Getter @Setter
 public class HongDeliverVO {
