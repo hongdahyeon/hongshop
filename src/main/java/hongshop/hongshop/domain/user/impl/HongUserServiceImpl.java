@@ -57,4 +57,9 @@ public class HongUserServiceImpl implements HongUserService {
         HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         return new HongUserVO(hongUser.getUserId(), hongUser.getRole(), hongUser.getAddress());
     }
+
+    @Override
+    public Boolean checkUserId(String userId) {
+        return hongUserRepository.findByUserId(userId).isEmpty();
+    }
 }

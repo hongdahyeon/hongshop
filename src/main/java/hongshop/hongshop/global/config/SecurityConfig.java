@@ -29,7 +29,7 @@ public class SecurityConfig  {
         http
                 .authorizeRequests(authorize ->                         // url 기반 보안을 구성하는 http 객체의 메서드 -> 다양한 유형의 사용자가 액세스할 수 있는 url 정의
                         authorize
-                                .antMatchers("/login", "/assets/**").permitAll()                                  // 로그인 페이지의 경우 모두 접근 가능
+                                .antMatchers("/login", "/assets/**", "/api/checkId", "/api/user").permitAll()                                  // 로그인 페이지의 경우 모두 접근 가능
 //                                .antMatchers("/user/**").access("hasRole('ROLE_USER')")     // "/user/"로 시작하는 모든 url은 "ROLE_USER"의 역할을 갖은 사용자만 액세스 가능
 //                                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")   // "/admin/"로 시작하는 모든 url은 "ROLE_ADMIN"의 역할을 갖은 사용자만 액세스 가능
                                 .anyRequest().authenticated()                                             // 앞선 패턴들을 제외한 다른 요청들은 권한 검사를 한다.

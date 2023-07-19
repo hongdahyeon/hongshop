@@ -22,10 +22,7 @@ public class HongUserDTO {
 
     private HongRoleType role;
 
-    @NotNull
     private String city;
-    @NotNull
     private String street;
-    @NotNull
     private String zipcode;
 }

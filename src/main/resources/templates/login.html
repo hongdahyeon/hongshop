@@ -13,7 +13,7 @@
             <form id="form" action="/loginProc" method="post">
 
                 <div class="card-header">
-                    <h4>로그인</h4>
+                    <h4 class="card-title">로그인</h4>
                 </div>
                 <div class="card-body">
                     <div class="mb-3 mt-3">
@@ -21,10 +21,12 @@
                         <input type="text" class="form-control" id="userId" name="userId" value="test" />
                     </div>
 
-
-                    <div class="mb-3">
+                    <div class="mb-3 mt-3">
                         <label for="password">비밀번호</label>
-                        <input type="text" class="form-control" id="password" name="password" value="1234" />
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" value="1234"/>
+                            <button class="btn btn-outline-dark" type="button" id="show-pwd">show</button>
+                        </div>
                     </div>
 
                     <div class="form-check mb-3">
@@ -34,17 +36,157 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">로그인</button>
-                    <button type="button" class="btn btn-secondary" id="new-login">회원가입</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
                 </div>
             </form>
         </div>
+
+        <!-- The Modal -->
+        <form id="new-login-form">
+            <div class="modal" id="myModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">회원가입</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="mb-3 mt-3">
+                                <label for="newUserId">아이디</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="newUserId" name="userId"/>
+                                    <button class="btn btn-outline-dark" type="button" id="check-Id">중복확인</button>
+                                </div>
+                                <p style="color: red" class="error-message" id="errorMessage"></p>
+                            </div>
+
+                            <div class="mb-3 mt-3">
+                                <label for="newPassword">비밀번호</label>
+                                <input type="password" class="form-control" id="newPassword" name="password" />
+                            </div>
+
+                            <div class="mb-3 mt-3">
+                                <label for="newPassword">비밀번호 확인</label>
+                                <input type="password" class="form-control" id="newPasswordChk"/>
+                            </div>
+
+                            <div class="mb-3 mt-3">
+                                <label>유저 권한</label>
+                                <div class="input-group">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="ROLE_ADNIM" name="role" value="ROLE_ADMIN" checked> admin
+                                        <label class="form-check-label" for="ROLE_ADNIM"></label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="ROLE_USER" name="role" value="ROLE_USER"> user
+                                        <label class="form-check-label" for="ROLE_USER"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <label>주소</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control mb-1" name="city" placeholder="city">
+                                </div>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control mb-1" name="street" placeholder="street">
+                                </div>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control mb-1" name="zipcode" placeholder="zipcode">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="new-login">회원가입</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
     </div>
     <th:block th:replace="fragments/script :: script"></th:block>
     <script>
 
-        $("#new-login").click(() => {
-            console.log("click")
+        let IdChk = false;
+
+        $("#show-pwd").click(() => {
+            const passwordInput = $('#password');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
         })
+
+        $("#check-Id").click(() => {
+            const newUserId = $("#newUserId").val();
+            console.log("check! : ", newUserId);
+
+            if(!newUserId.length) alert("아이디는 빈값일 수 없습니다.")
+            else {
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/checkId?userId=${newUserId}`,
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("data : ", data)
+                        if (!data.message) $("#errorMessage").html("중복되는 아이디입니다.")
+                        else {
+                            $("#errorMessage").html("사용 가능한 아이디입니다.")
+                            IdChk = true
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            }
+        })
+
+
+        const form = document.getElementById("new-login-form");
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const pwd = $("#newPassword").val()
+            const pwdChk = $("#newPasswordChk").val()
+
+            if(!IdChk) alert("아이디 중복 여부를 확인해주세요.")
+            else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
+            else {
+                FormDataToObj.getParameter("new-login-form").then(obj => {
+                    console.log("obj : ", obj)
+
+                    $.ajax({
+                        type: 'POST',
+                        url: `/api/user`,
+                        dataType: 'json',
+                        data: JSON.stringify(obj),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            console.log("data : ", data)
+                            alert("회원가입 성공")
+                            $('#myModal').modal('hide');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+
+                })
+            }
+
+
+        });
+
 
     </script>
 </body>

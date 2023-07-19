@@ -17,4 +17,6 @@ public interface HongUserService {
     Optional<HongUser> getHongUser(String userId);
 
     HongUserVO getHongUserByUserId(String userId);
+
+    Boolean checkUserId(String userId);
 }

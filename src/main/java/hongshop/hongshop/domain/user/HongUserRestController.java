@@ -6,6 +6,7 @@ import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 @Tag(name = "hong user rest controller", description = "유저 Rest 컨트롤러")
 @RequiredArgsConstructor
 public class HongUserRestController {
@@ -50,5 +52,13 @@ public class HongUserRestController {
     public Response getUserById(String userId){
         HongUserVO hongUserByUserId = hongUserService.getHongUserByUserId(userId);
         return Response.ok(hongUserByUserId);
+    }
+
+    @GetMapping("/checkId")
+    @Operation(summary = "check userId if duplicated", description = "회원가입시, 회원아이디 중복 여부 체크")
+    @ApiDocumentResponse
+    public Response checkUserId(String userId){
+        Boolean bool = hongUserService.checkUserId(userId);
+        return Response.ok(bool);
     }
 }
