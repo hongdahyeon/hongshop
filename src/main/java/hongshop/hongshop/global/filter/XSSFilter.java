@@ -35,8 +35,6 @@ public class XSSFilter extends OncePerRequestFilter {
 
         String method = request.getMethod();
         String contentType = request.getContentType();
-        log.info("method : {}", method);
-        log.info("contentType : {}", contentType);
 
         if(method.equals(HttpMethod.DELETE.name()) || method.equals(HttpMethod.GET.name())) doFilterParam(request, wrappingResponse, chain);
         else if(method.equals(HttpMethod.POST.name()) || method.equals(HttpMethod.PUT.name())) doFilterBody(request, wrappingResponse, chain);
@@ -46,7 +44,6 @@ public class XSSFilter extends OncePerRequestFilter {
 
     public void doFilterParam(HttpServletRequest request, ContentCachingResponseWrapper response, FilterChain chain) throws IOException, ServletException {
         final Map<String, String[]> modifiedParameterMap = getModifiedXSSParameterMap(request);
-        log.info("get param map : {}", modifiedParameterMap);
 
         HttpServletRequestWrapper modifiedRequest = new HttpServletRequestWrapper(request) {
             @Override
