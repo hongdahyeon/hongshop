@@ -46,3 +46,5 @@
     - 만일, fileGroupId가 있다면 해당 fileGroupId를 갖는 파일들의 fileState SAVED로 변경
 * commit35 : post 엔티티 builder 수정 (23/07/18)
 * commit36 : 주문 상태 값 변경 (23/07/18)
+* commit37 : 배송 테이블 생성 (23/07/19)
+    - 1개 배송 = 1개의 주문
