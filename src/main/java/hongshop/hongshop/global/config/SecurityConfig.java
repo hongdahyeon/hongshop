@@ -41,8 +41,15 @@ public class SecurityConfig  {
                                 .loginProcessingUrl("/loginProc")       // 처리를 위해 로그인 양식을 제출할 url을 지정
                                 .defaultSuccessUrl("/")                 // 로그인 성공 후, 리다렉션할 기본 url 설정
 
+                )
+                .logout(logoutConfigurer ->
+                   logoutConfigurer
+                           .logoutUrl("/logout")
+                           .logoutSuccessUrl("/login")
+                           .invalidateHttpSession(true)
+                           .clearAuthentication(true)       // 로그 아웃시, 인증정부를 지우고 세션을 무효화
                 );
 
-        return http.build();                                            // build된 http 객체를 반환 -> spring 보안 framework에 적용된다.
+        return http.build();                                // build된 http 객체를 반환 -> spring 보안 framework에 적용된다.
     }
 }

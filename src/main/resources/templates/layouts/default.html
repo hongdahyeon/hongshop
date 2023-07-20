@@ -9,10 +9,12 @@
     <th:block layout:fragment="head"></th:block>
 </head>
 
-<!--<body class="container-lg">-->
-<body>
+<body class="container-xl">
+<!--<body>-->
     <th:block th:replace="fragments/header :: headerFragment"></th:block>
-    <th:block layout:fragment="content"></th:block>
+    <div class="content-section" style="height: 800px; overflow-y: auto;">
+        <th:block layout:fragment="content"></th:block>
+    </div>
     <th:block th:replace="fragments/footer :: footer"></th:block>
     <th:block th:replace="fragments/script :: script"></th:block>
     <th:block layout:fragment="script"></th:block>
