@@ -49,4 +49,10 @@ public class HongUser {
         this.role = role;
         this.address = address;
     }
+
+    public void updateHongUser(HongUserDTO hongUserDTO){
+        if(hongUserDTO.getPassword() != null) this.password = hongUserDTO.getPassword();
+        this.role = hongUserDTO.getRole();
+        this.address = new Address(hongUserDTO.getCity(), hongUserDTO.getStreet(), hongUserDTO.getZipcode());
+    }
 }

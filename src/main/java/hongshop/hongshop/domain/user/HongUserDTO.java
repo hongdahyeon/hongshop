@@ -17,12 +17,15 @@ public class HongUserDTO {
 
     @NotNull
     private String userId;
-    @NotNull
+
     private String password;
 
     private HongRoleType role;
 
+    @NotNull
     private String city;
+    @NotNull
     private String street;
+    @NotNull
     private String zipcode;
 }

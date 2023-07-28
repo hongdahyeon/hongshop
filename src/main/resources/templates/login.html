@@ -10,6 +10,7 @@
     <div class="container mt-3 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="card col-md-6">
 
+            <!-- start : Login Form  -->
             <form id="form" action="/loginProc" method="post">
 
                 <div class="card-header">
@@ -39,10 +40,11 @@
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
                 </div>
             </form>
+            <!-- end : Login Form  -->
         </div>
 
-        <!-- The Modal -->
-        <form id="new-login-form">
+        <!-- Start : new login form -->
+        <form id="new-login-form" class="needs-validation" novalidate>
             <div class="modal" id="myModal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -58,32 +60,35 @@
                             <div class="mb-3 mt-3">
                                 <label for="newUserId">아이디</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="newUserId" name="userId"/>
+                                    <input type="text" class="form-control" id="newUserId" name="userId" required/>
                                     <button class="btn btn-outline-dark" type="button" id="check-Id">중복확인</button>
+                                    <div class="invalid-feedback">아이디를 입력하세요.</div>
                                 </div>
                                 <p style="color: red" class="error-message" id="errorMessage"></p>
                             </div>
 
                             <div class="mb-3 mt-3">
                                 <label for="newPassword">비밀번호</label>
-                                <input type="password" class="form-control" id="newPassword" name="password" />
+                                <input type="password" class="form-control" id="newPassword" name="password" required />
+                                <div class="invalid-feedback">비밀번호를 입력하세요.</div>
                             </div>
 
                             <div class="mb-3 mt-3">
                                 <label for="newPassword">비밀번호 확인</label>
-                                <input type="password" class="form-control" id="newPasswordChk"/>
+                                <input type="password" class="form-control" id="newPasswordChk" required />
+                                <div class="invalid-feedback">비밀번호 확인을 입력하세요.</div>
                             </div>
 
                             <div class="mb-3 mt-3">
                                 <label>유저 권한</label>
                                 <div class="input-group">
-                                    <div class="form-check">
-                                        <input type="radio" class="form-check-input" id="ROLE_ADNIM" name="role" value="ROLE_ADMIN" checked> admin
-                                        <label class="form-check-label" for="ROLE_ADNIM"></label>
+                                    <div class="form-check" style="margin-right: 20px;">
+                                        <input type="radio" class="form-check-input" id="ROLE_ADMIN" name="role" value="ROLE_ADMIN" checked>
+                                        <label class="form-check-label" for="ROLE_ADMIN">admin</label>
                                     </div>
                                     <div class="form-check">
-                                        <input type="radio" class="form-check-input" id="ROLE_USER" name="role" value="ROLE_USER"> user
-                                        <label class="form-check-label" for="ROLE_USER"></label>
+                                        <input type="radio" class="form-check-input" id="ROLE_USER" name="role" value="ROLE_USER">
+                                        <label class="form-check-label" for="ROLE_USER">user</label>
                                     </div>
                                 </div>
                             </div>
@@ -91,13 +96,16 @@
                             <div class="row">
                                 <label>주소</label>
                                 <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="city" placeholder="city">
+                                    <input type="text" class="form-control mb-1" name="city" placeholder="city" required>
+                                    <div class="invalid-feedback">지역을 입력하세요.</div>
                                 </div>
                                 <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="street" placeholder="street">
+                                    <input type="text" class="form-control mb-1" name="street" placeholder="street" required>
+                                    <div class="invalid-feedback">거리를 입력하세요.</div>
                                 </div>
                                 <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="zipcode" placeholder="zipcode">
+                                    <input type="text" class="form-control mb-1" name="zipcode" placeholder="zipcode" required>
+                                    <div class="invalid-feedback">우편번호를 입력하세요.</div>
                                 </div>
                             </div>
 
@@ -113,6 +121,7 @@
                 </div>
             </div>
         </form>
+        <!-- End : new login form -->
 
     </div>
     <th:block th:replace="fragments/script :: script"></th:block>
@@ -151,41 +160,47 @@
             }
         })
 
+        window.addEventListener("load", function(event) {
+            event.preventDefault(); event.stopPropagation();
+            const form = document.getElementById("new-login-form");
+            form.addEventListener("submit", function(e){
+                if(form.checkValidity() === false){
+                    e.preventDefault(); e.stopPropagation();
+                    form.classList.add("was-validated")
+                }else{
+                    e.preventDefault(); e.stopPropagation();
+                    const pwd = $("#newPassword").val()
+                    const pwdChk = $("#newPasswordChk").val()
 
-        const form = document.getElementById("new-login-form");
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
+                    if(!IdChk) alert("아이디 중복 여부를 확인해주세요.")
+                    else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
+                    else {
+                        FormDataToObj.getParameter("new-login-form").then(obj => {
 
-            const pwd = $("#newPassword").val()
-            const pwdChk = $("#newPasswordChk").val()
+                            $.ajax({
+                                type: 'POST',
+                                url: `/api/user`,
+                                dataType: 'json',
+                                data: JSON.stringify(obj),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if(data.httpStatus === 200) {
+                                        alert("회원가입을 성공했습니다.")
+                                        $('#myModal').modal('hide');
+                                    }else {
+                                        alert("회원가입을 실패했습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
+                                }
+                            });
 
-            if(!IdChk) alert("아이디 중복 여부를 확인해주세요.")
-            else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
-            else {
-                FormDataToObj.getParameter("new-login-form").then(obj => {
-                    console.log("obj : ", obj)
-
-                    $.ajax({
-                        type: 'POST',
-                        url: `/api/user`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            console.log("data : ", data)
-                            alert("회원가입 성공")
-                            $('#myModal').modal('hide');
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-
-                })
-            }
-
-
-        });
+                        })
+                    }
+                }
+            })
+        })
 
 
     </script>

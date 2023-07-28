@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/default">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-body">
+            <form id="update-form" class="needs-validation" novalidate>
+                <input type="hidden" name="userId" th:value="${user.userId}" />
+                <div class="mb-3 mt-3">
+                    <label for="userId">아이디</label>
+                    <input type="text" class="form-control" id="userId" name="userId" th:value="${user.userId}" disabled/>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label for="newPassword">비밀번호</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="newPassword" name="password" disabled/>
+                        <button class="btn btn-outline-dark" type="button" id="change-pwd">비밀번호 변경</button>
+                    </div>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label for="newPassword">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="newPasswordChk" disabled/>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label>유저 권한</label>
+                    <div class="input-group">
+                        <div class="form-check" style="margin-right: 20px;">
+                            <input type="radio" class="form-check-input" id="ROLE_ADMIN" name="role" value="ROLE_ADMIN" th:checked="${user.role == 'ROLE_ADMIN'}">
+                            <label class="form-check-label" for="ROLE_ADMIN">admin</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" id="ROLE_USER" name="role" value="ROLE_USER" th:checked="${user.role == 'ROLE_USER'}">
+                            <label class="form-check-label" for="ROLE_USER">user</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label>주소</label>
+                    <div class="col-sm">
+                       <input type="text" class="form-control mb-1" name="city" placeholder="city" th:value="${user.city}" required>
+                        <div class="invalid-feedback">지역을 입력하세요.</div>
+                    </div>
+                    <div class="col-sm">
+                        <input type="text" class="form-control mb-1" name="street" placeholder="street" th:value="${user.street}" required>
+                        <div class="invalid-feedback">거리를 입력하세요.</div>
+                    </div>
+                    <div class="col-sm">
+                        <input type="text" class="form-control mb-1" name="zipcode" placeholder="zipcode" th:value="${user.zipcode}" required>
+                        <div class="invalid-feedback">우편번호를 입력하세요.</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary" id="update-info">수정</button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/'">뒤로가기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script>
+
+        let changePwd = false
+
+      $("#change-pwd").on("click", function(e) {
+          e.preventDefault();
+          changePwd = true
+          $("#newPassword").prop("disabled", false);
+          $("#newPasswordChk").prop("disabled", false);
+      })
+
+      window.addEventListener("load", function(event) {
+         event.preventDefault();
+         const form = document.getElementById("update-form");
+
+         form.addEventListener("submit", function(event) {
+             if(form.checkValidity() === false) {
+                 event.preventDefault();
+                 form.classList.add("was-validated")
+             }else{
+                 event.preventDefault();
+                 const pwd = $("#newPassword").val()
+                 const pwdChk = $("#newPasswordChk").val()
+
+                 if(changePwd &&(pwd.length === 0 || pwd !== pwdChk)) alert("입력하신 비밀번호가 다릅니다.")
+                 else {
+                     FormDataToObj.getParameter("update-form").then(obj => {
+
+                         $.ajax({
+                           type: 'PUT',
+                           url: `/api/user`,
+                           dataType: 'json',
+                           data: JSON.stringify(obj),
+                           contentType: 'application/json',
+                           success: function (data) {
+                               if(data.httpStatus === 200) {
+                                   alert("회원정보를 수정하였습니다.")
+                                   window.location.href='/'
+                               }else {
+                                   alert("회원정보 수정을 실패했습니다.")
+                               }
+                           },
+                           error: function (xhr, status, error) {
+                             console.error('Error getting password:', error);
+                           }
+                         });
+                     })
+                }
+             }
+         });
+      });
+    </script>
+</th:block>
+
+</html>

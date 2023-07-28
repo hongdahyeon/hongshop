@@ -19,4 +19,6 @@ public interface HongUserService {
     HongUserVO getHongUserByUserId(String userId);
 
     Boolean checkUserId(String userId);
+
+    void updateHongUser(HongUserDTO hongUserDTO);
 }

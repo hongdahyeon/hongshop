@@ -62,4 +62,12 @@ public class HongUserServiceImpl implements HongUserService {
     public Boolean checkUserId(String userId) {
         return hongUserRepository.findByUserId(userId).isEmpty();
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateHongUser(HongUserDTO hongUserDTO) {
+        HongUser hongUser = hongUserRepository.findByUserId(hongUserDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        if(hongUserDTO.getPassword() != null) hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
+        hongUser.updateHongUser(hongUserDTO);
+    }
 }

@@ -61,4 +61,12 @@ public class HongUserRestController {
         Boolean bool = hongUserService.checkUserId(userId);
         return Response.ok(bool);
     }
+
+    @PutMapping("/user")
+    @Operation(summary = "update user", description = "로그인한 회원 정보 수정하기")
+    @ApiDocumentResponse
+    public Response updateUser(@RequestBody HongUserDTO hongUserDTO){
+        hongUserService.updateHongUser(hongUserDTO);
+        return Response.ok("updated");
+    }
 }
