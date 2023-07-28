@@ -52,3 +52,4 @@
 * commit39 : 기본적인 css, js 파일 추가
 * commit40 : layout 구현 및 기본적인 login 화면 구현
 * commit41 : 로그인 및 회원가입 로직 구현
+* commit42 : 기본 레이아웃 수정 및 로그아웃 처리
