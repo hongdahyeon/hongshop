@@ -30,9 +30,17 @@ public class HongCartRestController {
     @GetMapping("/cart")
     @Operation(summary = "get login user's cart list", description = "로그인한 사용자의 장바구니 리스트 가져오기")
     @ApiDocumentResponse
-    public Response listofCart(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<HongCartVO> usersListofCart = hongCartService.getUsersListofCart(principalDetails.getUser());
-        return Response.ok(usersListofCart);
+    public Response listOfCartByLoginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<HongCartVO> usersListOfCart = hongCartService.getUsersListOfCartByLoginUser(principalDetails.getUser());
+        return Response.ok(usersListOfCart);
+    }
+
+    @GetMapping("/cart/{id}")
+    @Operation(summary = "get login user's cart list", description = "로그인한 사용자의 장바구니 리스트 가져오기")
+    @ApiDocumentResponse
+    public Response listOfCartById(@PathVariable Long id){
+        List<HongCartVO> usersListOfCartById = hongCartService.getUsersListOfCartById(id);
+        return Response.ok(usersListOfCartById);
     }
 
     @PostMapping("/cart")

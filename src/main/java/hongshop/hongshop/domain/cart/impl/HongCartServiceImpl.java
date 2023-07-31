@@ -53,8 +53,15 @@ public class HongCartServiceImpl implements HongCartService {
     }
 
     @Override
-    public List<HongCartVO> getUsersListofCart(HongUser hongUser) {
-        List<HongCart> listofCart = hongCartRepository.findAllByHongUserId(hongUser.getId());
-        return listofCart.stream().map(HongCartVO::new).toList();
+    public List<HongCartVO> getUsersListOfCartByLoginUser(HongUser hongUser) {
+        List<HongCart> listOfCart = hongCartRepository.findAllByHongUserId(hongUser.getId());
+        return listOfCart.stream().map(HongCartVO::new).toList();
     }
+
+    @Override
+    public List<HongCartVO> getUsersListOfCartById(Long id) {
+        List<HongCart> listOfCart = hongCartRepository.findAllByHongUserId(id);
+        return listOfCart.stream().map(HongCartVO::new).toList();
+    }
+
 }
