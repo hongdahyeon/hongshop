@@ -6,6 +6,8 @@ import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupVO;
 import hongshop.hongshop.domain.post.*;
+import hongshop.hongshop.domain.postType.HongPostType;
+import hongshop.hongshop.domain.postType.HongPostTypeRepository;
 import hongshop.hongshop.global.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +36,13 @@ public class HongPostServiceImpl implements HongPostService {
     private final HongAnswerService hongAnswerService;
     private final HongFileService hongFileService;
     private final HongFileGroupService hongFileGroupService;
+    private final HongPostTypeRepository hongPostTypeRepository;
 
     @Override
     @Transactional(readOnly = false)
     public Long join(HongPostDTO hongPostDTO) {
+
+        HongPostType postType = hongPostTypeRepository.findById(hongPostDTO.getHongPostTypeId()).orElseThrow(() -> new IllegalArgumentException("there is no post type"));
 
         HongPost hongPost = null;
         if(hongPostDTO.getFileGroupId() == null) {
@@ -45,6 +50,7 @@ public class HongPostServiceImpl implements HongPostService {
              hongPost = HongPost.hongPostInsertBuilder()
                     .title(hongPostDTO.getTitle())
                     .content(hongPostDTO.getContent())
+                     .hongPostType(postType)
                     .build();
         }else {
             hongFileService.updateFileState(hongPostDTO.getFileGroupId());
@@ -52,6 +58,7 @@ public class HongPostServiceImpl implements HongPostService {
                     .title(hongPostDTO.getTitle())
                     .content(hongPostDTO.getContent())
                     .fileGroupId(hongPostDTO.getFileGroupId())
+                    .hongPostType(postType)
                     .build();
         }
         HongPost save = hongPostRepository.save(hongPost);
@@ -107,5 +114,11 @@ public class HongPostServiceImpl implements HongPostService {
             CookieUtil.createCookie(res, id.toString(), String.format("[%s]", id), 60);
             hongPost.updateReadCnt();
         }
+    }
+
+    @Override
+    public List<HongPostVO> listByHongPostTypeId(Long honPostTypeId) {
+        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeId(honPostTypeId);
+        return hongPosts.stream().map(HongPostVO::new).toList();
     }
 }

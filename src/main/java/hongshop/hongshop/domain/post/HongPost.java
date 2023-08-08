@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.post;
 
+import hongshop.hongshop.domain.postType.HongPostType;
 import hongshop.hongshop.global.base.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,13 +40,18 @@ public class HongPost extends BaseEntity {
     @Column(name = "read_cnt")
     private Integer readCnt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hong_post_type_id")
+    private HongPostType hongPostType;
+
     @Builder(builderMethodName = "hongPostInsertBuilder")
-    public HongPost(String title, String content, Long fileGroupId) {
+    public HongPost(String title, String content, Long fileGroupId, HongPostType hongPostType) {
         this.title = title;
         this.content = content;
         this.fileGroupId = fileGroupId;
         this.deleteYn = "N";
         this.readCnt = 0;
+        this.hongPostType = hongPostType;
     }
 
     public void updatePost(HongPostDTO hongPostDTO){

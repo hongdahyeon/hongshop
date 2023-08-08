@@ -21,4 +21,6 @@ public class HongPostDTO {
     @NotNull
     private String content;
     private Long fileGroupId;
+
+    private Long hongPostTypeId;
 }

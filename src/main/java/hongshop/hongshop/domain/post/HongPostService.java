@@ -30,4 +30,6 @@ public interface HongPostService {
 
     void updateReadCnt(Long id, HttpServletRequest req, HttpServletResponse res);
 
+    List<HongPostVO>  listByHongPostTypeId(Long honPostTypeId);
+
 }
