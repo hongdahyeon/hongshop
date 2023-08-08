@@ -15,6 +15,10 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-08-08
 * @summary
+ *  (1) list : 전체 게시글 타입 리스트
+ *  (2) listWithPost : 전체 게시글 타입 리스트 with 게시글
+ *  (3) join : 게시글 타입 저장
+ *  (4) view : 게시글 타입 단건 조회
 **/
 
 @Transactional(readOnly = true)
@@ -50,6 +54,12 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
 
         HongPostType save = hongPostTypeRepository.save(hongPostType);
         return save.getId();
+    }
+
+    @Override
+    public HongPostTypeVO view(Long id) {
+        HongPostType hongPostType = hongPostTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no type"));
+        return new HongPostTypeVO(hongPostType);
     }
 
 }

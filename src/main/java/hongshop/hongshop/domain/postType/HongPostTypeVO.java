@@ -18,16 +18,19 @@ import java.util.List;
 @Getter @Setter
 public class HongPostTypeVO {
 
+    public Long postTypeId;
     public String postType;
     public String postName;
     public List<HongPostVO> hongPost = new ArrayList<>();
 
     public HongPostTypeVO(HongPostType hongPostType){
+        this.postTypeId = hongPostType.getId();
         this.postType = hongPostType.getPostType().toString();
         this.postName = hongPostType.getPostName();
     }
 
     public HongPostTypeVO(HongPostType hongPostType, List<HongPostVO> hongPost){
+        this.postTypeId = hongPostType.getId();
         this.postType = hongPostType.getPostType().toString();
         this.postName = hongPostType.getPostName();
         this.hongPost = hongPost;

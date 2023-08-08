@@ -7,10 +7,7 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-08-08
-* @summary 
- *  - list : 전체 게시글 타입 리스트
- *  - listWithPost : 전체 게시글 타입 리스트 with 게시글
- *  - join : 게시글 타입 저장
+* @summary
 **/
 
 public interface HongPostTypeService {
@@ -20,5 +17,7 @@ public interface HongPostTypeService {
     List<HongPostTypeVO> listWithPost();
 
     Long join(HongPostTypeDTO hongPostTypeDTO);
+
+    HongPostTypeVO view(Long id);
 
 }

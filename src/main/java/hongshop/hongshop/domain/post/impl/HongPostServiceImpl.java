@@ -24,6 +24,16 @@ import java.util.List;
  * @version 1.0.0
  * @date 2023-07-17
  * @summary
+ *   (1) join : 파일그룹ID의 유무에 따라 저장
+ *   (2) list : 게시글 전체 리스트 조회
+ *   (3) postWithAnswer : 게시글 단건 조회 with 답변
+ *   (4) postWithFile : 게시글 단건 조회 with 파일
+ *   (5) postsWithFileByPostType : 게시판ID에 따른 게시글 전체 리스트 조회 with 파일
+ *   (6) show : 게시글 단건 조회
+ *   (7) update : 게시글 단건 update 
+ *   (8) delete : 게시글 삭제 -> delete_Yn 변경
+ *   (9) updateReadCnt : 조회수 증가
+ *   (10) listByHongPostTypeId : 게시판ID에 따른 게시글 전체 리스트 조회
  **/
 
 @Service
@@ -83,6 +93,16 @@ public class HongPostServiceImpl implements HongPostService {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         HongFileGroupVO list = hongFileGroupService.list(hongPost.getFileGroupId());
         return new HongPostVO(hongPost, list);
+    }
+
+    @Override
+    public List<HongPostVO> postsWithFileByPostType(Long postTypeId) {
+        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeId(postTypeId);
+        return hongPosts.stream().map(post -> {
+            HongFileGroupVO list = null;
+            if(post.getFileGroupId() != null) list = hongFileGroupService.list(post.getFileGroupId());
+            return new HongPostVO(post, list);
+        }).toList();
     }
 
     @Override
