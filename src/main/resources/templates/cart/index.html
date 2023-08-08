@@ -9,10 +9,46 @@
 
 <th:block layout:fragment="content">
     <div class="container-sm mt-3">
-        <div class="card-header">
-            <div class="card-text">
-                장바구니
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>🛒 장바구니 🛒</h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info">상품보러가기</button>
+                </div>
             </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-bordered" id="cart-table">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th>번호</th>
+                        <th>상품명</th>
+                        <th>상품개수</th>
+                        <th>가격</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:if="${cart.size() == 0}">
+                        <tr>
+                            <td colspan="4">장바구니가 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${cart.size() == 0}">
+                        <tr th:each="ct, ctStat : ${cart}">
+                            <td th:text="${ctStat.index + 1}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${ct.productName}" style="width: 40%"></td>
+                            <td th:text="|${ct.cartCnt} 개|" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${#numbers.formatInteger(ct.cartPrice, 0, 'COMMA')}" style="width: 30%"></td>
+                            <td style="width: 10%; text-align: center;">
+                                <button th:value="${ct.id}" type="button" class="btn btn-outline-secondary delete-cart">삭제</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
         </div>
     </div>
 </th:block>
@@ -21,6 +57,30 @@
 <th:block layout:fragment="script">
     <script>
         console.log("script...")
+
+        $(".delete-cart").on("click", function(e) {
+            const cartId = $(this).val()
+            const row = $(this).closest('tr')
+
+            const result = confirm("장바구니에서 삭제하시겠습니까?")
+            if(result) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/api/cart/${cartId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            alert(`${data.message}`)
+                            row.remove()
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            }
+        })
     </script>
 </th:block>
 

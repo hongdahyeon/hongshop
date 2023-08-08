@@ -51,4 +51,13 @@ public class HongCartRestController {
         return Response.ok(savedCart);
     }
 
+    @DeleteMapping("/cart/{id}")
+    @Operation(summary = "delete cart", description = "장바구니 삭제")
+    @ApiDocumentResponse
+    public Response delete(@PathVariable Long id){
+        hongCartService.delete(id);
+        return Response.ok("삭제되었습니다.");
+    }
+
+
 }

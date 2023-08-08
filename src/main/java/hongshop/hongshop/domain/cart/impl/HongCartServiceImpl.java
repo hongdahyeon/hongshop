@@ -64,4 +64,11 @@ public class HongCartServiceImpl implements HongCartService {
         return listOfCart.stream().map(HongCartVO::new).toList();
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
+        hongCartRepository.delete(hongCart);
+    }
+
 }

@@ -18,4 +18,6 @@ public interface HongCartService {
     List<HongCartVO> getUsersListOfCartByLoginUser(HongUser hongUser);
 
     List<HongCartVO> getUsersListOfCartById(Long id);
+
+    void delete(Long id);
 }
