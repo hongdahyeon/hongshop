@@ -54,3 +54,4 @@
 * commit41 : 로그인 및 회원가입 로직 구현 (23/07/19)
 * commit42 : 기본 레이아웃 수정 및 로그아웃 처리 (23/07/20)
 * commit43 : html에서의 validation 처리 및 회원정보 수정 기능 추가 (23/07/28)
+* commit44 : 장바구니 화면 세팅 및 spring security를 thymeleaf에서 사용하도록 gradle 추가 (23/07/31)
