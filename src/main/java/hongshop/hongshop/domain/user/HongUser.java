@@ -52,7 +52,7 @@ public class HongUser {
 
     public void updateHongUser(HongUserDTO hongUserDTO){
         if(hongUserDTO.getPassword() != null) this.password = hongUserDTO.getPassword();
-        this.role = hongUserDTO.getRole();
+//        this.role = hongUserDTO.getRole();
         this.address = new Address(hongUserDTO.getCity(), hongUserDTO.getStreet(), hongUserDTO.getZipcode());
     }
 }

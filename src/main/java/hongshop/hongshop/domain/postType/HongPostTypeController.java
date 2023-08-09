@@ -4,7 +4,9 @@ import hongshop.hongshop.domain.post.HongPostService;
 import hongshop.hongshop.domain.post.HongPostVO;
 import hongshop.hongshop.domain.postType.html.BbsType;
 import hongshop.hongshop.domain.postType.html.CRUD;
+import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +24,10 @@ public class HongPostTypeController {
     private final HongPostService hongPostService;
 
     @GetMapping("/{id}")
-    public String list(@PathVariable Long id, Model model){
+    public String list(@PathVariable Long id, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails){
         HongPostTypeVO view = hongPostTypeService.view(id);
-        List<HongPostVO> posts = hongPostService.postsWithFileByPostType(view.getPostTypeId());
-
         model.addAttribute("type", view);
-        model.addAttribute("posts", posts);
+        model.addAttribute("role", principalDetails.getUser().getRole());
         return "bbs/" + BbsType.getHtmlName(view.getPostType(), CRUD.INDEX.html());
     }
 }

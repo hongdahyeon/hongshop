@@ -19,6 +19,7 @@ import java.util.List;
 @Getter @Setter
 public class HongPostVO {
 
+    private Long id;
     private String title;
     private String content;
     private String deleteYn;
@@ -27,6 +28,7 @@ public class HongPostVO {
     private HongFileGroupVO file;
 
     public HongPostVO(HongPost hongPost){
+        this.id = hongPost.getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
@@ -34,6 +36,7 @@ public class HongPostVO {
     }
 
     public HongPostVO(HongPost hongPost, List<HongAnswerVO> answerVOList){
+        this.id = hongPost.getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
@@ -42,6 +45,7 @@ public class HongPostVO {
     }
 
     public HongPostVO(HongPost hongPost, HongFileGroupVO file){
+        this.id = hongPost.getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
