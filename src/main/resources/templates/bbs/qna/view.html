@@ -42,6 +42,7 @@
             <div class="mb-3 mt-3">
                 <label for="file-container">파일첨부</label>
                 <div class="file-container" id="file-container">
+                    <ul id="download-container"></ul>
                 </div>
             </div>
 
@@ -55,6 +56,56 @@
 
         const post = /*[[${post}]]*/ {}
         console.log("post : ", post)
+
+        $(document).ready(function(){
+            if(post['file']) setFileList(post['file']['fileList']);
+        })
+
+        const setFileList = (file = []) => {
+            console.log("file[] : ", file)
+
+            const dom = $("#download-container")
+            dom.empty()
+
+            file.forEach((value, i) => {
+                const body =
+                    `
+                    <li style="margin-top: 10px;">
+                        <a href="#" onclick="downloadFile(${value.id})">
+                            <i data-feather="download" class="front-medium-2"></i>
+                        </a>
+                        ${value['originalFileName']}
+                    </li>
+                    `
+                dom.append(body)
+            });
+            feather.replace()
+        }
+
+        function downloadFile(id) {
+            console.log("download")
+            let filename = '';
+
+            fetch(`/api/downloadFile/${id}`)
+                .then(response => {
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
+                    if(filename) return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.setAttribute('download', decodeURIComponent(filename));
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.log("error : ", error)
+                })
+        }
 
         $("#list-btn").on("click", function(e){
             console.log("list-btn")

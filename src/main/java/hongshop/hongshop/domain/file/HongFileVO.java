@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.file;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
 * @fileName HongFileVO
@@ -12,6 +13,7 @@ import lombok.Setter;
 **/
 
 @Getter @Setter
+@ToString
 public class HongFileVO {
 
     private Long id;

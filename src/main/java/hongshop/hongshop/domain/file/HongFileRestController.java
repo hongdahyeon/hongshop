@@ -49,6 +49,7 @@ public class HongFileRestController {
     @ApiDocumentResponse
     public ResponseEntity<ByteArrayResource> download(@PathVariable Long id) throws IOException {
         HongFileVO view = hongFileService.download(id);
+        System.out.println("view = " + view);
         File tempFile = Paths.get(view.getFilePath()).toFile();
 
         ByteArrayResource resource = null;

@@ -105,7 +105,7 @@ public class HongPostServiceImpl implements HongPostService {
              list = hongFileGroupService.list(hongPost.getFileGroupId());
         }
 
-        return new HongPostVO(hongPost, null, listOfAnswer);
+        return new HongPostVO(hongPost, list, listOfAnswer);
     }
 
 

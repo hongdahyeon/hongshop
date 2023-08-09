@@ -131,11 +131,10 @@
 
         $(document).ready(function(){
 
-            const $userId = $('#userId')
             const idItemKey = 'HONG_SHOP_ID'
 
             document.getElementById('form').addEventListener('submit', () => {
-                $('#remember').is(":checked") && localStorage.setItem(idItemKey, $userId.val())
+                $('#remember').is(":checked") && localStorage.setItem(idItemKey, $('#userId').val())
                 return true
             })
 
@@ -143,7 +142,7 @@
             if (rememberId) {
                 const checkbox = $("#remember");
                 checkbox.prop("checked", !checkbox.prop("checked"));
-                $userId.val(rememberId)``
+                $('#userId').val(rememberId)
             }
         })
 
