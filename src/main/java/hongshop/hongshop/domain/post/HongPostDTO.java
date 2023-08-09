@@ -4,6 +4,8 @@ package hongshop.hongshop.domain.post;
 import lombok.Getter;
 import lombok.Setter;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @fileName HongPostDTO
@@ -23,4 +25,6 @@ public class HongPostDTO {
     private Long fileGroupId;
 
     private Long hongPostTypeId;
+
+    private List<Long> deleteFile = new ArrayList<>();
 }

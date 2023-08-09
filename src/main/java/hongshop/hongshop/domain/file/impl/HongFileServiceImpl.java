@@ -127,13 +127,13 @@ public class HongFileServiceImpl implements HongFileService {
 
         Map<String, Object> params = new HashMap<>();
 
-        String fileRoot = "D:/hongFile";
+        String fileRoot = "D:/hongFile/ckImage";
         String originalName = multipartFile.getOriginalFilename();
         String extension = originalName.substring(originalName.lastIndexOf(".")+1);
         UUID uuid = UUID.randomUUID();
         String savedFileName = uuid + "." + extension;
         String filePath = fileRoot + "/" + savedFileName;
-
+        System.out.println("filePath = " + filePath);
         File targetFile = new File(String.format("%s%s%s", fileRoot, File.separator, savedFileName));
 
         try{
@@ -148,5 +148,14 @@ public class HongFileServiceImpl implements HongFileService {
         }
 
         return params;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteFiles(List<Long>  deleteFile) {
+         for (Long fileId : deleteFile) {
+            HongFile hongFile = hongFileRepository.findById(fileId).orElseThrow(() -> new IllegalArgumentException("there is no file"));
+            hongFileRepository.delete(hongFile);
+        }
     }
 }

@@ -57,6 +57,7 @@ public class HongPost extends BaseEntity {
     public void updatePost(HongPostDTO hongPostDTO){
         if(hongPostDTO.getTitle() != null) this.title = hongPostDTO.getTitle();
         if(hongPostDTO.getContent() != null) this.content = hongPostDTO.getContent();
+        if(hongPostDTO.getFileGroupId() != null) this.fileGroupId = hongPostDTO.getFileGroupId();
     }
 
     public void deletePost(){

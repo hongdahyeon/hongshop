@@ -45,4 +45,15 @@ public class HongPostTypeController {
         model.addAttribute("type", type);
         return "bbs/" + BbsType.getHtmlName(post.getType(), CRUD.VIEW.html());
     }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Long id, Model model){
+        HongPostVO post = hongPostService.postWithFileAndAnswer(id);
+        HongPostTypeVO type = hongPostTypeService.view(post.getTypeId());
+
+        post.setContent(StringEscapeUtils.unescapeHtml4(post.getContent()));
+        model.addAttribute("post", post);
+        model.addAttribute("type", type);
+        return "bbs/" + BbsType.getHtmlName(post.getType(), CRUD.EDIT.html());
+    }
 }

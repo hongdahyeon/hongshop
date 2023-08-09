@@ -68,6 +68,7 @@ class MyUploadAdapter {
                     resolve({
                         default: json.url,
                     });
+                    console.log("json : ", json)
                 });
             } else {
                 return reject(genericErrorText);

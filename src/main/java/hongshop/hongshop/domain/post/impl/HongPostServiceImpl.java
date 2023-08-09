@@ -53,8 +53,16 @@ public class HongPostServiceImpl implements HongPostService {
     @Transactional(readOnly = false)
     public Long join(HongPostDTO hongPostDTO) {
 
+        // 1. delete file from list : deleteFile
+        if(hongPostDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongPostDTO.getDeleteFile());
+        }
+
+        // 2. get post type
         HongPostType postType = hongPostTypeRepository.findById(hongPostDTO.getHongPostTypeId()).orElseThrow(() -> new IllegalArgumentException("there is no post type"));
 
+        // 3-1. if fileGroupId is null -> just save it
+        // 3-2. if fileGroupId is not null -> first change the file state and then save it
         HongPost hongPost = null;
         if(hongPostDTO.getFileGroupId() == null) {
 
@@ -128,6 +136,12 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     @Transactional(readOnly = false)
     public void update(HongPostDTO hongPostDTO, Long id) {
+
+        if(hongPostDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongPostDTO.getDeleteFile());
+        }
+
+        if(hongPostDTO.getFileGroupId() != null) hongFileService.updateFileState(hongPostDTO.getFileGroupId());
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         hongPost.updatePost(hongPostDTO);
     }

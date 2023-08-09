@@ -49,7 +49,6 @@ public class HongFileRestController {
     @ApiDocumentResponse
     public ResponseEntity<ByteArrayResource> download(@PathVariable Long id) throws IOException {
         HongFileVO view = hongFileService.download(id);
-        System.out.println("view = " + view);
         File tempFile = Paths.get(view.getFilePath()).toFile();
 
         ByteArrayResource resource = null;
@@ -76,7 +75,8 @@ public class HongFileRestController {
     @PostMapping(value = "/uploadCKImageFile", produces="application/json")
     @Operation(summary = "upload ckImage", description = "ckeditor로 이미지 업로드")
     @ApiDocumentResponse
-    public Map<String, Object> uploadCKImageFile(@RequestParam("file")MultipartFile multipartFile){
+    public Map<String, Object> uploadCKImageFile(@RequestParam("file") MultipartFile multipartFile){
+        System.out.println("multipartFile = " + multipartFile);
         Map<String, Object> params = hongFileService.uploadCKImageFile(multipartFile);
         return params;
     }

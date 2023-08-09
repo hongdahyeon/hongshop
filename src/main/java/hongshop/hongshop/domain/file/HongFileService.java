@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.file;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,7 @@ public interface HongFileService {
     void updateFileState(Long fileGroupId);
 
     Map<String, Object> uploadCKImageFile(MultipartFile multipartFile);
+
+    void deleteFiles(List<Long> deleteFile);
 
 }

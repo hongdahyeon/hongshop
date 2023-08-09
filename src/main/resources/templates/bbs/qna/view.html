@@ -20,6 +20,7 @@
                 </div>
                 <div class="text-end">
                     <button type="button" class="btn btn-info" id="list-btn">목록</button>
+                    <button type="button" class="btn btn-secondary" id="edit-btn">수정</button>
                 </div>
             </div>
         </div>
@@ -55,15 +56,12 @@
     <script th:inline="javascript">
 
         const post = /*[[${post}]]*/ {}
-        console.log("post : ", post)
 
         $(document).ready(function(){
             if(post['file']) setFileList(post['file']['fileList']);
         })
 
         const setFileList = (file = []) => {
-            console.log("file[] : ", file)
-
             const dom = $("#download-container")
             dom.empty()
 
@@ -83,7 +81,6 @@
         }
 
         function downloadFile(id) {
-            console.log("download")
             let filename = '';
 
             fetch(`/api/downloadFile/${id}`)
@@ -108,8 +105,11 @@
         }
 
         $("#list-btn").on("click", function(e){
-            console.log("list-btn")
             window.location.href = `/bbs/${post['typeId']}`
+        })
+
+        $("#edit-btn").on("click", function(e){
+            window.location.href = `/bbs/edit/${post['id']}`
         })
 
         let ckEditor;
