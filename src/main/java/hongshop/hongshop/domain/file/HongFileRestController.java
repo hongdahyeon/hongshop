@@ -71,4 +71,12 @@ public class HongFileRestController {
                 .body(resource);
     }
 
+
+    @PostMapping(value = "/uploadCKImageFile", produces="application/json")
+    @Operation(summary = "upload ckImage", description = "ckeditor로 이미지 업로드")
+    @ApiDocumentResponse
+    public Map<String, Object> uploadCKImageFile(@RequestParam("file")MultipartFile multipartFile){
+        Map<String, Object> params = hongFileService.uploadCKImageFile(multipartFile);
+        return params;
+    }
 }

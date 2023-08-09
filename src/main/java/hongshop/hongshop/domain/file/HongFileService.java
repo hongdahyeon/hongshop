@@ -24,4 +24,6 @@ public interface HongFileService {
 
     void updateFileState(Long fileGroupId);
 
+    Map<String, Object> uploadCKImageFile(MultipartFile multipartFile);
+
 }

@@ -121,4 +121,32 @@ public class HongFileServiceImpl implements HongFileService {
             hongFile.updateFileState();
         }
     }
+
+    @Override
+    public Map<String, Object> uploadCKImageFile(MultipartFile multipartFile) {
+
+        Map<String, Object> params = new HashMap<>();
+
+        String fileRoot = "D:/hongFile";
+        String originalName = multipartFile.getOriginalFilename();
+        String extension = originalName.substring(originalName.lastIndexOf(".")+1);
+        UUID uuid = UUID.randomUUID();
+        String savedFileName = uuid + "." + extension;
+        String filePath = fileRoot + "/" + savedFileName;
+
+        File targetFile = new File(String.format("%s%s%s", fileRoot, File.separator, savedFileName));
+
+        try{
+            InputStream fileStream = multipartFile.getInputStream();
+            FileUtils.copyInputStreamToFile(fileStream, targetFile);
+            params.put("url", "/ckImage/"+savedFileName);
+            params.put("responseCode", "success");
+        }catch(IOException e){
+            FileUtils.deleteQuietly(targetFile);
+            params.put("responseCode", "error");
+            e.printStackTrace();
+        }
+
+        return params;
+    }
 }

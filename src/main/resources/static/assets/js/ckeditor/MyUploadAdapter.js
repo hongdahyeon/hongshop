@@ -5,7 +5,7 @@ class MyUploadAdapter {
         this.loader = loader;
 
         // URL where to send files.
-        this.url = "/manager/site/bbscttManager/uploadCkImageFile";
+        this.url = "/api/uploadCKImageFile";
     }
 
     // Starts the upload process.
