@@ -28,6 +28,7 @@ import java.util.List;
  *   (2) list : 게시글 전체 리스트 조회
  *   (3) postWithAnswer : 게시글 단건 조회 with 답변
  *   (4) postWithFile : 게시글 단건 조회 with 파일
+ *   (5) postWithFileAndAnswer : 게시글 다건 조회 with 파일 and 답변
  *   (5) postsWithFileByPostType : 게시판ID에 따른 게시글 전체 리스트 조회 with 파일
  *   (6) show : 게시글 단건 조회
  *   (7) update : 게시글 단건 update 
@@ -94,6 +95,19 @@ public class HongPostServiceImpl implements HongPostService {
         HongFileGroupVO list = hongFileGroupService.list(hongPost.getFileGroupId());
         return new HongPostVO(hongPost, list);
     }
+
+    @Override
+    public HongPostVO postWithFileAndAnswer(Long id) {
+        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
+        List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
+        HongFileGroupVO list = null;
+        if(hongPost.getFileGroupId() != null){
+             list = hongFileGroupService.list(hongPost.getFileGroupId());
+        }
+
+        return new HongPostVO(hongPost, null, listOfAnswer);
+    }
+
 
     @Override
     public List<HongPostVO> postsWithFileByPostType(Long postTypeId) {

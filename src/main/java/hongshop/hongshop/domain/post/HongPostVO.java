@@ -20,36 +20,61 @@ import java.util.List;
 public class HongPostVO {
 
     private Long id;
+    private String type;
+    private Long typeId;
     private String title;
     private String content;
     private String deleteYn;
     private Integer readCnt;
     private List<HongAnswerVO> answerList = new ArrayList<>();
     private HongFileGroupVO file;
+    private Long regId;
 
     public HongPostVO(HongPost hongPost){
         this.id = hongPost.getId();
+        this.type = hongPost.getHongPostType().getPostType().toString();
+        this.typeId = hongPost.getHongPostType().getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
         this.readCnt = hongPost.getReadCnt();
+        this.regId = hongPost.getRegId();
     }
 
     public HongPostVO(HongPost hongPost, List<HongAnswerVO> answerVOList){
         this.id = hongPost.getId();
+        this.type = hongPost.getHongPostType().getPostType().toString();
+        this.typeId = hongPost.getHongPostType().getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
         this.readCnt = hongPost.getReadCnt();
         this.answerList = answerVOList;
+        this.regId = hongPost.getRegId();
     }
 
     public HongPostVO(HongPost hongPost, HongFileGroupVO file){
         this.id = hongPost.getId();
+        this.type = hongPost.getHongPostType().getPostType().toString();
+        this.typeId = hongPost.getHongPostType().getId();
         this.title = hongPost.getTitle();
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
         this.readCnt = hongPost.getReadCnt();
         this.file = file;
+        this.regId = hongPost.getRegId();
+    }
+
+    public HongPostVO(HongPost hongPost, HongFileGroupVO file, List<HongAnswerVO> answerVOList){
+        this.id = hongPost.getId();
+        this.type = hongPost.getHongPostType().getPostType().toString();
+        this.typeId = hongPost.getHongPostType().getId();
+        this.title = hongPost.getTitle();
+        this.content = hongPost.getContent();
+        this.deleteYn = hongPost.getDeleteYn();
+        this.readCnt = hongPost.getReadCnt();
+        this.file = file;
+        this.answerList = answerVOList;
+        this.regId = hongPost.getRegId();
     }
 }

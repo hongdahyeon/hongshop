@@ -22,6 +22,8 @@ public interface HongPostService {
 
     HongPostVO postWithFile(Long id);
 
+    HongPostVO postWithFileAndAnswer(Long id);
+
     List<HongPostVO> postsWithFileByPostType(Long postTypeId);
 
     HongPostVO show(Long id);

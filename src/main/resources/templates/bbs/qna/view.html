@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/default">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        .ck-editor__editable { height: 400px; }
+        .ck-content { font-size: 12px; }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3 th:text="|${type.postName}|"></h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" id="list-btn">목록</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${post.title}"  disabled/>
+            </div>
+
+            <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                <label for="content">내용</label>
+                <div id="content" name="content" class="ckeditor" style="min-height: 300px"></div>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="files">파일첨부</label>
+                <div id="files"></div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        const post = /*[[${post}]]*/ {}
+        console.log("post : ", post)
+
+        $("#list-btn").on("click", function(e){
+            console.log("list-btn")
+            window.location.href = `/bbs/${post['typeId']}`
+        })
+
+        let ckEditor;
+        const myFeatureLockId = Symbol("#content")
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                readOnly: true,
+            })
+            .then(editor => {
+                ckEditor = editor;
+                ckEditor.enableReadOnlyMode( myFeatureLockId );
+                ckEditor.setData([[${post['content']}]])
+
+                const editableElement = ckEditor.ui.view.editable.element;
+                editableElement.style.border = 'none';
+
+                const toolbarElement = ckEditor.ui.view.toolbar.element;
+                toolbarElement.style.display = 'none';
+            })
+            .catch(error => {
+                // Handle any initialization error
+            });
+
+    </script>
+</th:block>
+
+</html>
