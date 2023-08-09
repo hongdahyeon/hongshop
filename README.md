@@ -65,3 +65,4 @@
 * commit52 : 파일 다운로드 front쪽 로직 구현 (23/08/09)
 * commit53 : 게시글 업데이트 로직 구현 (23/08/09)
     - 아직 ckeditor에서 사진 업로드는 구현 안됨
+* commit54 : ckeditor 사진 업로드 구현 (안된 이유 : @Configuration를 안적음)
