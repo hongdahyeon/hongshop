@@ -32,7 +32,7 @@
 
                     <div class="form-check mb-3">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="remember"> Remember me
+                            <input class="form-check-input" type="checkbox" name="remember" id="remember"> Remember me
                         </label>
                     </div>
 
@@ -128,6 +128,24 @@
     <script>
 
         let IdChk = false;
+
+        $(document).ready(function(){
+
+            const $userId = $('#userId')
+            const idItemKey = 'HONG_SHOP_ID'
+
+            document.getElementById('form').addEventListener('submit', () => {
+                $('#remember').is(":checked") && localStorage.setItem(idItemKey, $userId.val())
+                return true
+            })
+
+            const rememberId = localStorage.getItem(idItemKey);
+            if (rememberId) {
+                const checkbox = $("#remember");
+                checkbox.prop("checked", !checkbox.prop("checked"));
+                $userId.val(rememberId)``
+            }
+        })
 
         $("#show-pwd").click(() => {
             const passwordInput = $('#password');
