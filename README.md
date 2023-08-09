@@ -62,3 +62,4 @@
 * commit49 : qna 게시판 각각 게시글 조회 및 ckeditor 추가 (23/08/09)
 * commit50 : ckeditor 파일 업로드 url 생성 (23/08/09)
 * commit51 : 로그인시, 아이디 저장 로직 구현 (23/08/09)
+* commit52 : 파일 다운로드 front쪽 로직 구현 (23/08/09)
