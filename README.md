@@ -68,3 +68,6 @@
 * commit54 : ckeditor 사진 업로드 구현 (안된 이유 : @Configuration를 안적음)
 * commit55 :  layout:decorate="layouts/default" -> layout:decorate="~{layouts/default}" (23/09/12)
 * commit56 : 게시글 새글 작성 로직 구현 (23/10/19)
+* commit57 (23/10/19)
+      - 게시글 댓글 기능 추가
+      - 유저 권한 추가 : ROLE_SUPER -> 모든 게시글에 대한 댓글 작성 가능 및 다른 사람의 댓글 삭제 및 수정 가능
