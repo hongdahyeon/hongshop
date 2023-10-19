@@ -120,7 +120,9 @@
     $("#new-bbsctt").on("click", function(e) {
         console.log("new-bbsctt clicked")
         console.log("id : ", type['postTypeId'])
+        window.location.href = `/bbs/save/${type['postTypeId']}`
     })
+
 </script>
 </th:block>
 

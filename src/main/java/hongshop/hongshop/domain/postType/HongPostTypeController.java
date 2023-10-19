@@ -56,4 +56,12 @@ public class HongPostTypeController {
         model.addAttribute("type", type);
         return "bbs/" + BbsType.getHtmlName(post.getType(), CRUD.EDIT.html());
     }
+
+    @GetMapping("/save/{id}")
+    public String save(@PathVariable Long id, Model model) {
+        HongPostTypeVO type = hongPostTypeService.view(id);
+
+        model.addAttribute("type", type);
+        return "bbs/" + BbsType.getHtmlName(type.getPostType(), CRUD.SAVE.html());
+    }
 }
