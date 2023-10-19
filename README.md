@@ -67,3 +67,4 @@
     - 아직 ckeditor에서 사진 업로드는 구현 안됨
 * commit54 : ckeditor 사진 업로드 구현 (안된 이유 : @Configuration를 안적음)
 * commit55 :  layout:decorate="layouts/default" -> layout:decorate="~{layouts/default}" (23/09/12)
+* commit56 : 게시글 새글 작성 로직 구현 (23/10/19)
