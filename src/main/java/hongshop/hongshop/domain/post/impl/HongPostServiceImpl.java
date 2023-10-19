@@ -119,7 +119,7 @@ public class HongPostServiceImpl implements HongPostService {
 
     @Override
     public List<HongPostVO> postsWithFileByPostType(Long postTypeId) {
-        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeId(postTypeId);
+        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(postTypeId, "N");
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
             if(post.getFileGroupId() != null) list = hongFileGroupService.list(post.getFileGroupId());
@@ -167,7 +167,7 @@ public class HongPostServiceImpl implements HongPostService {
 
     @Override
     public List<HongPostVO> listByHongPostTypeId(Long honPostTypeId) {
-        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeId(honPostTypeId);
+        List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(honPostTypeId, "N");
         return hongPosts.stream().map(HongPostVO::new).toList();
     }
 }

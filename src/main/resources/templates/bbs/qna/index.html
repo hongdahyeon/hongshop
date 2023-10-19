@@ -92,6 +92,8 @@
                 dom.append(body)
                 feather.replace()
             })
+            $("tr").on("click", handleRowClick);
+
         }else {
             const body = `<tr style="text-align: center;">
                                 <td colspan="6">게시글이 비어있습니다.</td>
@@ -99,7 +101,6 @@
             dom.append(body)
         }
 
-        $("tr").on("click", handleRowClick);
     }
 
     function handleRowClick(e) {
