@@ -32,8 +32,8 @@
                 </thead>
                 <tbody>
                     <th:block th:if="${cart.size() == 0}">
-                        <tr>
-                            <td colspan="4">장바구니가 비어있습니다.</td>
+                        <tr style="text-align: center;">
+                            <td colspan="5">장바구니가 비어있습니다.</td>
                         </tr>
                     </th:block>
                     <th:block th:unless="${cart.size() == 0}">

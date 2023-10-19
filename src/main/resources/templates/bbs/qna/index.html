@@ -23,12 +23,12 @@
             <table class="table table-hover table-bordered" id="qna-table">
                 <thead>
                     <tr style="text-align: center;">
-                        <th></th>
-                        <th>번호</th>
-                        <th>제목</th>
-                        <th>첨부파일</th>
-                        <th>조회수</th>
-                        <th>답변여부</th>
+                        <th style="width: 5%" class="text-center"></th>
+                        <th style="width: 10%;" class="text-center">번호</th>
+                        <th style="width: 30%">제목</th>
+                        <th style="width: 10%" class="text-center">첨부파일</th>
+                        <th style="width: 10%" class="text-center">조회수</th>
+                        <th style="width: 10%" class="text-center">답변여부</th>
                     </tr>
                 </thead>
                 <tbody id="qna-tbody"></tbody>
@@ -70,18 +70,18 @@
         dom.empty();
 
         const list = data.message;
+        if(list.length > 0) {
+            list.forEach((value, i) => {
+                const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
+                const locked = (value.regId == user['id']) ? '<i data-feather="unlock" class="front-medium-2"></i>' : '<i data-feather="lock" class="front-medium-2"></i>'
 
-        list.forEach((value, i) => {
-            const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
-            const locked = (value.regId == user['id']) ? '<i data-feather="unlock" class="front-medium-2"></i>' : '<i data-feather="lock" class="front-medium-2"></i>'
-
-            const body =
-                `
+                const body =
+                    `
                     <tr data-num="${value.regId}" data-value="${value.id}">
                         <td style="width: 5%" class="text-center">
                             ${locked}
                         </td>
-                        <td style="width: 10%;" class="text-center">${i+1}</td>
+                        <td style="width: 10%;" class="text-center">${i + 1}</td>
                         <td style="width: 30%">${value.title}</td>
                         <td style="width: 10%" class="text-center">${fileCnt}</td>
                         <td style="width: 10%" class="text-center">${value.readCnt}</td>
@@ -89,9 +89,15 @@
                     </tr>
                     `
 
+                dom.append(body)
+                feather.replace()
+            })
+        }else {
+            const body = `<tr style="text-align: center;">
+                                <td colspan="6">게시글이 비어있습니다.</td>
+                          </tr>`
             dom.append(body)
-            feather.replace()
-        })
+        }
 
         $("tr").on("click", handleRowClick);
     }
