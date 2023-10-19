@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        .ck-editor__editable { height: 300px; }
+        .ck-content { font-size: 12px; }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3 th:text="|${type.postName}|"></h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" id="list-btn">목록</button>
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER')">
+                        <button type="button" class="btn btn-secondary" id="edit-btn">수정</button>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" name="title" th:value="${post.title}"  disabled/>
+            </div>
+
+            <hr class="hr" />
+
+            <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                <label for="content">내용</label>
+                <div id="content" name="content" class="ckeditor" style="min-height: 300px"></div>
+            </div>
+
+            <hr class="hr" />
+
+            <div class="mb-3 mt-3">
+                <label for="file-container">파일첨부</label>
+                <div class="file-container" id="file-container">
+                    <ul id="download-container"></ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        let answerId = null;
+        const post = /*[[${post}]]*/ {}
+
+        $(document).ready(function(){
+            feather.replace()
+            if(post['file']) setFileList(post['file']['fileList']);
+        })
+
+        const setFileList = (file = []) => {
+            const dom = $("#download-container")
+            dom.empty()
+
+            file.forEach((value, i) => {
+                const body =
+                    `
+                    <li style="margin-top: 10px;">
+                        <a href="#" onclick="downloadFile(${value.id})">
+                            <i data-feather="download" class="front-medium-2"></i>
+                        </a>
+                        ${value['originalFileName']}
+                    </li>
+                    `
+                dom.append(body)
+            });
+            feather.replace()
+        }
+
+        function downloadFile(id) {
+            let filename = '';
+
+            fetch(`/api/downloadFile/${id}`)
+                .then(response => {
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
+                    if(filename) return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.setAttribute('download', decodeURIComponent(filename));
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.log("error : ", error)
+                })
+        }
+
+        $("#list-btn").on("click", function(e){
+            window.location.href = `/bbs/${post['typeId']}`
+        })
+
+        $("#edit-btn").on("click", function(e){
+            window.location.href = `/bbs/edit/${post['id']}`
+        })
+
+        let ckEditor;
+        const myFeatureLockId = Symbol("#content")
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                readOnly: true,
+            })
+            .then(editor => {
+                ckEditor = editor;
+                ckEditor.enableReadOnlyMode( myFeatureLockId );
+                ckEditor.setData([[${post['content']}]])
+
+                const editableElement = ckEditor.ui.view.editable.element;
+                editableElement.style.border = 'none';
+
+                const toolbarElement = ckEditor.ui.view.toolbar.element;
+                toolbarElement.style.display = 'none';
+            })
+            .catch(error => {
+                // Handle any initialization error
+            });
+
+    </script>
+</th:block>
+
+</html>

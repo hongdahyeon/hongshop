@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3 th:text="|${type.postName}|"></h3>
+                </div>
+                <div class="text-end">
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER')">
+                        <button type="button" class="btn btn-info" id="new-bbsctt">글작성하기</button>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-bordered" id="qna-table">
+                <thead>
+                <tr style="text-align: center;">
+                    <th style="width: 10%;" class="text-center">번호</th>
+                    <th style="width: 30%">제목</th>
+                    <th style="width: 10%" class="text-center">첨부파일</th>
+                    <th style="width: 10%" class="text-center">조회수</th>
+                </tr>
+                </thead>
+                <tbody id="qna-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        console.log("script...")
+
+        const type = /*[[${type}]]*/ []
+        const user = /*[[${user}]]*/ {};
+        console.log("user ", user)
+
+        window.onload = () => {
+            getList()
+        };
+
+        const getList = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/api/postsWithFileByPostType/${type['postTypeId']}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) setList(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        }
+
+        const setList = (data) => {
+
+            const dom = $("#qna-tbody")
+            dom.empty();
+
+            const list = data.message;
+            if(list.length > 0) {
+                list.forEach((value, i) => {
+                    const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
+
+                    const body =
+                        `
+                    <tr data-num="${value.regId}" data-value="${value.id}">
+                        <td style="width: 10%;" class="text-center">${i + 1}</td>
+                        <td style="width: 50%">${value.title}</td>
+                        <td style="width: 10%" class="text-center">${fileCnt}</td>
+                        <td style="width: 10%" class="text-center">${value.readCnt}</td>
+                    </tr>
+                    `
+
+                    dom.append(body)
+                    feather.replace()
+                })
+            }else {
+                const body = `<tr style="text-align: center;">
+                                <td colspan="6">게시글이 비어있습니다.</td>
+                          </tr>`
+                dom.append(body)
+            }
+
+            $("tr").on("click", handleRowClick);
+        }
+
+        function handleRowClick(e) {
+            const clickedRow = $(e.target).closest('tr')
+            const postId = clickedRow.attr("data-value");
+
+            window.location.href = `/bbs/view/${postId}`
+        }
+
+        $("#new-bbsctt").on("click", function(e) {
+            window.location.href = `/bbs/save/${type['postTypeId']}`
+        })
+
+    </script>
+</th:block>
+
+</html>
