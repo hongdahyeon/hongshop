@@ -1,4 +1,6 @@
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="headerFragment">
     <div class="bg-dark">
         hong shop
@@ -17,9 +19,10 @@
                         상품 구경하기
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="productDropdown">
-                        <li><a class="dropdown-item" href="#">Option 1</a></li>
-                        <li><a class="dropdown-item" href="#">Option 2</a></li>
-                        <li><a class="dropdown-item" href="#">Option 3</a></li>
+                        <li><a class="dropdown-item" href="#">의류</a></li>
+                        <li><a class="dropdown-item" href="#">뷰티</a></li>
+                        <li><a class="dropdown-item" href="#">식품</a></li>
+                        <li><a class="dropdown-item" href="#">기타</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -44,6 +47,20 @@
                         <li><a class="dropdown-item" href="#">Option 3</a></li>
                     </ul>
                 </li>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER')">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown4" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            정보관리
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown4">
+                            <li><a class="dropdown-item" href="#">상품 카테고리 관리</a></li>
+                            <li><a class="dropdown-item" href="#">상품 관리</a></li>
+                            <li><a class="dropdown-item" href="#">주문 관리</a></li>
+                            <li><a class="dropdown-item" href="#">업로드 파일 관리</a></li>
+                        </ul>
+                    </li>
+                </th:block>
             </ul>
             <div class="dropdown">
                 <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
