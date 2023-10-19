@@ -5,6 +5,7 @@ import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -71,6 +72,9 @@ public class HongPostRestController {
     @ApiDocumentResponse
     public Response postsWithFileByPostType(@PathVariable Long id){
         List<HongPostVO> hongPostVOS = hongPostService.postsWithFileByPostType(id);
+        hongPostVOS.forEach(hongPostVO -> {
+            hongPostVO.setContent(StringEscapeUtils.unescapeHtml4(hongPostVO.getContent()));
+        });
         return Response.ok(hongPostVOS);
     }
 

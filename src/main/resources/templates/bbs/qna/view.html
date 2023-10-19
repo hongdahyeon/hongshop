@@ -121,7 +121,7 @@
     </div>
     <!-- e: saveAnswerModal -->
 
-    <!-- s: saveAnswerModal -->
+    <!-- s: editAnswerModal -->
     <div class="modal" id="editAnswerModal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -147,7 +147,7 @@
             </div>
         </div>
     </div>
-    <!-- e: saveAnswerModal -->
+    <!-- e: editAnswerModal -->
 
 </th:block>
 
@@ -254,7 +254,7 @@
                     url: `/api/post/${post['id']}`,
                     success: function (response) {
                         if (response['httpStatus'] === 200) {
-                            alert("답변이 삭제되었습니다.")
+                            alert("게시글이 삭제되었습니다.")
                             window.location.href = `/bbs/${post['typeId']}`
                         }
                     },

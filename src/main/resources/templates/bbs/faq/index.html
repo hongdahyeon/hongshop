@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3 th:text="|${type.postName}|"></h3>
+                </div>
+                <div class="text-end">
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER')">
+                        <button type="button" class="btn btn-info" id="new-bbsctt">글작성하기</button>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="faq-accordion"></div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:src="@{'/assets/js/page/faq.index.js'}"></script>
+    <script th:inline="javascript">
+
+        const type = /*[[${type}]]*/ []
+        const user = /*[[${user}]]*/ {};
+        const faq = new faqAcc("faq-accordion", user['role'])
+
+        $(document).ready(function(e) {
+            getList()
+        })
+
+        $("#new-bbsctt").on("click", function(e) {
+            console.log("new-bbsctt clicked... > ", type['postTypeId'])
+            window.location.href = `/bbs/save/${type['postTypeId']}`
+        })
+
+        const getList = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/api/postsWithFileByPostType/${type['postTypeId']}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        faq.setData(data['message']).draw()
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        }
+
+        function downloadFile(id) {
+            let filename = '';
+
+            fetch(`/api/downloadFile/${id}`)
+                .then(response => {
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
+                    if(filename) return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.setAttribute('download', decodeURIComponent(filename));
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.log("error : ", error)
+                })
+        }
+
+        function deleteBbsctt(id){
+            console.log("deleteBbsctt : ", id)
+            const result = confirm("삭제 하시겠습니까?")
+            if(result) {
+                $.ajax({
+                    type: "DELETE",
+                    url: `/api/post/${id}`,
+                    success: function (response) {
+                        if (response['httpStatus'] === 200) {
+                            alert("게시글이 삭제되었습니다.")
+                            getList()
+                        }
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error("upload error:", error);
+                    }
+                });
+            }
+        }
+
+        function editBbsctt(id){
+            console.log("editBbsctt : ", id)
+            window.location.href = `/bbs/edit/${id}`
+        }
+    </script>
+</th:block>
+
+</html>
