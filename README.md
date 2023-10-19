@@ -77,3 +77,4 @@
 * commit61 : 답변개수 -> 답변 (23/10/19)
 * commit62 : window.onload -> $(document).ready(function(e) (23/10/19)
 * commit63 : FAQ CRUD 기능 추가 (23/10/19)
+* commit64 : home 화면 이동 (23/10/19)
