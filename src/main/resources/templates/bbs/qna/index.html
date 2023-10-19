@@ -39,15 +39,13 @@
 
 <th:block layout:fragment="script">
 <script th:inline="javascript">
-    console.log("script...")
 
     const type = /*[[${type}]]*/ []
     const user = /*[[${user}]]*/ {};
-    console.log("user ", user)
 
-    window.onload = () => {
+    $(document).ready(function(e) {
         getList()
-    };
+    })
 
     const getList = () => {
         $.ajax({
@@ -107,9 +105,6 @@
         const clickedRow = $(e.target).closest('tr')
         const regId = clickedRow.attr("data-num");
         const postId = clickedRow.attr("data-value");
-        console.log("clickedRow" , clickedRow)
-        console.log( "regId => ", regId);
-        console.log( "postId => ", postId);
 
         if(user['role'] == 'ROLE_USER' && regId != user['id']) alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.")
         else window.location.href = `/bbs/view/${postId}`

@@ -40,15 +40,13 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        console.log("script...")
 
         const type = /*[[${type}]]*/ []
         const user = /*[[${user}]]*/ {};
-        console.log("user ", user)
 
-        window.onload = () => {
+        $(document).ready(function(e) {
             getList()
-        };
+        })
 
         const getList = () => {
             $.ajax({
