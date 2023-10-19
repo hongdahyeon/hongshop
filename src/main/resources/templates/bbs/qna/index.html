@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layouts/default}">
 
 <th:block layout:fragment="head">
@@ -24,14 +23,12 @@
             <table class="table table-hover table-bordered" id="qna-table">
                 <thead>
                     <tr style="text-align: center;">
+                        <th></th>
                         <th>번호</th>
                         <th>제목</th>
                         <th>첨부파일</th>
                         <th>조회수</th>
                         <th>답변여부</th>
-                        <th:block sec:authorize="hasRole('ROLE_ADMIN')">
-                            <th>답변하러가기</th>
-                        </th:block>
                     </tr>
                 </thead>
                 <tbody id="qna-tbody"></tbody>
@@ -76,25 +73,27 @@
 
         list.forEach((value, i) => {
             const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
-            const answered = (value.answerList.length === 0) ? "N" : "Y"
-            const answerBtn = (user['role'] === 'ROLE_ADMIN') ? `<td style="width: 10%" class="text-center"><button type="button" class="btn btn-outline-info answer-btn" data-num="${value.id}">답변하기</button></></td>` : ''
+            const locked = (value.regId == user['id']) ? '<i data-feather="unlock" class="front-medium-2"></i>' : '<i data-feather="lock" class="front-medium-2"></i>'
+
             const body =
                 `
                     <tr data-num="${value.regId}" data-value="${value.id}">
+                        <td style="width: 5%" class="text-center">
+                            ${locked}
+                        </td>
                         <td style="width: 10%;" class="text-center">${i+1}</td>
                         <td style="width: 30%">${value.title}</td>
                         <td style="width: 10%" class="text-center">${fileCnt}</td>
                         <td style="width: 10%" class="text-center">${value.readCnt}</td>
-                        <td style="width: 10%" class="text-center">${answered}</td>
-                        ${answerBtn}
+                        <td style="width: 10%" class="text-center">${value.answerList.length}</td>
                     </tr>
                     `
 
             dom.append(body)
+            feather.replace()
         })
 
         $("tr").on("click", handleRowClick);
-        $(".answer-btn").on("click", handleBtnClick);
     }
 
     function handleRowClick(e) {
@@ -105,21 +104,11 @@
         console.log( "regId => ", regId);
         console.log( "postId => ", postId);
 
-
-        if(regId != user['id']) alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.")
+        if(user['role'] == 'ROLE_USER' && regId != user['id']) alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.")
         else window.location.href = `/bbs/view/${postId}`
     }
 
-    function handleBtnClick(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("this" , $(this))
-        console.log("value : ", $(this).attr("data-num"))
-    }
-
     $("#new-bbsctt").on("click", function(e) {
-        console.log("new-bbsctt clicked")
-        console.log("id : ", type['postTypeId'])
         window.location.href = `/bbs/save/${type['postTypeId']}`
     })
 

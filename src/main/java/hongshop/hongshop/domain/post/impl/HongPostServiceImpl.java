@@ -123,7 +123,8 @@ public class HongPostServiceImpl implements HongPostService {
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
             if(post.getFileGroupId() != null) list = hongFileGroupService.list(post.getFileGroupId());
-            return new HongPostVO(post, list);
+            List<HongAnswerVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
+            return new HongPostVO(post, list, hongAnswerVOS);
         }).toList();
     }
 

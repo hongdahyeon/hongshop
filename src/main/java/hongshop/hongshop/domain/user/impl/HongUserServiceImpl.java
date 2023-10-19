@@ -70,4 +70,10 @@ public class HongUserServiceImpl implements HongUserService {
         if(hongUserDTO.getPassword() != null) hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
         hongUser.updateHongUser(hongUserDTO);
     }
+
+    @Override
+    public HongUserVO getHongUserById(Long id) {
+        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return new HongUserVO(user.getUserId(), user.getRole(), user.getAddress());
+    }
 }

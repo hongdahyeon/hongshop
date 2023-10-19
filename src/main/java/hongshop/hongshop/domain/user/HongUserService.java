@@ -21,4 +21,6 @@ public interface HongUserService {
     Boolean checkUserId(String userId);
 
     void updateHongUser(HongUserDTO hongUserDTO);
+
+    HongUserVO getHongUserById(Long id);
 }

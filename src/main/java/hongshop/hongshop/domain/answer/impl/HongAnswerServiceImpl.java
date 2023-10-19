@@ -3,6 +3,8 @@ package hongshop.hongshop.domain.answer.impl;
 import hongshop.hongshop.domain.answer.*;
 import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.domain.post.HongPostRepository;
+import hongshop.hongshop.domain.user.HongUserService;
+import hongshop.hongshop.domain.user.HongUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ public class HongAnswerServiceImpl implements HongAnswerService {
 
     private final HongAnswerRepository hongAnswerRepository;
     private final HongPostRepository hongPostRepository;
+    private final HongUserService hongUserService;
 
     @Override
     @Transactional(readOnly = false)
@@ -48,14 +51,18 @@ public class HongAnswerServiceImpl implements HongAnswerService {
 
     @Override
     public List<HongAnswerVO> listByHongPostId(Long hongPostId) {
-        List<HongAnswer> allByHongPostId = hongAnswerRepository.findAllByHongPostId(hongPostId);
-        return allByHongPostId.stream().map(HongAnswerVO::new).toList();
+        List<HongAnswer> allByHongPostId = hongAnswerRepository.findAllByHongPostIdAndDeleteYnIs(hongPostId, "N");
+        return allByHongPostId.stream().map(hongAnswer -> {
+            HongUserVO userVO = hongUserService.getHongUserById(hongAnswer.getRegId());
+            return new HongAnswerVO(hongAnswer, userVO.getUserId());
+        }).toList();
     }
 
     @Override
     public HongAnswerVO show(Long id) {
         HongAnswer hongAnswer = hongAnswerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        return new HongAnswerVO(hongAnswer);
+        HongUserVO userVO = hongUserService.getHongUserById(hongAnswer.getRegId());
+        return new HongAnswerVO(hongAnswer, userVO.getUserId());
     }
 
     @Override

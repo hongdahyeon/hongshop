@@ -15,4 +15,6 @@ import java.util.List;
 public interface HongAnswerRepository extends JpaRepository<HongAnswer, Long> {
 
     public List<HongAnswer> findAllByHongPostId(Long hongPostId);
+
+    public List<HongAnswer> findAllByHongPostIdAndDeleteYnIs(Long hongPostId, String deleteYn);
 }

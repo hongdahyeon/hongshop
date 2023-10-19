@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layouts/default}">
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
     <style>
-        .ck-editor__editable { height: 400px; }
+        .ck-editor__editable { height: 300px; }
         .ck-content { font-size: 12px; }
     </style>
 </th:block>
@@ -48,16 +49,119 @@
             </div>
 
         </div>
+
+        <div class="card-body" id="answer-body">
+            <hr class="hr" />
+
+            <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                <div class="card-text d-flex justify-content-between">
+                    <div class="text-start">
+                        <h5>답변</h5>
+                    </div>
+                    <div class="text-end">
+                        <th:block sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPER')">
+                            <button type="button" class="btn btn-outline-primary" id="show-modalAnswer">답변 작성하기</button>
+                        </th:block>
+                    </div>
+                </div>
+
+                <th:block th:if="${#lists.size(answers) == 0}">
+                    <div class="text-center" style="margin-top: 10px"> <h6>답변이 없습니다.</h6> </div>
+                </th:block>
+                <th:block th:unless="${#lists.size(answers) == 0}">
+                    <th:block th:each="answer, answerSata : ${answers}">
+                        <div class="card" style="margin-top: 10px">
+                            <div class="card-text d-flex justify-content-between" style="background-color: #c4c8cb">
+                                <div class="text-start">
+                                    <p th:text="|답변 작성자: ${answer.userId}|"></p>
+                                </div>
+                                <div class="text-end">
+                                    <th:block th:if="${user.userId == answer.userId or #authorization.expression('hasRole(''ROLE_SUPER'')')}">
+                                        <a href="#" th:onclick="'deleteAnswer(\'' + ${answer.id} + '\')'">
+                                            <i data-feather="trash" class="front-medium-2"></i>
+                                        </a>
+                                        <a href="#" th:onclick="'editAnswer(\'' + ${answer.id} + '\')'">
+                                            <i data-feather="edit" class="front-medium-2"></i>
+                                        </a>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <textarea th:utext="${answer.content}" style="height: 100px" readonly />
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
     </div>
+
+    <!-- s: saveAnswerModal -->
+    <div class="modal" id="saveAnswerModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">답변 작성하기</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <label for="save-answer">답변내용</label>
+                    <textarea class="form-control" id="save-answer" name="answer" style="margin-top: 10px; height: 100px;"></textarea>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-outline-primary" id="save-answer-btn">저장</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- e: saveAnswerModal -->
+
+    <!-- s: saveAnswerModal -->
+    <div class="modal" id="editAnswerModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">답변 수정하기</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <label for="save-answer">답변내용</label>
+                    <textarea class="form-control" id="edit-answer" name="answer" style="margin-top: 10px; height: 100px;"></textarea>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-outline-primary" id="edit-answer-btn">수정</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- e: saveAnswerModal -->
+
 </th:block>
 
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
+        let answerId = null;
         const post = /*[[${post}]]*/ {}
+        console.log("user : ", [[${user}]])
 
         $(document).ready(function(){
+            feather.replace()
             if(post['file']) setFileList(post['file']['fileList']);
         })
 
@@ -78,6 +182,44 @@
                 dom.append(body)
             });
             feather.replace()
+        }
+
+        function deleteAnswer(id) {
+            const result = confirm("삭제 하시겠습니까?")
+            if(result) {
+                $.ajax({
+                    type: "DELETE",
+                    url: `/api/answer/${id}`,
+                    success: function (response) {
+                        if (response['httpStatus'] === 200) {
+                            alert("답변이 삭제되었습니다.")
+                            window.location.href = `/bbs/view/${post['id']}`
+                        }
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error("upload error:", error);
+                    }
+                });
+            }
+        }
+
+        function editAnswer(id) {
+            $.ajax({
+                type: "GET",
+                url: `/api/answer/${id}`,
+                success: function(response) {
+                    if(response.httpStatus === 200){
+                        $("#edit-answer").val(response['message']['content'])
+                        answerId = response['message']['id']
+                        $("#editAnswerModal").modal("show")
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("upload error:", error);
+                }
+            });
         }
 
         function downloadFile(id) {
@@ -110,6 +252,59 @@
 
         $("#edit-btn").on("click", function(e){
             window.location.href = `/bbs/edit/${post['id']}`
+        })
+
+        $("#save-answer-btn").on("click", function(e){
+            const content = $("#save-answer").val()
+            const hongPostId = post['id']
+            const obj = { content, hongPostId }
+
+            $.ajax({
+                type: "POST",
+                url: `/api/answer`,
+                data: JSON.stringify(obj),
+                contentType: "application/json",
+                success: function(response) {
+                    if(response.httpStatus === 200){
+                        alert("답변이 등록되었습니다.")
+                        $("#saveAnswerModal").modal("hide")
+                        window.location.href = `/bbs/view/${post['id']}`
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("upload error:", error);
+                }
+            });
+        })
+
+        $("#edit-answer-btn").on("click", function(e) {
+            const content = $("#edit-answer").val()
+            const hongPostId = post['id']
+            const obj = { content, hongPostId }
+
+            $.ajax({
+                type: "PUT",
+                url: `/api/answer/${answerId}`,
+                data: JSON.stringify(obj),
+                contentType: "application/json",
+                success: function(response) {
+                    if(response.httpStatus === 200){
+                        alert("답변이 수정되었습니다.")
+                        $("#editAnswerModal").modal("hide")
+                        window.location.href = `/bbs/view/${post['id']}`
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("upload error:", error);
+                }
+            });
+
+        })
+
+        $("#show-modalAnswer").on("click", function(e) {
+            $("#saveAnswerModal").modal("show")
         })
 
         let ckEditor;

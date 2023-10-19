@@ -1,5 +1,7 @@
 package hongshop.hongshop.domain.postType;
 
+import hongshop.hongshop.domain.answer.HongAnswerService;
+import hongshop.hongshop.domain.answer.HongAnswerVO;
 import hongshop.hongshop.domain.post.HongPostService;
 import hongshop.hongshop.domain.post.HongPostVO;
 import hongshop.hongshop.domain.postType.html.BbsType;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 @RequestMapping("/bbs")
@@ -24,6 +27,7 @@ public class HongPostTypeController {
 
     private final HongPostTypeService hongPostTypeService;
     private final HongPostService hongPostService;
+    private final HongAnswerService hongAnswerService;
 
     @GetMapping("/{id}")
     public String list(@PathVariable Long id, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails){
@@ -34,15 +38,19 @@ public class HongPostTypeController {
     }
 
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Long id, Model model, HttpServletResponse res, HttpServletRequest req){
+    public String view(@PathVariable Long id, Model model, HttpServletResponse res, HttpServletRequest req, @AuthenticationPrincipal PrincipalDetails principalDetails){
         HongPostVO post = hongPostService.postWithFileAndAnswer(id);
         HongPostTypeVO type = hongPostTypeService.view(post.getTypeId());
+        List<HongAnswerVO> answers = hongAnswerService.listByHongPostId(id);
 
         post.setContent(StringEscapeUtils.unescapeHtml4(post.getContent()));
         hongPostService.updateReadCnt(post.getId(), req, res);
 
         model.addAttribute("post", post);
         model.addAttribute("type", type);
+        model.addAttribute("answers", answers);
+        model.addAttribute("user", principalDetails.getUser());
+
         return "bbs/" + BbsType.getHtmlName(post.getType(), CRUD.VIEW.html());
     }
 
