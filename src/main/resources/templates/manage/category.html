@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+
+        .nav-pills .nav-link.root.active {
+            background-color: #0dcaf0; /* Change the background color to red when "root" is active */
+            color: black; /* Change the text color to black */
+        }
+
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <section id="faq-tabs" class="mt-2">
+            <!-- vertical tab pill -->
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="faq-navigation d-flex justify-content-between flex-column mb-2 mb-md-0">
+
+                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <button class="nav-link root text-start" style="color: black" id="category" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">
+                                <i data-feather="home" class="font-medium-2 ms-50"></i>
+                                category
+                            </button>
+                            <button class="nav-link" id="product1" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product1</button>
+                            <button class="nav-link" id="product2" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product2</button>
+                            <button class="nav-link" id="product3" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product3</button>
+                            <button class="nav-link" id="product4" data-bs-toggle="pill"  type="button" role="tab" aria-selected="false">product4</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="tab-content">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="userNm">이름<span
+                                                    class="text-primary ms-50">*</span></label>
+                                            <input type="text" id="userNm" class="form-control" name="userNm"
+                                                   placeholder="이름을 입력해주세요." required/>
+                                            <div class="invalid-feedback">이름을 입력해주세요.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="userId">ID<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="text" class="form-control" id="userId" name="userId" placeholder="사용할 ID를 입력해주세요." required/>
+                                                <div class="invalid-feedback">ID를 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="password">비밀번호<span class="text-primary ms-50">*</span></label>
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="" required/>
+                                            <div class="invalid-feedback">영문 + 숫자 + 특수문자으로 8~20자으로 만들어주세요.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="confirmPassword">비밀번호 확인<span class="text-primary ms-50">*</span></label>
+                                            <input type="password" id="confirmPassword" class="form-control" placeholder="비밀번호를 확인해주세요." required/>
+                                            <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="userTel">핸드폰번호<span class="text-primary ms-50">*</span></label>
+                                            <input type="tel" id="userTel" class="form-control" name="userTel" required/>
+                                            <div class="invalid-feedback">핸드폰번호를 입력해주세요.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="userEmail">이메일<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="text" id="userEmail" class="form-control" placeholder="사용할 이메일을 입력해주세요." name="userEmail" required/>
+                                                <div class="invalid-feedback">이메일을 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="pstinstNm">소속기관</label>
+                                            <input type="text" id="pstinstNm" class="form-control" placeholder="소속기관을 입력해주세요." name="pstinstNm"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label" for="grdtnSchulNm">졸업학교</label>
+                                        <input type="text" id="grdtnSchulNm" class="form-control" placeholder="졸업학교를 입력해주세요." name="grdtnSchulNm"/>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label" for="majorNm">전공</label>
+                                        <input type="text" id="majorNm" class="form-control" placeholder="전공을 입력해주세요." name="majorNm"/>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label" for="dgriNm">학위</label>
+                                        <input type="number" id="dgriNm" class="form-control" placeholder="학위를 입력해주세요." name="dgriNm"/>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px" class="text-end">
+                                    <button type="submit" class="btn btn-primary">로그인</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script>
+
+    </script>
+</th:block>
+
+</html>
