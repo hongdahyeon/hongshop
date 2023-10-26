@@ -78,3 +78,4 @@
 * commit62 : window.onload -> $(document).ready(function(e) (23/10/19)
 * commit63 : FAQ CRUD 기능 추가 (23/10/19)
 * commit64 : home 화면 이동 (23/10/19)
+* commit65 : admin, super 권한은 정보관리 메뉴 보임 (23/10/19)
