@@ -64,7 +64,7 @@
                                     <button class="btn btn-outline-dark" type="button" id="check-Id">중복확인</button>
                                     <div class="invalid-feedback">아이디를 입력하세요.</div>
                                 </div>
-                                <p style="color: red" class="error-message" id="errorMessage"></p>
+                                <p class="error-message" id="IdChkMessage"></p>
                             </div>
 
                             <div class="mb-3 mt-3">
@@ -76,7 +76,7 @@
                             <div class="mb-3 mt-3">
                                 <label for="newPassword">비밀번호 확인</label>
                                 <input type="password" class="form-control" id="newPasswordChk" required />
-                                <div class="invalid-feedback">비밀번호 확인을 입력하세요.</div>
+                                <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
                             </div>
 
                             <div class="mb-3 mt-3">
@@ -132,6 +132,8 @@
     <script>
 
         let IdChk = false;
+        const newPassword = $("#newPassword")
+        const newPasswordChk = $("#newPasswordChk")
 
         $(document).ready(function(){
 
@@ -148,7 +150,20 @@
                 checkbox.prop("checked", !checkbox.prop("checked"));
                 $('#userId').val(rememberId)
             }
+
+            newPassword.on('input', chckValidate)
+            newPasswordChk.on('input', chckValidate)
         })
+
+        function chckValidate(){
+            const passwordVal = newPassword.val()
+            const passwordChkVal = newPasswordChk.val()
+
+            if(passwordVal && passwordChkVal) {
+                if(passwordVal === passwordChkVal) newPasswordChk.removeClass('is-invalid')
+                else newPasswordChk.addClass('is-invalid')
+            }
+        }
 
         $("#show-pwd").click(() => {
             const passwordInput = $('#password');
@@ -158,7 +173,6 @@
 
         $("#check-Id").click(() => {
             const newUserId = $("#newUserId").val();
-            console.log("check! : ", newUserId);
 
             if(!newUserId.length) alert("아이디는 빈값일 수 없습니다.")
             else {
@@ -167,10 +181,11 @@
                     url: `/api/checkId?userId=${newUserId}`,
                     dataType: 'json',
                     success: function (data) {
-                        console.log("data : ", data)
-                        if (!data.message) $("#errorMessage").html("중복되는 아이디입니다.")
+                        if (!data.message) $("#IdChkMessage").css('color', 'red').html("중복되는 아이디입니다.")
                         else {
-                            $("#errorMessage").html("사용 가능한 아이디입니다.")
+                            $("#IdChkMessage").css('color', 'green').html("사용 가능한 아이디입니다.")
+                            $("#newUserId").prop('disabled', true)
+                            $("#check-Id").prop('disabled', true)
                             IdChk = true
                         }
                     },
@@ -190,13 +205,14 @@
                     form.classList.add("was-validated")
                 }else{
                     e.preventDefault(); e.stopPropagation();
-                    const pwd = $("#newPassword").val()
-                    const pwdChk = $("#newPasswordChk").val()
+                    const pwd = newPassword.val()
+                    const pwdChk = newPasswordChk.val()
 
                     if(!IdChk) alert("아이디 중복 여부를 확인해주세요.")
                     else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
                     else {
                         FormDataToObj.getParameter("new-login-form").then(obj => {
+                            obj['userId'] = $("#newUserId").val()
 
                             $.ajax({
                                 type: 'POST',

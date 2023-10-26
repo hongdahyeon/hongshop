@@ -2,7 +2,6 @@ class faqAcc {
 
     constructor(id, role) {
         this._id = id;
-        this._num = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"]
         this._data = []
         this._userRole = role
     }
@@ -32,11 +31,11 @@ class faqAcc {
             const body = `
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="${data['id']}">
-                      <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" data-bs-target="#${this._num[i]}" aria-expanded="false" aria-controls="${this._num[i]}">
-                            ${data['title']}
+                      <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" data-bs-target="#faq${i}" aria-expanded="false" aria-controls="faq${i}">
+                           <b> ${data['title']} </b>
                       </button>
                     </h2>
-                    <div id="${this._num[i]}" class="accordion-collapse collapse" aria-labelledby="${data['id']}" data-bs-parent="#faq-accordion">
+                    <div id="faq${i}" class="accordion-collapse collapse" aria-labelledby="${data['id']}" data-bs-parent="#faq-accordion">
                         <div class="accordion-body">
                             <div class="mb-3 mt-3" style="margin-bottom: 10px;">
                                 <label for="content">내용</label>
