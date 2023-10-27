@@ -80,7 +80,7 @@ public class HongCategoryRestController {
     @ApiDocumentResponse
     public Response delete(@PathVariable Long id) {
         hongCategoryService.delete(id);
-        return Response.ok("deleted");
+        return Response.ok("삭제되었습니다.");
     }
 
 }

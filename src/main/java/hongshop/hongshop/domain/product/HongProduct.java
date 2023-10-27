@@ -58,7 +58,10 @@ public class HongProduct {
 
     public void updateProduct(HongProductDTO hongProductDTO){
         if(hongProductDTO.getProductName() != null) this.productName = hongProductDTO.getProductName();
-        if(hongProductDTO.getProductCnt() != null) this.productCnt = hongProductDTO.getProductCnt();
+        if(hongProductDTO.getProductCnt() != null) {
+            this.productCnt = hongProductDTO.getProductCnt();
+            this.productStock = this.productStock + (hongProductDTO.getProductCnt() - hongProductDTO.getOriginProductCnt());
+        }
         if(hongProductDTO.getProductPrice() != null) this.productPrice = hongProductDTO.getProductPrice();
     }
 

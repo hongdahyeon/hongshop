@@ -47,9 +47,9 @@ public class HongCategoryServiceImpl implements HongCategoryService {
 
     @Override
     public List<HongCategoryVO> listWithProduct() {
-        List<HongCategory> all = hongCategoryRepository.findAll();
+        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIs("N");
         return all.stream().map(category -> {
-            List<HongProduct> productList = hongProductRepository.findAllByHongCategoryId(category.getId());
+            List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(category.getId(), "N");
             List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
             return new HongCategoryVO(category, list);
         }).toList();
@@ -64,7 +64,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     @Override
     public HongCategoryVO showWithProduct(Long id) {
         HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
-        List<HongProduct> productList = hongProductRepository.findAllByHongCategoryId(id);
+        List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(id, "N");
         List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
         return new HongCategoryVO(hongCategory, list);
     }

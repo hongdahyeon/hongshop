@@ -62,6 +62,6 @@ public class HongProductRestController {
     @ApiDocumentResponse
     public Response delete(@PathVariable Long id) {
         hongProductService.delete(id);
-        return Response.ok("deleted");
+        return Response.ok("삭제되었습니다.");
     }
 }

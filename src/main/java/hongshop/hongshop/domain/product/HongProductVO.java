@@ -14,6 +14,7 @@ import lombok.Setter;
 @Getter @Setter
 public class HongProductVO {
 
+    private Long productId;
     private String categoryName;
     private String productName;
     private Integer productCnt;
@@ -21,6 +22,7 @@ public class HongProductVO {
     private Integer productStock;
 
     public HongProductVO(HongProduct hongProduct) {
+        this.productId = hongProduct.getId();
         this.categoryName = hongProduct.getHongCategory().getCategoryName();
         this.productName = hongProduct.getProductName();
         this.productCnt = hongProduct.getProductCnt();

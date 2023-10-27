@@ -2,6 +2,8 @@ package hongshop.hongshop.domain.category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * @fileName HongCategoryRepository
  * @author dahyeon
@@ -11,4 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  **/
 
 public interface HongCategoryRepository extends JpaRepository<HongCategory, Long> {
+
+    List<HongCategory> findAllByDeleteYnIs(String deleteYn);
 }

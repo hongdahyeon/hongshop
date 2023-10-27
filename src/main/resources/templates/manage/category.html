@@ -7,9 +7,17 @@
     <title>HONG SHOP</title>
     <style>
 
-        .nav-pills .nav-link.root.active {
+        .nav-pills .nav-link.category.active {
             background-color: #0dcaf0; /* Change the background color to red when "root" is active */
             color: black; /* Change the text color to black */
+        }
+
+        .nav-pills .nav-link.product {
+            margin-left: 20px;
+        }
+
+        .margin-10 {
+            margin-top: 10px
         }
 
     </style>
@@ -17,118 +25,586 @@
 
 <th:block layout:fragment="content">
     <div class="container-sm mt-3">
+
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>상품 및 카테고리 관리</h3>
+                </div>
+            </div>
+        </div>
+
         <section id="faq-tabs" class="mt-2">
-            <!-- vertical tab pill -->
             <div class="row">
+                <!-- s: category & product nav-tab -->
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="faq-navigation d-flex justify-content-between flex-column mb-2 mb-md-0">
-
-                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <button class="nav-link root text-start" style="color: black" id="category" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">
-                                <i data-feather="home" class="font-medium-2 ms-50"></i>
-                                category
-                            </button>
-                            <button class="nav-link" id="product1" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product1</button>
-                            <button class="nav-link" id="product2" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product2</button>
-                            <button class="nav-link" id="product3" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">product3</button>
-                            <button class="nav-link" id="product4" data-bs-toggle="pill"  type="button" role="tab" aria-selected="false">product4</button>
+                        <div class="nav flex-column nav-pills me-3" role="tablist" aria-orientation="vertical" id="navTab"></div>
+                        <div style="margin-top: 10px" class="text-end">
+                            <button type="button" class="btn btn-outline-dark" id="add-category-btn">+카테고리</button>
                         </div>
+                    </div>
+                </div>
+                <!-- e: category & product nav-tab -->
+
+                <!-- s: category & product info-card -->
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <div class="tab-content">
+
+                        <!-- s: empty card -->
+                        <div class="card" id="empty-div">
+                            <div class="card-body" style="text-align: center">
+                                <h4>카테고리 및 상품을 선택해주세요.</h4>
+                            </div>
+                        </div>
+                        <!-- e: empty card -->
+
+                        <!-- s: 카테고리 card -->
+                        <div class="card" id="category-div" style="display: none">
+                            <form id="category-form" class="needs-validation" novalidate>
+
+                                <div class="card-header" style="margin-bottom: 10px">
+                                    <div class="card-text d-flex justify-content-between">
+                                        <div class="text-start">
+                                            <h3>카테고리 정보</h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="categoryName">카테고리 이름<span
+                                                        class="text-primary ms-50">*</span></label>
+                                                <input type="text" id="categoryName" class="form-control" name="categoryName" required/>
+                                                <div class="invalid-feedback">카테고리 이름을 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="hongCategoryId">카테고리 ID<span class="text-primary ms-50">*</span></label>
+                                                <div class="input_wrap">
+                                                    <input type="text" class="form-control" id="hongCategoryId" name="hongCategoryId" disabled/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-12">
+                                            <div class="mb-1 margin-10">
+                                                <label class="form-label" for="description">설명<span class="text-primary ms-50">*</span></label>
+                                                <textarea class="form-control" id="description" name="description" required></textarea>
+                                                <div class="invalid-feedback">카테고리에 대한 설명을 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 10px" class="text-end">
+                                        <button type="submit" class="btn btn-outline-primary" id="save-category-btn">수정</button>
+                                        <button type="button" class="btn btn-outline-danger" id="delete-category-btn">삭제</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- e: 카테고리 card -->
+
+                        <!-- s: 상품 card -->
+                        <div class="card" id="product-div" style="display: none">
+                            <form id="product-form" class="needs-validation" novalidate>
+
+                                <div class="card-header" style="margin-bottom: 10px">
+                                    <div class="card-text d-flex justify-content-between">
+                                        <div class="text-start">
+                                            <h3>상품 정보</h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1 margin-10">
+                                                <label class="form-label" for="productName">상품이름<span class="text-primary ms-50">*</span></label>
+                                                <input type="text" id="productName" class="form-control" name="productName" required/>
+                                                <div class="invalid-feedback">상품이름을 입력하세요.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1 margin-10">
+                                                <label class="form-label" for="hongProductId">상품ID<span class="text-primary ms-50">*</span></label>
+                                                <input type="text" id="hongProductId" class="form-control" name="hongProductId" disabled/>
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="originProductCnt" id="originProductCnt" />
+                                        <div class="col-md-6 col-12">
+                                            <div class="mb-1 margin-10">
+                                                <label class="form-label" for="productCnt">상품 개수<span class="text-primary ms-50">*</span></label>
+                                                <input type="number" id="productCnt" class="form-control" name="productCnt" required/>
+                                                <div class="invalid-feedback">상품 개수를 입력하세요.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12 margin-10">
+                                            <label class="form-label" for="productPrice">상품 가격<span class="text-primary ms-50">*</span></label>
+                                            <input type="number" id="productPrice" class="form-control" name="productPrice" required disabled/>
+                                            <div class="invalid-feedback">상품의 가격을 입력하세요.</div>
+                                        </div>
+                                        <div class="col-md-6 col-12 margin-10">
+                                            <label class="form-label" for="productStock">현재 상품 재고<span class="text-primary ms-50">*</span></label>
+                                            <input type="text" id="productStock" class="form-control" name="productStock" disabled/>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 10px" class="text-end">
+                                        <button type="button" class="btn btn-outline-success" id="show-product-order">주문자</button>
+                                        <button type="submit" class="btn btn-outline-primary" id="save-product-btn">수정</button>
+                                        <button type="button" class="btn btn-outline-danger" id="delete-product-btn">삭제</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- e: 상품 card -->
 
                     </div>
                 </div>
+                <!-- e: category & product info-card -->
+            </div>
+        </section>
 
-                <div class="col-lg-8 col-md-8 col-sm-12">
-                    <div class="tab-content">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="userNm">이름<span
-                                                    class="text-primary ms-50">*</span></label>
-                                            <input type="text" id="userNm" class="form-control" name="userNm"
-                                                   placeholder="이름을 입력해주세요." required/>
-                                            <div class="invalid-feedback">이름을 입력해주세요.</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="userId">ID<span class="text-primary ms-50">*</span></label>
-                                            <div class="input_wrap">
-                                                <input type="text" class="form-control" id="userId" name="userId" placeholder="사용할 ID를 입력해주세요." required/>
-                                                <div class="invalid-feedback">ID를 입력해주세요.</div>
-                                            </div>
-                                        </div>
-                                    </div>
+        <!-- s: newProductModal -->
+        <form id="new-product-form" class="needs-validation" novalidate>
+            <input type="hidden" name="hongCategoryId" id="new-product-hongCategoryId" />
+            <div class="modal" id="new-product-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
 
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="password">비밀번호<span class="text-primary ms-50">*</span></label>
-                                            <input type="password" class="form-control" id="password" name="password" placeholder="" required/>
-                                            <div class="invalid-feedback">영문 + 숫자 + 특수문자으로 8~20자으로 만들어주세요.</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="confirmPassword">비밀번호 확인<span class="text-primary ms-50">*</span></label>
-                                            <input type="password" id="confirmPassword" class="form-control" placeholder="비밀번호를 확인해주세요." required/>
-                                            <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="userTel">핸드폰번호<span class="text-primary ms-50">*</span></label>
-                                            <input type="tel" id="userTel" class="form-control" name="userTel" required/>
-                                            <div class="invalid-feedback">핸드폰번호를 입력해주세요.</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="userEmail">이메일<span class="text-primary ms-50">*</span></label>
-                                            <div class="input_wrap">
-                                                <input type="text" id="userEmail" class="form-control" placeholder="사용할 이메일을 입력해주세요." name="userEmail" required/>
-                                                <div class="invalid-feedback">이메일을 입력해주세요.</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">상품 등록하기</h4>
+                            <button type="button" class="btn-close" id="close-product-modal-btn"></button>
+                        </div>
 
-                                    <div class="col-md-6 col-12">
-                                        <div class="mb-1">
-                                            <label class="form-label" for="pstinstNm">소속기관</label>
-                                            <input type="text" id="pstinstNm" class="form-control" placeholder="소속기관을 입력해주세요." name="pstinstNm"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <label class="form-label" for="grdtnSchulNm">졸업학교</label>
-                                        <input type="text" id="grdtnSchulNm" class="form-control" placeholder="졸업학교를 입력해주세요." name="grdtnSchulNm"/>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <label class="form-label" for="majorNm">전공</label>
-                                        <input type="text" id="majorNm" class="form-control" placeholder="전공을 입력해주세요." name="majorNm"/>
-                                    </div>
-
-                                    <div class="col-md-6 col-12">
-                                        <label class="form-label" for="dgriNm">학위</label>
-                                        <input type="number" id="dgriNm" class="form-control" placeholder="학위를 입력해주세요." name="dgriNm"/>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-productName">상품이름<span class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="new-productName" class="form-control" name="productName" required/>
+                                        <div class="invalid-feedback">상품이름을 입력하세요.</div>
                                     </div>
                                 </div>
-                                <div style="margin-top: 10px" class="text-end">
-                                    <button type="submit" class="btn btn-primary">로그인</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-productCnt">상품 개수<span class="text-primary ms-50">*</span></label>
+                                        <input type="number" id="new-productCnt" class="form-control" name="productCnt" required/>
+                                        <div class="invalid-feedback">상품 개수를 입력하세요.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12 margin-10">
+                                    <label class="form-label" for="new-productPrice">상품 가격<span class="text-primary ms-50">*</span></label>
+                                    <input type="number" id="new-productPrice" class="form-control" name="productPrice" required/>
+                                    <div class="invalid-feedback">상품의 가격을 입력하세요.</div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-new-product-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="save-new-product-btn">저장</button>
+                        </div>
+
                     </div>
                 </div>
-
             </div>
-        </section>
+        </form>
+        <!-- e: newProductModal -->
+
+        <!-- s: newProductModal -->
+        <form id="new-category-form" class="needs-validation" novalidate>
+            <div class="modal" id="new-category-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">카테고리 등록하기</h4>
+                            <button type="button" class="btn-close" id="close-category-modal-btn"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="new-categoryName">카테고리 이름<span
+                                                class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="new-categoryName" class="form-control" name="categoryName" required/>
+                                        <div class="invalid-feedback">카테고리 이름을 입력해주세요.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12"></div>
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-description">설명<span class="text-primary ms-50">*</span></label>
+                                        <textarea class="form-control" id="new-description" name="description" required></textarea>
+                                        <div class="invalid-feedback">카테고리에 대한 설명을 입력해주세요.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-new-category-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="save-new-category-btn">저장</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: newProductModal -->
+
     </div>
 </th:block>
 
 
 <th:block layout:fragment="script">
-    <script>
+    <script th:src="@{'/assets/js/page/caregory.nav.js'}"></script>
+    <script th:inline="javascript">
+
+        const nav = new navTab("navTab")
+
+        $(document).ready(function() {
+
+            getCategoryWithProduct()
+
+            /* [왼쪽] 상품 nav-tab 클릭 */
+            $("#navTab").on("click", ".product", function(e) {
+                const hongProductId = $(this).attr("data-num")
+
+                document.getElementById("empty-div").style.display = 'none'
+                document.getElementById("category-div").style.display = 'none'
+                document.getElementById("product-div").style.display = 'block'
+
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/product/${hongProductId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            $("#productName").val(data.message['productName'])
+                            $("#hongProductId").val(data.message['productId'])
+                            $("#productCnt").val(data.message['productCnt'])
+                            $("#originProductCnt").val(data.message['productCnt'])
+                            $("#productPrice").val(data.message['productPrice'])
+                            $("#productStock").val(data.message['productStock'])
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            })
+
+            /* [왼쪽] 카테고리 nav-tab 클릭 */
+            $("#navTab").on("click", ".category", function(e) {
+                const hongCategoryId = $(this).attr("data-num")
+
+                document.getElementById("empty-div").style.display = 'none'
+                document.getElementById("category-div").style.display = 'block'
+                document.getElementById("product-div").style.display = 'none'
+
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/category-product/${hongCategoryId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            $("#hongCategoryId").val(data.message['categoryId'])
+                            $("#categoryName").val(data.message['categoryName'])
+                            $("#description").html(data.message['description'])
+                            if(data.message['productList'].length) $("#delete-category-btn").prop('disabled', true)     // 하위 상품 존재시, 카테고리 삭제 불가능
+                            else $("#delete-category-btn").prop('disabled', false)
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            })
+
+            /* [왼쪽] "+상품" 클릭 */
+            $("#navTab").on("click", "#add-product-btn", function(e) {
+                const hongCategoryId = $(this).attr("data-num")
+                $("#new-product-hongCategoryId").val(hongCategoryId)
+                $("#new-product-modal").modal('show')
+            })
+
+            /* [왼쪽] "+카테고리" 클릭 */
+            $("#add-category-btn").on("click", function(e) {
+                $("#new-category-modal").modal('show')
+            })
+
+            /* [왼쪽] "+카테고리" 클릭 -> 나온 모달 "취소" 버튼 */
+            $("#cancel-new-category-btn, #close-category-modal-btn").on("click", function(e) {
+                const result = confirm("카테고리 작성 정보를 취소하시겠습니까?")
+                if(result) {
+                    $("#new-categoryName").val('')
+                    $("#new-description").val('')
+
+                    const form = document.getElementById("new-category-form")
+                    form.classList.remove("was-validated")
+
+                    $("#new-category-modal").modal('hide')
+                }
+            })
+
+            /* [왼쪽] "+상품" 클릭 -> 나온 모달 "취소" 버튼 */
+            $("#cancel-new-product-btn, #close-product-modal-btn").on("click", function(e) {
+                const result = confirm("상품 작성 정보를 취소하시겠습니까?")
+                if(result) {
+                    $("#new-productName").val('')
+                    $("#new-productCnt").val('')
+                    $("#new-productPrice").val('')
+
+                    const form = document.getElementById("new-product-form")
+                    form.classList.remove("was-validated")
+
+                    $("#new-product-modal").modal('hide')
+                }
+            })
+
+            /* [오른쪽] "삭제" 클릭 (상품) */
+            $("#delete-product-btn").on("click", function(e) {
+                const productId = $("#hongProductId").val()
+
+                const result = confirm("해당 상품을 삭제하시겠습니까?")
+                if(result) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/api/product/${productId}`,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                alert(`${data.message}`)
+                                defaultPage()
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+                }
+            })
+
+            /* [오른쪽] "삭제" 클릭 (카테고리) */
+            $("#delete-category-btn").on("click", function(e) {
+                const categoryId = $("#hongCategoryId").val()
+
+                const result = confirm("해당 카테고리를 삭제하시겠습니까?")
+                if(result) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/api/category/${categoryId}`,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                alert(`${data.message}`)
+                                defaultPage()
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+                }
+            })
+
+            /* [오른쪽] "주문자" 버튼 클릭 */
+            $("#show-product-order").on("click", function(e) {
+                const categoryId = $("#hongProductId").val()
+                console.log("show-product-order clicked : ", categoryId)
+            })
+        })
+
+        function getCategoryWithProduct(){
+            $.ajax({
+                type: 'GET',
+                url: `/api/category-product`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        nav.setData(data.message).draw()
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        }
+
+        /* [오른쪽] 카테고리 정보 변경 */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("category-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("category-form").then((obj) => {
+                        const hongCategoryId = $("#hongCategoryId").val()
+
+                        $.ajax({
+                            type: 'PUT',
+                            url: `/api/category/${hongCategoryId}`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.httpStatus === 200) {
+                                    alert("카테고리 정보를 수정하였습니다.")
+                                    defaultPage()
+                                } else {
+                                    alert("카테고리 정보 수정에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+                    })
+                }
+            })
+        })
+
+        /* [오른쪽] 상품 정보 변경 */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("product-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("product-form").then((obj) => {
+                        const productId = $("#hongProductId").val()
+                        const limitProduct = parseInt(obj['originProductCnt']) - $("#productStock").val()
+
+                        if(obj['productCnt'] < limitProduct) alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`)
+                        else {
+                            $.ajax({
+                                type: 'PUT',
+                                url: `/api/product/${productId}`,
+                                dataType: 'json',
+                                data: JSON.stringify(obj),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if (data.httpStatus === 200) {
+                                        alert("상품 정보를 수정하였습니다.")
+                                        defaultPage()
+                                    } else {
+                                        alert("상품 정보 수정에 실패하였습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        })
+
+        /* [모달] 새로운 카테고리 등록  */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("new-category-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("new-category-form").then((obj) => {
+
+                        $.ajax({
+                            type: 'POST',
+                            url: `/api/category`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    alert("카테고리가 추가되었습니다.")
+                                    defaultPage()
+                                    $("#new-category-modal").modal('hide')
+                                }else {
+                                    alert("카테고리 추가에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+
+                    })
+                }
+            })
+        })
+
+        /* [모달] 새로운 상품 등록  */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("new-product-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("new-product-form").then((obj) => {
+
+                        $.ajax({
+                            type: 'POST',
+                            url: `/api/product`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    alert("상품이 추가되었습니다.")
+                                    defaultPage()
+                                    $("#new-product-modal").modal('hide')
+                                }else {
+                                    alert("상품 추가에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+                    })
+                }
+            })
+        })
+
+        function defaultPage(){
+            document.getElementById("empty-div").style.display = 'block'
+            document.getElementById("category-div").style.display = 'none'
+            document.getElementById("product-div").style.display = 'none'
+            getCategoryWithProduct()
+        }
 
     </script>
 </th:block>

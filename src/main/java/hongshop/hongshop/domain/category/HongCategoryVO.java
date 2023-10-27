@@ -18,17 +18,20 @@ import java.util.List;
 @Getter @Setter
 public class HongCategoryVO {
 
+    private Long categoryId;
     private String categoryName;
     private String description;
     private List<HongProductVO> productList = new ArrayList<>();
 
     public HongCategoryVO(HongCategory hongCategory, List<HongProductVO> productVOList) {
+        this.categoryId = hongCategory.getId();
         this.categoryName = hongCategory.getCategoryName();
         this.description = hongCategory.getDescription();
         this.productList = productVOList;
     }
 
     public HongCategoryVO(HongCategory hongCategory) {
+        this.categoryId = hongCategory.getId();
         this.categoryName = hongCategory.getCategoryName();
         this.description = hongCategory.getDescription();
     }

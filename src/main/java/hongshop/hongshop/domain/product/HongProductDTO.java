@@ -16,5 +16,6 @@ public class HongProductDTO {
     private Long hongCategoryId;
     private String productName;
     private Integer productCnt;
+    private Integer originProductCnt;
     private Integer productPrice;
 }
