@@ -19,7 +19,7 @@ class navTab {
                 const category =
                     `
                     <div class="d-flex justify-content-between align-items-center">
-                        <button class="nav-link text-start category" style="color: black" id="category-${data['categoryId']}" data-bs-toggle="pill" type="button" role="tab" aria-selected="true" data-num="${data['categoryId']}">
+                        <button class="nav-link text-start category" style="color: black; width: 70%" id="category-${data['categoryId']}" data-bs-toggle="pill" type="button" role="tab" aria-selected="true" data-num="${data['categoryId']}">
                             <i data-feather="home" class="font-medium-2 ms-50"></i>
                             ${data['categoryName']}
                         </button>
