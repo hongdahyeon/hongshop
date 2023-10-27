@@ -81,3 +81,4 @@
 * commit65 : admin, super 권한은 정보관리 메뉴 보임 (23/10/19)
 * commit66 : 비번, 비번확인 validation (23/10/26)
 * commit67 : 상품 카테고리 관리 화면 추가(수정중) (23/10/26)
+* commit68 : product, category table 'deleteYn' 컬럼 추가 (23/10/27)
