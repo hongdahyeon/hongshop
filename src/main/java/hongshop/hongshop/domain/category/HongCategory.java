@@ -31,14 +31,22 @@ public class HongCategory {
 
     private String description;
 
+    @Column(name = "delete_yn")
+    private String deleteYn;
+
     @Builder(builderMethodName = "hongCategoryInsertBuilder")
     public HongCategory(String categoryName, String description) {
         this.categoryName = categoryName;
         this.description = description;
+        this.deleteYn = "N";
     }
 
     public void updateCategory(HongCategoryDTO hongCategoryDTO){
         if(hongCategoryDTO.getCategoryName() != null) this.categoryName = hongCategoryDTO.getCategoryName();
         if(hongCategoryDTO.getDescription() != null) this.description = hongCategoryDTO.getDescription();
+    }
+
+    public void deleteCategory(){
+        this.deleteYn = "Y";
     }
 }

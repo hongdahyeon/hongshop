@@ -73,4 +73,11 @@ public class HongProductServiceImpl implements HongProductService {
     public void updateStockCnt(Integer orderCnt, HongProduct hongProduct) {
         hongProduct.updateStockCnt(orderCnt);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
+        product.deleteProduct();
+    }
 }

@@ -56,4 +56,12 @@ public class HongProductRestController {
         hongProductService.update(hongProductDTO, id);
         return Response.ok("updated");
     }
+
+    @DeleteMapping("/product/{id}")
+    @Operation(summary = "delete product", description = "물품 삭제")
+    @ApiDocumentResponse
+    public Response delete(@PathVariable Long id) {
+        hongProductService.delete(id);
+        return Response.ok("deleted");
+    }
 }

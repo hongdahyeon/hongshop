@@ -43,6 +43,9 @@ public class HongProduct {
     @Column(name = "product_stock")
     private Integer productStock;
 
+    @Column(name = "delete_yn")
+    private String deleteYn;
+
     @Builder(builderMethodName = "hongProductInsertBuilder")
     public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice, Integer productStock) {
         this.hongCategory = hongCategory;
@@ -50,6 +53,7 @@ public class HongProduct {
         this.productCnt = productCnt;
         this.productPrice = productPrice;
         this.productStock = productStock;
+        this.deleteYn = "N";
     }
 
     public void updateProduct(HongProductDTO hongProductDTO){
@@ -60,5 +64,9 @@ public class HongProduct {
 
     public void updateStockCnt(Integer orderCnt){
         this.productStock = this.productStock - orderCnt;
+    }
+
+    public void deleteProduct(){
+        this.deleteYn = "Y";
     }
 }

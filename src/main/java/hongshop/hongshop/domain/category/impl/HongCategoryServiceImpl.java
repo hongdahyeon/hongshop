@@ -75,4 +75,11 @@ public class HongCategoryServiceImpl implements HongCategoryService {
         HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
         hongCategory.updateCategory(hongCategoryDTO);
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
+        hongCategory.deleteCategory();
+    }
 }

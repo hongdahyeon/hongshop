@@ -74,4 +74,13 @@ public class HongCategoryRestController {
         hongCategoryService.update(hongCategoryDTO, id);
         return Response.ok("updated");
     }
+
+    @DeleteMapping("/category/{id}")
+    @Operation(summary = "delete category", description = "물품 카테고리 삭제")
+    @ApiDocumentResponse
+    public Response delete(@PathVariable Long id) {
+        hongCategoryService.delete(id);
+        return Response.ok("deleted");
+    }
+
 }

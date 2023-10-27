@@ -24,4 +24,6 @@ public interface HongProductService {
 
     void updateStockCnt(Integer orderCnt, HongProduct hongProduct);
 
+    void delete(Long id);
+
 }

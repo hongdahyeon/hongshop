@@ -24,4 +24,6 @@ public interface HongCategoryService {
 
     void update(HongCategoryDTO hongCategoryDTO, Long id);
 
+    void delete(Long id);
+
 }
