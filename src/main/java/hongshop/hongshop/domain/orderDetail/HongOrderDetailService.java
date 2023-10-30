@@ -18,4 +18,6 @@ public interface HongOrderDetailService {
     Long saveOrderDetails(HongOrder hongOrder, HongProduct hongProduct, Integer orderCnt, Integer orderPrice);
 
     List<HongOrderDetailVO> listOfDetailOrders(Long orderId);
+
+    List<HongOrderDetailUserVO> listByProductId(Long productId);
 }

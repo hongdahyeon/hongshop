@@ -2,6 +2,9 @@ package hongshop.hongshop.domain.product.impl;
 
 import hongshop.hongshop.domain.category.HongCategory;
 import hongshop.hongshop.domain.category.HongCategoryRepository;
+import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
+import hongshop.hongshop.domain.orderDetail.HongOrderDetailUserVO;
+import hongshop.hongshop.domain.orderDetail.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +17,13 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary      (1) save : 상품 정보를 저장
+ *              (2) list : 상품 정보 리스트 조회
+ *              (3) view, productInfo : 상품 정보 조회
+ *              (4) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
+ *              (5) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
+ *              (6) delete : 상품 삭제 (deleteYn)
+ *              (7) productUser : 상품ID를 통한 주문자 리스트 조회
 **/
 
 @Service
@@ -24,6 +33,7 @@ public class HongProductServiceImpl implements HongProductService {
 
     private final HongProductRepository hongProductRepository;
     private final HongCategoryRepository hongCategoryRepository;
+    private final HongOrderDetailService hongOrderDetailService;
 
     @Override
     @Transactional(readOnly = false)
@@ -79,5 +89,13 @@ public class HongProductServiceImpl implements HongProductService {
     public void delete(Long id) {
         HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         product.deleteProduct();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HongPrdouctUserVO productUser(Long id) {
+        HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
+        List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);
+        return new HongPrdouctUserVO(product, orderDetails);
     }
 }

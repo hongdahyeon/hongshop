@@ -266,6 +266,44 @@
         </form>
         <!-- e: newProductModal -->
 
+        <!-- s: productUserModal -->
+        <div class="modal modal-lg" id="product-user-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">상품 주문 사용자 정보</h4>
+                        <button type="button" class="btn-close" id="close-product-user-modal-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-hover table-bordered" id="product-user-table">
+                            <thead>
+                            <tr style="text-align: center;">
+                                <th style="width: 10%;" class="text-center">번호</th>
+                                <th style="width: 20%" class="text-center">주문자</th>
+                                <th style="width: 10%" class="text-center">주문상태</th>
+                                <th style="width: 10%" class="text-center">주문개수</th>
+                                <th style="width: 10%" class="text-center">주문가격</th>
+                                <th style="width: 20%" class="text-center">주문날짜</th>
+                            </tr>
+                            </thead>
+                            <tbody id="product-user-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-product-user-btn" data-bs-dismiss="modal">취소</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: productUserModal -->
+
     </div>
 </th:block>
 
@@ -428,10 +466,48 @@
 
             /* [오른쪽] "주문자" 버튼 클릭 */
             $("#show-product-order").on("click", function(e) {
-                const categoryId = $("#hongProductId").val()
-                console.log("show-product-order clicked : ", categoryId)
+                const productId = $("#hongProductId").val()
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/product/user/${productId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            const productUser = data.message.orderDetails
+                            if(!productUser.length) alert("해당 상품을 구매한 사용자가 없습니다.")
+                            else {
+                                drawModalTable(productUser)
+                                $("#product-user-modal").modal('show')
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
             })
         })
+
+        function drawModalTable(productUser) {
+            const dom = $("#product-user-tbody")
+            dom.empty();
+
+            productUser.forEach((data, i) => {
+                const body =
+                    `
+                    <tr>
+                        <td style="width: 10%" class="text-center">${i+1}</td>
+                        <td style="width: 20%" class="text-center">${data['userId']}</td>
+                        <td style="width: 10%" class="text-center">${data['orderStatus']}</td>
+                        <td style="width: 10%" class="text-center">${data['orderCnt']}</td>
+                        <td style="width: 10%" class="text-center">${data['orderPrice']}</td>
+                        <td style="width: 10%" class="text-center">${data['orderDate'].toString().substring(0, 9)}</td>
+                    </tr>
+                    `
+                dom.append(body)
+            })
+        }
 
         function getCategoryWithProduct(){
             $.ajax({

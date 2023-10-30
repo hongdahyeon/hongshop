@@ -15,4 +15,6 @@ import java.util.List;
 
 public interface HongOrderDetailRepository extends JpaRepository<HongOrderDetail, Long> {
     List<HongOrderDetail> findAllByHongOrderId(Long id);
+
+    List<HongOrderDetail> findAllByHongProduct_Id(Long productId);
 }
