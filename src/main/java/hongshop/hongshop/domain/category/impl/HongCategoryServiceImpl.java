@@ -33,6 +33,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
         HongCategory hongCategory = HongCategory.hongCategoryInsertBuilder()
                 .categoryName(hongCategoryDTO.getCategoryName())
                 .description(hongCategoryDTO.getDescription())
+                .orderNum(hongCategoryDTO.getOrderNum())
                 .build();
         HongCategory save = hongCategoryRepository.save(hongCategory);
 
@@ -41,13 +42,13 @@ public class HongCategoryServiceImpl implements HongCategoryService {
 
     @Override
     public List<HongCategoryVO> list() {
-        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIs("N");
+        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIsOrderByOrderNum("N");
         return all.stream().map(HongCategoryVO::new).toList();
     }
 
     @Override
     public List<HongCategoryVO> listWithProduct() {
-        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIs("N");
+        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIsOrderByOrderNum("N");
         return all.stream().map(category -> {
             List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(category.getId(), "N");
             List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();

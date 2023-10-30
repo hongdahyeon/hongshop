@@ -83,6 +83,15 @@
                                         </div>
                                         <div class="col-md-6 col-12">
                                             <div class="mb-1">
+                                                <label class="form-label" for="hongCategoryId">카테고리 순서<span class="text-primary ms-50">*</span></label>
+                                                <div class="input_wrap">
+                                                    <input type="text" class="form-control" id="orderNum" name="orderNum" required/>
+                                                    <div class="invalid-feedback">카테고리 순서를 입력해주세요.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-12">
+                                            <div class="mb-1 margin-10">
                                                 <label class="form-label" for="hongCategoryId">카테고리 ID<span class="text-primary ms-50">*</span></label>
                                                 <div class="input_wrap">
                                                     <input type="text" class="form-control" id="hongCategoryId" name="hongCategoryId" disabled/>
@@ -243,7 +252,14 @@
                                         <div class="invalid-feedback">카테고리 이름을 입력해주세요.</div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-12"></div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="new-categoryName">카테고리 순서<span
+                                                class="text-primary ms-50">*</span></label>
+                                        <input type="number" id="new-orderNum" class="form-control" name="orderNum" required/>
+                                        <div class="invalid-feedback">카테고리 순서를 입력해주세요.</div>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 col-12">
                                     <div class="mb-1 margin-10">
                                         <label class="form-label" for="new-description">설명<span class="text-primary ms-50">*</span></label>
@@ -363,6 +379,7 @@
                     success: function (data) {
                         if(data.httpStatus === 200) {
                             $("#hongCategoryId").val(data.message['categoryId'])
+                            $("#orderNum").val(data.message['orderNum'])
                             $("#categoryName").val(data.message['categoryName'])
                             $("#description").html(data.message['description'])
                             if(data.message['productList'].length) $("#delete-category-btn").prop('disabled', true)     // 하위 상품 존재시, 카테고리 삭제 불가능

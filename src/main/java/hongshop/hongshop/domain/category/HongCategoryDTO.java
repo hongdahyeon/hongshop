@@ -19,4 +19,6 @@ public class HongCategoryDTO {
     @NotNull
     private String categoryName;
     private String description;
+
+    private Integer orderNum;
 }

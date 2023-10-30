@@ -14,5 +14,5 @@ import java.util.List;
 
 public interface HongCategoryRepository extends JpaRepository<HongCategory, Long> {
 
-    List<HongCategory> findAllByDeleteYnIs(String deleteYn);
+    List<HongCategory> findAllByDeleteYnIsOrderByOrderNum(String deleteYn);
 }

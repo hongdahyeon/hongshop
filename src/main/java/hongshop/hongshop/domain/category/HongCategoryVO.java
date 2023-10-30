@@ -19,12 +19,14 @@ import java.util.List;
 public class HongCategoryVO {
 
     private Long categoryId;
+    private Integer orderNum;
     private String categoryName;
     private String description;
     private List<HongProductVO> productList = new ArrayList<>();
 
     public HongCategoryVO(HongCategory hongCategory, List<HongProductVO> productVOList) {
         this.categoryId = hongCategory.getId();
+        this.orderNum = hongCategory.getOrderNum();
         this.categoryName = hongCategory.getCategoryName();
         this.description = hongCategory.getDescription();
         this.productList = productVOList;
@@ -32,6 +34,7 @@ public class HongCategoryVO {
 
     public HongCategoryVO(HongCategory hongCategory) {
         this.categoryId = hongCategory.getId();
+        this.orderNum = hongCategory.getOrderNum();
         this.categoryName = hongCategory.getCategoryName();
         this.description = hongCategory.getDescription();
     }
