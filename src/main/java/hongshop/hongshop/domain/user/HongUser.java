@@ -33,6 +33,12 @@ public class HongUser {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "user_email")
+    private String userEmail;
+
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private HongRoleType role;
@@ -43,17 +49,20 @@ public class HongUser {
 
 
     @Builder(builderMethodName = "hongUserInsertBuilder")
-    public HongUser(String userId, String password, HongRoleType role, Address address){
+    public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail){
         this.userId = userId;
         this.password = password;
         this.role = role;
         this.address = address;
+        this.userName = userName;
+        this.userEmail = userEmail;
     }
 
     public void updateHongUser(HongUserDTO hongUserDTO){
         if(hongUserDTO.getPassword() != null) this.password = hongUserDTO.getPassword();
-//        this.role = hongUserDTO.getRole();
         this.address = new Address(hongUserDTO.getCity(), hongUserDTO.getStreet(), hongUserDTO.getZipcode());
+        if(hongUserDTO.getUserName() != null) this.userName = hongUserDTO.getUserName();
+        if(hongUserDTO.getUserEmail() != null) this.userEmail = hongUserDTO.getUserEmail();
     }
 
     public void updateUserRole(HongRoleType hongRoleType){

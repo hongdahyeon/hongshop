@@ -38,6 +38,7 @@
 
                     <button type="submit" class="btn btn-primary">로그인</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
+                    <button type="button" class="btn btn-success" id="find-user-password">비밀번호찾기</button>
                 </div>
             </form>
             <!-- end : Login Form  -->
@@ -77,6 +78,18 @@
                                 <label for="newPassword">비밀번호 확인</label>
                                 <input type="password" class="form-control" id="newPasswordChk" required />
                                 <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
+                            </div>
+
+                            <div class="mb-3 mt-3">
+                                <label for="userName">이름</label>
+                                <input type="text" class="form-control" id="userName" name="userName" required />
+                                <div class="invalid-feedback">이름을 입력하세요.</div>
+                            </div>
+
+                            <div class="mb-3 mt-3">
+                                <label for="userEmail">이메일</label>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" required />
+                                <div class="invalid-feedback">이메일을 입력하세요.</div>
                             </div>
 
                             <div class="mb-3 mt-3">
@@ -164,6 +177,10 @@
                 else newPasswordChk.addClass('is-invalid')
             }
         }
+
+        $("#find-user-password").on("click", function(e){
+            console.log("find-user-password clicked")
+        })
 
         $("#show-pwd").click(() => {
             const passwordInput = $('#password');

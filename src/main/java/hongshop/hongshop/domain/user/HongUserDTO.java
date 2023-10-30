@@ -22,6 +22,9 @@ public class HongUserDTO {
 
     private HongRoleType role;
 
+    private String userName;
+    private String userEmail;
+
     @NotNull
     private String city;
     @NotNull

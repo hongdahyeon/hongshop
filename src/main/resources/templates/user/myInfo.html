@@ -33,6 +33,18 @@
                 </div>
 
                 <div class="mb-3 mt-3">
+                    <label for="userName">이름</label>
+                    <input type="text" class="form-control" id="userName" name="userName" th:value="${user.userName}" required/>
+                    <div class="invalid-feedback">이름을 입력하세요.</div>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label for="userEmail">이메일</label>
+                    <input type="text" class="form-control" id="userEmail" name="userEmail" th:value="${user.userEmail}" required/>
+                    <div class="invalid-feedback">이메일을 입력하세요.</div>
+                </div>
+
+                <div class="mb-3 mt-3">
                     <label>유저 권한</label>
                     <div class="input-group">
                         <div class="form-check" style="margin-right: 20px;">

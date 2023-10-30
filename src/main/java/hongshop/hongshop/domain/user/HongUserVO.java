@@ -20,22 +20,18 @@ public class HongUserVO {
     private Long id;
     private String userId;
     private String role;
+    private String userName;
+    private String userEmail;
     private String city;
     private String street;
     private String zipcode;
-
-    public HongUserVO(String userId, HongRoleType hongUserRole, Address address){
-        this.userId = userId;
-        this.role = hongUserRole.toString();
-        this.city = address.getCity();
-        this.street = address.getStreet();
-        this.zipcode = address.getZipcode();
-    }
 
     public HongUserVO(HongUser hongUser){
         this.id = hongUser.getId();
         this.userId = hongUser.getUserId();
         this.role = hongUser.getRole().toString();
+        this.userName = hongUser.getUserName();
+        this.userEmail = hongUser.getUserEmail();
         this.city = hongUser.getAddress().getCity();
         this.street = hongUser.getAddress().getStreet();
         this.zipcode = hongUser.getAddress().getZipcode();

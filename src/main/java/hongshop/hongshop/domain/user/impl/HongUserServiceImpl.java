@@ -41,6 +41,8 @@ public class HongUserServiceImpl implements HongUserService {
                 .password(encodePassword)
                 .role(hongUserDTO.getRole())
                 .address(new Address(hongUserDTO.getCity(), hongUserDTO.getStreet(), hongUserDTO.getZipcode()))
+                .userName(hongUserDTO.getUserName())
+                .userEmail(hongUserDTO.getUserEmail())
                 .build();
 
         HongUser save = hongUserRepository.save(hongUser);
@@ -56,7 +58,7 @@ public class HongUserServiceImpl implements HongUserService {
     @Override
     public HongUserVO getHongUserByUserId(String userId) {
         HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        return new HongUserVO(hongUser.getUserId(), hongUser.getRole(), hongUser.getAddress());
+        return new HongUserVO(hongUser);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class HongUserServiceImpl implements HongUserService {
     @Override
     public HongUserVO getHongUserById(Long id) {
         HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        return new HongUserVO(user.getUserId(), user.getRole(), user.getAddress());
+        return new HongUserVO(user);
     }
 
     @Override
