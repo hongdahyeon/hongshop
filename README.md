@@ -88,3 +88,4 @@
 * commit70 : nav-width 70% (23/10/27)
 * commit71 : product-user-list-view (23/10/30)
 * commit72 : 주문관리 화면 구현 (23/10/30)
+* commit73 : 상품 구경하기 헤더 db 데이터로 뿌리기 (23/10/30)
