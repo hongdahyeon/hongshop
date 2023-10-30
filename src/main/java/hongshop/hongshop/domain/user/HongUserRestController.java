@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -68,5 +69,21 @@ public class HongUserRestController {
     public Response updateUser(@RequestBody HongUserDTO hongUserDTO){
         hongUserService.updateHongUser(hongUserDTO);
         return Response.ok("updated");
+    }
+
+    @GetMapping("/users")
+    @Operation(summary = "get user list", description = "회원 정보 리스트 가져오기")
+    @ApiDocumentResponse
+    public Response list(){
+        List<HongUserVO> list = hongUserService.list();
+        return Response.ok(list);
+    }
+
+    @PutMapping("/user/{id}/role")
+    @Operation(summary = "update user role", description = "회원 권한 변경")
+    @ApiDocumentResponse
+    public Response updateUserRole(@PathVariable Long id, @RequestBody HongUserRoleDTO hongUserRoleDTO){
+        hongUserService.updateUserRole(id, hongUserRoleDTO);
+        return Response.ok("해당 사용자의 권한 정보가 변경되었습니다.");
     }
 }

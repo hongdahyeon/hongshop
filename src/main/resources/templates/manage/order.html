@@ -40,7 +40,7 @@
                 <tbody>
                     <th:block th:if="${orderList.size() == 0}">
                         <tr style="text-align: center;">
-                            <td colspan="7">사용자 주문 정보가 비어있습니다.</td>
+                            <td colspan="8">사용자 주문 정보가 비어있습니다.</td>
                         </tr>
                     </th:block>
                     <th:block th:unless="${orderList.size() == 0}">
@@ -85,9 +85,6 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         const order = /*[[${orderList}]]*/[];
-
-        console.log("script...")
-        console.log("order: ", order)
 
         $(document).ready(function(e){
             $(".orderStatus-select").on("change", function(e){

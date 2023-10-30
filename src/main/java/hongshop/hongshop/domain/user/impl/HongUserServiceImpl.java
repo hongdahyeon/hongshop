@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -75,5 +76,18 @@ public class HongUserServiceImpl implements HongUserService {
     public HongUserVO getHongUserById(Long id) {
         HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         return new HongUserVO(user.getUserId(), user.getRole(), user.getAddress());
+    }
+
+    @Override
+    public List<HongUserVO> list() {
+        List<HongUser> hongUsers = hongUserRepository.findAll();
+        return hongUsers.stream().map(HongUserVO::new).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO) {
+        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        user.updateUserRole(hongUserRoleDTO.getRole());
     }
 }

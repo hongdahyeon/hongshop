@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.user;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,4 +24,8 @@ public interface HongUserService {
     void updateHongUser(HongUserDTO hongUserDTO);
 
     HongUserVO getHongUserById(Long id);
+
+    List<HongUserVO> list();
+
+    void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO);
 }

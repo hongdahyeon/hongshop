@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>사용자 관리</h3>
+                </div>
+                <div class="text-end"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="cart-table">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th style="width: 5%;" class="text-center" rowspan="2">번호</th>
+                        <th style="width: 10%" class="text-center" rowspan="2">사용자ID</th>
+                        <th style="width: 10%" class="text-center" rowspan="2">ROLE</th>
+                        <th style="width: 10%" class="text-center" COLSPAN="3">주소</th>
+                        <th style="width: 10%" class="text-center" rowspan="2">ROLE 변경</th>
+                    </tr>
+                    <tr>
+                        <th>시/도</th>
+                        <th>시군구/읍면동</th>
+                        <th>우편번호</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:if="${userList.size() == 0}">
+                    <tr style="text-align: center;">
+                        <td colspan="5">사용자 정보가 비어있습니다.</td>
+                    </tr>
+                </th:block>
+                <th:block th:unless="${userList.size() == 0}">
+                    <th:block  th:each="user, userStat : ${userList}">
+                        <tr>
+                            <td th:text="${userStat.index + 1}" style="width: 5%; text-align: center;"></td>
+                            <td th:text="${user.userId}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${user.role}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${user.city}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${user.street}" style="width: 20%; text-align: center"></td>
+                            <td th:text="${user.zipcode}" style="width: 10%; text-align: center"></td>
+                            <td style="width: 10%; text-align: center;">
+                                <select th:id="|userRole-${user.id}|" class="form-select-sm userRole-select" style="width: 150px" th:data-num="${user.id}" th:data-userId="${user.userId}" th:data-role="${user.role}">
+                                    <option value="ROLE_ADMIN" th:selected="${user.role eq 'ROLE_ADMIN'}">ROLE_ADMIN</option>
+                                    <option value="ROLE_USER" th:selected="${user.role eq 'ROLE_USER'}">ROLE_USER</option>
+                                    <option value="ROLE_SUPER" th:selected="${user.role eq 'ROLE_SUPER'}">ROLE_SUPER</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </th:block>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        $(document).ready(function(e){
+            $(".userRole-select").on("change", function(e){
+                const id = $(this).attr("data-num")
+                const userId = $(this).attr("data-userId")
+                const userRole = $(this).attr("data-role")
+                const chanageUserRole = $(this).val()
+
+                console.log("id : ", id, " userRole : ", userRole, " chanageUserRole : ", chanageUserRole)
+
+                const result = confirm(`${userId} 사용자의 권한 정보를 바꾸시겠습니까?`)
+                if(!result) $(`#userRole-${id}`).val(userRole)
+                else {
+                    const obj = {'role': chanageUserRole}
+                    console.log('obj : ', obj)
+                    $.ajax({
+                        type: 'PUT',
+                        url: `/api/user/${id}/role`,
+                        dataType: 'json',
+                        data: JSON.stringify(obj),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                alert(data.message)
+                                window.location.href='/manager/user'
+                            }else {
+                                alert("해당 사용자의 권한 정보 변경에 실패하였습니다.")
+                                $(`#userRole-${id}`).val(userRole)
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+                }
+            })
+        })
+
+
+
+    </script>
+</th:block>
+
+</html>

@@ -55,4 +55,8 @@ public class HongUser {
 //        this.role = hongUserDTO.getRole();
         this.address = new Address(hongUserDTO.getCity(), hongUserDTO.getStreet(), hongUserDTO.getZipcode());
     }
+
+    public void updateUserRole(HongRoleType hongRoleType){
+        this.role = hongRoleType;
+    }
 }
