@@ -16,7 +16,11 @@ public interface HongOrderService {
 
     Long save(List<HongOrderDTO> hongOrderDTO, HongUser hongUser);
 
+    List<HongOrderVO> list();
+
     HongOrderVO view(Long id);
 
     List<HongOrderVO> listOfUserOrder(Long id);
+
+    void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO);
 }

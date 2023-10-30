@@ -27,6 +27,8 @@ import java.util.List;
  *               order-id에 대해 order-detail-list 값을 함께 불러온다.
  *          (3) listOfUserOrder
  *               현재 로그인한 user의 주문 정보를 불러온다.
+ *          (4) updateStatus : 주문 상태값 변경
+ *          (5) list: 전체 주문 조회 with 주문 상세
 **/
 
 @Service
@@ -76,6 +78,15 @@ public class HongOrderServiceImpl implements HongOrderService {
     }
 
     @Override
+    public List<HongOrderVO> list() {
+        List<HongOrder> orders = hongOrderRepository.findAll();
+        return orders.stream().map(order -> {
+            List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
+            return new HongOrderVO(order, orderDetails);
+        }).toList();
+    }
+
+    @Override
     public HongOrderVO view(Long id) {
         HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
         List<HongOrderDetailVO> listofDetails = hongOrderDetailService.listOfDetailOrders(hongOrder.getId());
@@ -89,5 +100,12 @@ public class HongOrderServiceImpl implements HongOrderService {
             List<HongOrderDetailVO> listofDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
             return new HongOrderVO(order, listofDetails);
         }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO) {
+        HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
+        hongOrder.updateStatus(hongOrderStatusDTO.getOrderStatus());
     }
 }

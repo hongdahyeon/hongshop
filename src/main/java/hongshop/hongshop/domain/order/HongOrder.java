@@ -43,4 +43,8 @@ public class HongOrder {
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
     }
+
+    public void updateStatus(OrderStatus orderStatus){
+        this.orderStatus = orderStatus;
+    }
 }

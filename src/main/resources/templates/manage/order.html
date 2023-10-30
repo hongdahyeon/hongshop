@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>사용자 주문 관리</h3>
+                </div>
+                <div class="text-end"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="cart-table">
+                <thead>
+                    <tr style="text-align: center;">
+                        <th style="width: 5%;" class="text-center">번호</th>
+                        <th style="width: 10%" class="text-center">주문자</th>
+                        <th style="width: 10%" class="text-center">주문상태</th>
+                        <th style="width: 10%" class="text-center">주문날짜</th>
+                        <th style="width: 20%" class="text-center">주문상품</th>
+                        <th style="width: 10%" class="text-center">주문개수</th>
+                        <th style="width: 20%" class="text-center">주문가격</th>
+                        <th style="width: 10%" class="text-center">상태변경</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:if="${orderList.size() == 0}">
+                        <tr style="text-align: center;">
+                            <td colspan="7">사용자 주문 정보가 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${orderList.size() == 0}">
+                        <th:block  th:each="orders, orStat : ${orderList}">
+                            <tr>
+                                <td th:text="${orStat.index + 1}" th:rowspan="${orders.orderDetails.size()}" style="width: 5%; text-align: center;"></td>
+                                <td th:text="${orders.userId}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%; text-align: center;"></td>
+                                <td th:text="${orders.orderStatus}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%; text-align: center;"></td>
+                                <td th:text="${#strings.substring(orders.orderDate, 0, 10)}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%; text-align: center;"></td>
+                                <td th:text="${orders.orderDetails.get(0).productName}" style="width: 20%; text-align: center"></td>
+                                <td th:text="|${orders.orderDetails.get(0).orderCnt}개|" style="width: 10%; text-align: center"></td>
+                                <td th:text="${#numbers.formatInteger(orders.orderDetails.get(0).orderPrice, 0, 'COMMA')}" style="width: 20%; text-align: center"></td>
+                                <td th:rowspan="${orders.orderDetails.size()}" style="width: 10%; text-align: center;">
+                                    <select th:id="|orderStatus-${orders.orderId}|" class="form-select-sm orderStatus-select" style="width: 150px" th:data-num="${orders.orderId}" th:data-status="${orders.orderStatus}">
+                                        <option value="CHARGED" th:selected="${orders.orderStatus eq 'CHARGED'}">CHARGED</option>
+                                        <option value="CANCEL" th:selected="${orders.orderStatus eq 'CANCEL'}">CANCEL</option>
+                                        <option value="DELIVER_SUCCESS" th:selected="${orders.orderStatus eq 'DELIVER_SUCCESS'}">DELIVER_SUCCESS</option>
+                                        <option value="DELIVER_ING" th:selected="${orders.orderStatus eq 'DELIVER_ING'}">DELIVER_ING</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <th:block th:if="${orders.orderDetails.size() > 1}">
+                                <th:block th:each="detail, detailStat : ${orders.orderDetails}">
+                                    <th:block th:if="${!detailStat.first}">
+                                        <tr>
+                                            <td th:text="${detail.productName}" style="width: 20%; text-align: center"></td>
+                                            <td th:text="|${detail.orderCnt}개|" style="width: 10%; text-align: center"></td>
+                                            <td th:text="${#numbers.formatInteger(detail.orderPrice, 0, 'COMMA')}" style="width: 20%; text-align: center"></td>
+                                        </tr>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        const order = /*[[${orderList}]]*/[];
+
+        console.log("script...")
+        console.log("order: ", order)
+
+        $(document).ready(function(e){
+            $(".orderStatus-select").on("change", function(e){
+                const orderId = $(this).attr("data-num")
+                const orderStatus = $(this).attr("data-status")
+                const chanageOrderStatus = $(this).val()
+
+                console.log("orderId : ", orderId, " orderStatus : ", orderStatus, " chanageOrderStatus : ", chanageOrderStatus)
+
+                const result = confirm("해당 상품의 주문상태값을 변경하시겠습니까?")
+                if(!result) $(`#orderStatus-${orderId}`).val(orderStatus)
+                else {
+                    const obj = {'orderStatus': chanageOrderStatus}
+                    console.log('obj : ', obj)
+                    $.ajax({
+                        type: 'PUT',
+                        url: `/api/orderStatus/${orderId}`,
+                        dataType: 'json',
+                        data: JSON.stringify(obj),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                alert(data.message)
+                                window.location.href='/order'
+                            }else {
+                                alert("해당 상품의 주문 상태값 변경에 실패하였습니다.")
+                                $(`#orderStatus-${orderId}`).val(orderStatus)
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+                }
+            })
+        })
+    </script>
+</th:block>
+
+</html>

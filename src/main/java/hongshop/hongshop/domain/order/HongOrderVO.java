@@ -17,13 +17,15 @@ import java.util.List;
 @Getter @Setter
 public class HongOrderVO {
 
-    private OrderStatus orderStatus;
+    private Long orderId;
+    private String orderStatus;
     private String orderDate;
     private String userId;
     private List<HongOrderDetailVO> orderDetails;
 
     public HongOrderVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails) {
-        this.orderStatus = hongOrder.getOrderStatus();
+        this.orderId = hongOrder.getId();
+        this.orderStatus = hongOrder.getOrderStatus().toString();
         this.orderDate = hongOrder.getOrderDate();
         this.userId = hongOrder.getHongUser().getUserId();
         this.orderDetails = orderDetails;

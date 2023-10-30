@@ -36,6 +36,14 @@ public class HongOrderRestController {
         return Response.ok(saveId);
     }
 
+    @GetMapping("/order")
+    @Operation(summary = "order list", description = "주문 정보 조회")
+    @ApiDocumentResponse
+    public Response list(){
+        List<HongOrderVO> list = hongOrderService.list();
+        return Response.ok(list);
+    }
+
     @GetMapping("/order/{id}")
     @Operation(summary = "get view of order with details", description = "주문 & 상세 주문 정보 단건 조회")
     @ApiDocumentResponse
@@ -52,4 +60,13 @@ public class HongOrderRestController {
         List<HongOrderVO> hongOrderVOS = hongOrderService.listOfUserOrder(principalDetails.getUser().getId());
         return Response.ok(hongOrderVOS);
     }
+
+    @PutMapping("/orderStatus/{id}")
+    @Operation(summary = "update status of order", description = "주문정보에서 주문 상태값 변경")
+    @ApiDocumentResponse
+    public Response updateStatus(@PathVariable Long id, @RequestBody HongOrderStatusDTO hongOrderStatusDTO) {
+        hongOrderService.updateStatus(id, hongOrderStatusDTO);
+        return Response.ok("해당 상품의 상태값이 변경되었습니다.");
+    }
+
 }

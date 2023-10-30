@@ -489,6 +489,7 @@
             })
         })
 
+        /* [주문자] -> 상품에 대한 주문 정보 조회 (모달) */
         function drawModalTable(productUser) {
             const dom = $("#product-user-tbody")
             dom.empty();
@@ -509,6 +510,7 @@
             })
         }
 
+        /* [왼쪽] 카테고리->상품 리스트 조회 */
         function getCategoryWithProduct(){
             $.ajax({
                 type: 'GET',
