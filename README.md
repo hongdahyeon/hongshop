@@ -82,3 +82,7 @@
 * commit66 : 비번, 비번확인 validation (23/10/26)
 * commit67 : 상품 카테고리 관리 화면 추가(수정중) (23/10/26)
 * commit68 : product, category table 'deleteYn' 컬럼 추가 (23/10/27)
+* commit69 : 카테고리 및 상품 관리 화면 구현 (23/10/27)
+  - 상품 주문한 사용자 버튼 이동 화면 구현 필요
+  - 상품 가격 변경에 대한 대책 필요
+* commit70 : nav-width 70% (23/10/27)
