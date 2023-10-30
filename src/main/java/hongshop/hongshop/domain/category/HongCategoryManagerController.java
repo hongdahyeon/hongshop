@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/category")
-public class HongCategoryController {
+@RequestMapping("/manager/category")
+public class HongCategoryManagerController {
 
     @GetMapping({"/", ""})
     public String index(){

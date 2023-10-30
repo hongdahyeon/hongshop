@@ -10,8 +10,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/order")
-public class HongOrderController {
+@RequestMapping("/manager/order")
+public class HongOrderManagerController {
 
     private final HongOrderService hongOrderService;
     @GetMapping({"/", ""})

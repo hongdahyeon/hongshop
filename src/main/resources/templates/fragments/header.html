@@ -18,12 +18,7 @@
                        aria-expanded="false">
                         상품 구경하기
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="productDropdown">
-                        <li><a class="dropdown-item" href="#">의류</a></li>
-                        <li><a class="dropdown-item" href="#">뷰티</a></li>
-                        <li><a class="dropdown-item" href="#">식품</a></li>
-                        <li><a class="dropdown-item" href="#">기타</a></li>
-                    </ul>
+                    <ul class="dropdown-menu" aria-labelledby="productDropdown" id="product-dropdown"></ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown"
@@ -54,8 +49,8 @@
                             정보관리
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown4">
-                            <li><a class="dropdown-item" href="/category">카테고리 및 상품 관리</a></li>
-                            <li><a class="dropdown-item" href="/order">주문 관리</a></li>
+                            <li><a class="dropdown-item" href="/manager/category">카테고리 및 상품 관리</a></li>
+                            <li><a class="dropdown-item" href="/manager/order">주문 관리</a></li>
                             <li><a class="dropdown-item" href="#">업로드 파일 관리</a></li>
                         </ul>
                     </li>
@@ -79,6 +74,38 @@
             sessionStorage.clear();
             location.href='/logout';
         }
+
+        /* 상품 구경하기 헤더 구성하기 */
+        const drawCategoryDom = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/api/category`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        const category = data.message
+                        let body = ''
+                        const dom = document.getElementById("product-dropdown");
+                        dom.innerHTML = ''
+
+                        category.forEach((data, i) => {
+                            body += `<li><a class="dropdown-item" href="/category/${data['categoryId']}">${data['categoryName']}</a></li>`
+                        })
+
+                        dom.innerHTML = body
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        }
+
+
+        window.onload = function() {
+            drawCategoryDom();
+        };
 
     </script>
 

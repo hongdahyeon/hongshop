@@ -111,7 +111,7 @@
                         success: function (data) {
                             if(data.httpStatus === 200) {
                                 alert(data.message)
-                                window.location.href='/order'
+                                window.location.href='/manager/order'
                             }else {
                                 alert("해당 상품의 주문 상태값 변경에 실패하였습니다.")
                                 $(`#orderStatus-${orderId}`).val(orderStatus)

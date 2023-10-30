@@ -391,12 +391,7 @@
             $("#cancel-new-category-btn, #close-category-modal-btn").on("click", function(e) {
                 const result = confirm("카테고리 작성 정보를 취소하시겠습니까?")
                 if(result) {
-                    $("#new-categoryName").val('')
-                    $("#new-description").val('')
-
-                    const form = document.getElementById("new-category-form")
-                    form.classList.remove("was-validated")
-
+                    categoryModalEmpty()
                     $("#new-category-modal").modal('hide')
                 }
             })
@@ -405,13 +400,7 @@
             $("#cancel-new-product-btn, #close-product-modal-btn").on("click", function(e) {
                 const result = confirm("상품 작성 정보를 취소하시겠습니까?")
                 if(result) {
-                    $("#new-productName").val('')
-                    $("#new-productCnt").val('')
-                    $("#new-productPrice").val('')
-
-                    const form = document.getElementById("new-product-form")
-                    form.classList.remove("was-validated")
-
+                    productModalEmpty()
                     $("#new-product-modal").modal('hide')
                 }
             })
@@ -489,6 +478,25 @@
             })
         })
 
+        /* 카테고리 추가 및 수정 모달 비우기 */
+        function categoryModalEmpty(){
+            $("#new-categoryName").val('')
+            $("#new-description").val('')
+
+            const form = document.getElementById("new-category-form")
+            form.classList.remove("was-validated")
+        }
+
+        /* 상품 추가 및 수정 모달 비우기 */
+        function productModalEmpty(){
+            $("#new-productName").val('')
+            $("#new-productCnt").val('')
+            $("#new-productPrice").val('')
+
+            const form = document.getElementById("new-product-form")
+            form.classList.remove("was-validated")
+        }
+
         /* [주문자] -> 상품에 대한 주문 정보 조회 (모달) */
         function drawModalTable(productUser) {
             const dom = $("#product-user-tbody")
@@ -503,7 +511,7 @@
                         <td style="width: 10%" class="text-center">${data['orderStatus']}</td>
                         <td style="width: 10%" class="text-center">${data['orderCnt']}</td>
                         <td style="width: 10%" class="text-center">${data['orderPrice']}</td>
-                        <td style="width: 10%" class="text-center">${data['orderDate'].toString().substring(0, 9)}</td>
+                        <td style="width: 10%" class="text-center">${data['orderDate'].toString().substring(0, 10)}</td>
                     </tr>
                     `
                 dom.append(body)
@@ -682,6 +690,10 @@
             document.getElementById("category-div").style.display = 'none'
             document.getElementById("product-div").style.display = 'none'
             getCategoryWithProduct()
+            drawCategoryDom()           // 상품구경하기 header 재구성
+
+            categoryModalEmpty()
+            productModalEmpty()
         }
 
     </script>

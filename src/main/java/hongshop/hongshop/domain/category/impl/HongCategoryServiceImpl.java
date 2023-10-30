@@ -41,7 +41,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
 
     @Override
     public List<HongCategoryVO> list() {
-        List<HongCategory> all = hongCategoryRepository.findAll();
+        List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIs("N");
         return all.stream().map(HongCategoryVO::new).toList();
     }
 
