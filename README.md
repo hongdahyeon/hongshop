@@ -87,3 +87,4 @@
   - 상품 가격 변경에 대한 대책 필요
 * commit70 : nav-width 70% (23/10/27)
 * commit71 : product-user-list-view (23/10/30)
+* commit72 : 주문관리 화면 구현 (23/10/30)
