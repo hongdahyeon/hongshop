@@ -86,3 +86,4 @@
   - 상품 주문한 사용자 버튼 이동 화면 구현 필요
   - 상품 가격 변경에 대한 대책 필요
 * commit70 : nav-width 70% (23/10/27)
+* commit71 : product-user-list-view (23/10/30)
