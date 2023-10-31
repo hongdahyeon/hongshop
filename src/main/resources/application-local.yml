@@ -1,9 +1,21 @@
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/h2-db/hongshop    #jdbc:h2:C:/Users/hong/h2-db/table-test
-    username: sa
-    password: 1234
+    url: ENC(dfXlO3g3m4mpQSftAMkBYZwIy/pv5NzKRaJ8QgkhghxSRDVPuP3SDksF1hC/x0BnT8eYDxSvIJ4=)
+    username: ENC(xm788MHwRupSZB0VSe7H5w==)
+    password: ENC(u2CtGfVBCg9pkHG6pmAe1w==)
     driver-class-name: org.h2.Driver
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(QqHZftr0SvBFUfwErzRg4LWtQZXLy4l+Gx+HVHTqRdo=)
+    password: ENC(CahuRyBTeu0XqoM3BLwytRo2FQraKWFHxs9MPbWpmAU=)
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   #  thymeleaf:
   #    prefix: classpath:/templates/
@@ -19,3 +31,7 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
