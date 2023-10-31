@@ -2,6 +2,8 @@ package hongshop.hongshop.domain.fileLog;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
 * @fileName HongFileLogRepository
 * @author dahyeon
@@ -10,4 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 * @summary
 **/
 public interface HongFileLogRepository extends JpaRepository<HongFileLog, Long> {
+
+    List<HongFileLog> findAllByHongFileId(Long fileId);
 }

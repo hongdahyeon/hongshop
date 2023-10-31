@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>파일 업로드/다운로드 기록</h3>
+                </div>
+                <div class="text-end"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="cart-table">
+                <thead>
+                <tr style="text-align: center;">
+                    <th style="width: 5%;" class="text-center" rowspan="2">파일그룹ID</th>
+                    <th style="width: 50%" class="text-center" colspan="7">파일</th>
+                </tr>
+                <tr>
+                    <th style="width: 5%;" class="text-center">파일ID</th>
+                    <th style="width: 10%;" class="text-center">파일이름</th>
+                    <th style="width: 5%;" class="text-center">파일크기</th>
+                    <th style="width: 5%;" class="text-center">파일확장자</th>
+                    <th style="width: 20%;" class="text-center">파일저장 경로</th>
+                    <th style="width: 5%;" class="text-center">다운로드 회수</th>
+                    <th style="width: 5%" class="text-center">로그확인</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <th:block th:if="${fileGroupList.size() == 0}">
+                        <tr style="text-align: center;">
+                            <td colspan="3">파일정보가 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${fileGroupList.size() == 0}">
+                        <th:block th:each="file, fileStat : ${fileGroupList}">
+                            <tr>
+                                <td th:text="${file.id}" style="width: 5%; text-align: center;" th:rowspan="${file.fileList.size()}"></td>
+                                <td th:text="${file.fileList.get(0).id}" style="width: 5%;" class="text-center"></td>
+                                <td th:text="${file.fileList.get(0).originalFileName}" style="width: 10%;" class="text-center"></td>
+                                <td th:text="${file.fileList.get(0).fileSize}" style="width: 5%;" class="text-center"></td>
+                                <td th:text="${file.fileList.get(0).extension}" style="width: 5%;" class="text-center"></td>
+                                <td th:text="${file.fileList.get(0).filePath}" style="width: 20%;" class="text-center"></td>
+                                <td th:text="${file.fileList.get(0).downCnt}" style="width: 5%;" class="text-center"></td>
+                                <td style="width: 5%;" class="text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-success log-btn" th:data-num="${file.fileList.get(0).id}">로그</button>
+                                </td>
+                            </tr>
+                            <th:block th:if="${file.fileList.size() > 1}">
+                                <th:block th:each="fileList , fileListStat : ${file.fileList}">
+                                    <th:block th:unless="${fileListStat.first}">
+                                        <tr>
+                                            <td th:text="${fileList.id}" style="width: 5%;" class="text-center"></td>
+                                            <td th:text="${fileList.originalFileName}" style="width: 10%;" class="text-center"></td>
+                                            <td th:text="${fileList.fileSize}" style="width: 5%;" class="text-center"></td>
+                                            <td th:text="${fileList.extension}" style="width: 5%;" class="text-center"></td>
+                                            <td th:text="${fileList.filePath}" style="width: 20%;" class="text-center"></td>
+                                            <td th:text="${fileList.downCnt}" style="width: 5%;" class="text-center"></td>
+                                            <td style="width: 5%;" class="text-center">
+                                                <button type="button" class="btn btn-sm btn-outline-success log-btn" th:data-num="${fileList.id}">로그</button>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- s: download-log-modal -->
+        <div class="modal modal-lg" id="download-log-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">파일 로그 정보</h4>
+                        <button type="button" class="btn-close" id="close-download-log-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-hover table-bordered" id="download-log-table">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th style="width: 5%;" class="text-center">번호</th>
+                                    <th style="width: 10%" class="text-center">다운로드 사용자</th>
+                                    <th style="width: 10%" class="text-center">다운로드날짜</th>
+                                </tr>
+                            </thead>
+                            <tbody id="download-log-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-product-user-btn" data-bs-dismiss="modal">취소</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: productUserModal -->
+
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        const fileGroupList = /*[[${fileGroupList}]]*/[];
+
+        $(".log-btn").on("click", function(e){
+            const fileId = $(this).attr("data-num")
+            $.ajax({
+                type: 'GET',
+                url: `/api/log/${fileId}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        drawModalTable(data.message)
+                        $("#download-log-modal").modal('show')
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        })
+
+        function drawModalTable(data = []){
+            const dom = $("#download-log-tbody")
+            dom.empty()
+
+            let body = ``
+            if(!data.length) body += `<tr><td colspan="3" class="text-center"> 다운로드 기록이 없습니다. </td></tr>`
+            else {
+                data.forEach((data, i) => {
+                    body +=
+                        `
+                        <tr class="text-center">
+                            <td class="text-center">${i+1}</td>
+                            <td class="text-center">${data['userName']}</td>
+                            <td class="text-center">${data['downloadDate'].toString().substring(0, 10)}</td>
+                        </tr>
+                        `
+                })
+            }
+            dom.append(body)
+        }
+    </script>
+</th:block>
+
+</html>

@@ -2,6 +2,8 @@ package hongshop.hongshop.domain.fileGroup;
 
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 
+import java.util.List;
+
 /**
 * @fileName HongFileGroupService
 * @author dahyeon
@@ -11,6 +13,8 @@ import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 **/
 
 public interface HongFileGroupService {
+
+    List<HongFileGroupVO> all();
     HongFileGroupVO list(Long id);
 
     HongFileGroup saveFileGroup();

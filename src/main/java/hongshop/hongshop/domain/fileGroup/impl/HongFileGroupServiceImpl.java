@@ -30,6 +30,16 @@ public class HongFileGroupServiceImpl implements HongFileGroupService {
     private final HongFileRepository fileRepository;
 
     @Override
+    public List<HongFileGroupVO> all() {
+        List<HongFileGroup> all = fileGroupRepository.findAll();
+        return all.stream().map(group -> {
+            List<HongFile> fileList = fileRepository.findAllByHongFileGroupId(group.getId());
+            List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
+            return new HongFileGroupVO(group, listOfFileVO);
+        }).filter(hongFileGroupVO -> !hongFileGroupVO.getFileList().isEmpty()).toList();
+    }
+
+    @Override
     public HongFileGroupVO list(Long id) {
         HongFileGroup fileGroup = fileGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no file gorup"));
         List<HongFile> fileList = fileRepository.findAllByHongFileGroupId(id);

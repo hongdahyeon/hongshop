@@ -15,6 +15,7 @@ import javax.mail.internet.MimeMessage;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender javaMailSender;
+    @Override
     public void sendInitialPwdEmail(String to, String initialPassword){
         String subject = "초기화된 비밀번호입니다.";
         String text = "<!DOCTYPE html>\n" +
@@ -36,6 +37,7 @@ public class EmailServiceImpl implements EmailService {
         this.sendEmail(to, subject, text);
     }
 
+    @Override
     public void sendUserIdEmail(String to, String userId) {
         String subject = "아이디입니다.";
         String text = "<!DOCTYPE html>\n" +
@@ -53,6 +55,7 @@ public class EmailServiceImpl implements EmailService {
         this.sendEmail(to, subject, text);
     }
 
+    @Override
     public void sendEmail(String to, String subject, String text) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {

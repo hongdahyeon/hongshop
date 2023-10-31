@@ -1,5 +1,9 @@
 package hongshop.hongshop.domain.fileLog;
 
+import hongshop.hongshop.domain.fileLog.vo.HongFileLogVO;
+
+import java.util.List;
+
 /**
 * @fileName HongFileLogService
 * @author dahyeon
@@ -10,5 +14,7 @@ package hongshop.hongshop.domain.fileLog;
 
 public interface HongFileLogService {
     Long save(Long fileId);
+
+    List<HongFileLogVO> list(Long id);
 
 }

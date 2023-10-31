@@ -5,9 +5,14 @@ import hongshop.hongshop.domain.file.HongFileRepository;
 import hongshop.hongshop.domain.fileLog.HongFileLog;
 import hongshop.hongshop.domain.fileLog.HongFileLogRepository;
 import hongshop.hongshop.domain.fileLog.HongFileLogService;
+import hongshop.hongshop.domain.fileLog.vo.HongFileLogVO;
+import hongshop.hongshop.domain.user.HongUserService;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
 * @fileName HongFileLogServiceImpl
@@ -24,6 +29,7 @@ public class HongFileLogServiceImpl implements HongFileLogService {
 
     private final HongFileLogRepository hongFileLogRepository;
     private final HongFileRepository hongFileRepository;
+    private final HongUserService hongUserService;
     @Override
     @Transactional(readOnly = false)
     public Long save(Long fileId) {
@@ -33,5 +39,14 @@ public class HongFileLogServiceImpl implements HongFileLogService {
                 .build();
         HongFileLog save = hongFileLogRepository.save(hongFileLog);
         return save.getId();
+    }
+
+    @Override
+    public List<HongFileLogVO> list(Long id) {
+        List<HongFileLog> fileLog = hongFileLogRepository.findAllByHongFileId(id);
+        return fileLog.stream().map(log -> {
+            HongUserVO user = hongUserService.getHongUserById(log.getRegId());
+            return new HongFileLogVO(log, user.getUserName());
+        }).toList();
     }
 }
