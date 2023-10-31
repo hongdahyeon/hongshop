@@ -63,6 +63,14 @@ public class HongUserRestController {
         return Response.ok(bool);
     }
 
+    @GetMapping("/checkEmail")
+    @Operation(summary = "check userEmail if duplicated", description = "회원가입시, 회원 이메일 중복 여부 체크")
+    @ApiDocumentResponse
+    public Response checkEmail(String userEmail){
+        Boolean bool = hongUserService.checkUserEmail(userEmail);
+        return Response.ok(bool);
+    }
+
     @PutMapping("/user")
     @Operation(summary = "update user", description = "로그인한 회원 정보 수정하기")
     @ApiDocumentResponse

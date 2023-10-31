@@ -38,7 +38,7 @@
 
                     <button type="submit" class="btn btn-primary">로그인</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
-                    <button type="button" class="btn btn-success" id="find-user-password">비밀번호찾기</button>
+                    <button type="button" class="btn btn-info" id="find-user-password">비밀번호찾기</button>
                 </div>
             </form>
             <!-- end : Login Form  -->
@@ -88,8 +88,12 @@
 
                             <div class="mb-3 mt-3">
                                 <label for="userEmail">이메일</label>
-                                <input type="email" class="form-control" id="userEmail" name="userEmail" required />
-                                <div class="invalid-feedback">이메일을 입력하세요.</div>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" id="userEmail" name="userEmail" required/>
+                                    <button class="btn btn-outline-dark" type="button" id="check-Email">중복확인</button>
+                                    <div class="invalid-feedback">이메일을 입력하세요.</div>
+                                </div>
+                                <p class="error-message" id="EmailChkMessage"></p>
                             </div>
 
                             <div class="mb-3 mt-3">
@@ -145,6 +149,8 @@
     <script>
 
         let IdChk = false;
+        let EmailChk = false;
+
         const newPassword = $("#newPassword")
         const newPasswordChk = $("#newPasswordChk")
 
@@ -180,6 +186,32 @@
 
         $("#find-user-password").on("click", function(e){
             console.log("find-user-password clicked")
+        })
+
+        $("#check-Email").click(() => {
+            const newUserEmail = $("#userEmail").val()
+            console.log("check-Email clicked... : ", newUserEmail)
+
+            if(!newUserEmail.length) alert("이메일은 빈값일 수 없습니다.")
+            else {
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/checkEmail?userEmail=${newUserEmail}`,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (!data.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
+                        else {
+                            $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
+                            $("#userEmail").prop('disabled', true)
+                            $("#check-Email").prop('disabled', true)
+                            EmailChk = true
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            }
         })
 
         $("#show-pwd").click(() => {
@@ -225,11 +257,12 @@
                     const pwd = newPassword.val()
                     const pwdChk = newPasswordChk.val()
 
-                    if(!IdChk) alert("아이디 중복 여부를 확인해주세요.")
+                    if(!IdChk || !EmailChk) alert("아이디 및 이메일 중복 여부를 확인해주세요.")
                     else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
                     else {
                         FormDataToObj.getParameter("new-login-form").then(obj => {
                             obj['userId'] = $("#newUserId").val()
+                            obj['userEmail'] = $("#userEmail").val()
 
                             $.ajax({
                                 type: 'POST',

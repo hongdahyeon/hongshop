@@ -67,6 +67,11 @@ public class HongUserServiceImpl implements HongUserService {
     }
 
     @Override
+    public Boolean checkUserEmail(String userEmail) {
+        return hongUserRepository.findByUserEmail(userEmail).isEmpty();
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public void updateHongUser(HongUserDTO hongUserDTO) {
         HongUser hongUser = hongUserRepository.findByUserId(hongUserDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
