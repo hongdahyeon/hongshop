@@ -34,4 +34,8 @@ public interface HongUserService {
     List<HongUserVO> list();
 
     void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO);
+
+    boolean initialPassword(String userEmail, String userName);
+
+    boolean findUserId(String userEmail, String userName);
 }

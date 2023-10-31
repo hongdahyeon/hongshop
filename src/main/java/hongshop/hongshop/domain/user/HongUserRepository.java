@@ -17,4 +17,6 @@ public interface HongUserRepository extends JpaRepository<HongUser, Long> {
     Optional<HongUser> findByUserId(String userId);
 
     Optional<HongUser> findByUserEmail(String userEmail);
+
+    Optional<HongUser> findByUserEmailAndUserName(String userEmail, String userName);
 }

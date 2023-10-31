@@ -69,4 +69,8 @@ public class HongUser {
     public void updateUserRole(HongRoleType hongRoleType){
         this.role = hongRoleType;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

@@ -1,10 +1,14 @@
 package hongshop.hongshop.domain.user.impl;
 
 import hongshop.hongshop.domain.base.Address;
-import hongshop.hongshop.domain.user.*;
+import hongshop.hongshop.domain.user.HongUser;
+import hongshop.hongshop.domain.user.HongUserRepository;
+import hongshop.hongshop.domain.user.HongUserService;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
+import hongshop.hongshop.global.mail.EmailService;
+import hongshop.hongshop.global.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +34,7 @@ public class HongUserServiceImpl implements HongUserService {
 
     private final HongUserRepository hongUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     @Transactional(readOnly = false)
@@ -99,5 +104,32 @@ public class HongUserServiceImpl implements HongUserService {
     public void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO) {
         HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         user.updateUserRole(hongUserRoleDTO.getRole());
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public boolean initialPassword(String userEmail, String userName) {
+        Optional<HongUser> user = hongUserRepository.findByUserEmailAndUserName(userEmail, userName);
+        if(user.isEmpty()) return false;
+        else {
+            HongUser hongUser = user.get();
+
+            String initialPassword = StringUtil.random(6);
+            hongUser.updatePassword(passwordEncoder.encode(initialPassword));           // password 초기화
+            emailService.sendInitialPwdEmail(userEmail, initialPassword);    // send initialPassword
+
+            return true;
+        }
+    }
+
+    @Override
+    public boolean findUserId(String userEmail, String userName) {
+        Optional<HongUser> user = hongUserRepository.findByUserEmailAndUserName(userEmail, userName);
+        if(user.isEmpty()) return false;
+        else {
+            String userId = user.get().getUserId();
+            emailService.sendUserIdEmail(userEmail, userId);
+            return true;
+        }
     }
 }

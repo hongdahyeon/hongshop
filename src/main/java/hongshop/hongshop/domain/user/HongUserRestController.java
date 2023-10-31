@@ -34,14 +34,6 @@ public class HongUserRestController {
 
     private final HongUserService hongUserService;
 
-    @PostMapping("/user")
-    @Operation(summary = "insert user", description = "회원가입")
-    @ApiDocumentResponse
-    public Response insert(@Valid @RequestBody HongUserDTO hongUserDTO){
-        Long userUid = hongUserService.joinUser(hongUserDTO);
-        return Response.ok(userUid);
-    }
-
     @GetMapping("/user")
     @Operation(summary = "get login user", description = "로그인한 회원 정보 가져오기")
     @ApiDocumentResponse
@@ -56,22 +48,6 @@ public class HongUserRestController {
     public Response getUserById(String userId){
         HongUserVO hongUserByUserId = hongUserService.getHongUserByUserId(userId);
         return Response.ok(hongUserByUserId);
-    }
-
-    @GetMapping("/checkId")
-    @Operation(summary = "check userId if duplicated", description = "회원가입시, 회원아이디 중복 여부 체크")
-    @ApiDocumentResponse
-    public Response checkUserId(String userId){
-        Boolean bool = hongUserService.checkUserId(userId);
-        return Response.ok(bool);
-    }
-
-    @GetMapping("/checkEmail")
-    @Operation(summary = "check userEmail if duplicated", description = "회원가입시, 회원 이메일 중복 여부 체크")
-    @ApiDocumentResponse
-    public Response checkEmail(String userEmail){
-        Boolean bool = hongUserService.checkUserEmail(userEmail);
-        return Response.ok(bool);
     }
 
     @PutMapping("/user")
@@ -96,14 +72,5 @@ public class HongUserRestController {
     public Response updateUserRole(@PathVariable Long id, @RequestBody HongUserRoleDTO hongUserRoleDTO){
         hongUserService.updateUserRole(id, hongUserRoleDTO);
         return Response.ok("해당 사용자의 권한 정보가 변경되었습니다.");
-    }
-
-    @GetMapping("/initialPassword")
-    @Operation(summary = "initial password", description = "회원 비밀번호 초기화")
-    @ApiDocumentResponse
-    public Response findPassword(String userName, String userEmail){
-//        Boolean bool = hongUserService.checkUserEmail(userEmail);
-//        return Response.ok(bool);
-        return null;
     }
 }

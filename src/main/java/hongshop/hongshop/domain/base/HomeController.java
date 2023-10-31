@@ -15,4 +15,9 @@ public class HomeController {
     public String index(){
         return "index";
     }
+
+    @GetMapping("/front/initialPassword")
+    public String initialPassword(){
+        return "initialPassword";
+    }
 }
