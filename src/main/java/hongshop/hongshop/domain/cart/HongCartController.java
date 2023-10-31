@@ -1,9 +1,7 @@
 package hongshop.hongshop.domain.cart;
 
-import hongshop.hongshop.domain.user.HongUser;
-import hongshop.hongshop.global.auth.PrincipalDetails;
+import hongshop.hongshop.domain.cart.vo.HongCartVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

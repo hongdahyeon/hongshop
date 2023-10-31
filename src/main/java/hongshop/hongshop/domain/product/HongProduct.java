@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.product;
 
 import hongshop.hongshop.domain.category.HongCategory;
+import hongshop.hongshop.domain.product.dto.HongProductDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

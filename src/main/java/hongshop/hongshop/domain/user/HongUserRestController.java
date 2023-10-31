@@ -1,5 +1,8 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.domain.user.dto.HongUserDTO;
+import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -93,5 +96,14 @@ public class HongUserRestController {
     public Response updateUserRole(@PathVariable Long id, @RequestBody HongUserRoleDTO hongUserRoleDTO){
         hongUserService.updateUserRole(id, hongUserRoleDTO);
         return Response.ok("해당 사용자의 권한 정보가 변경되었습니다.");
+    }
+
+    @GetMapping("/initialPassword")
+    @Operation(summary = "initial password", description = "회원 비밀번호 초기화")
+    @ApiDocumentResponse
+    public Response findPassword(String userName, String userEmail){
+//        Boolean bool = hongUserService.checkUserEmail(userEmail);
+//        return Response.ok(bool);
+        return null;
     }
 }

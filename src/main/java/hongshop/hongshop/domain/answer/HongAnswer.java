@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.answer;
 
+import hongshop.hongshop.domain.answer.dto.HongAnswerDTO;
 import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.global.base.BaseEntity;
 import lombok.AccessLevel;

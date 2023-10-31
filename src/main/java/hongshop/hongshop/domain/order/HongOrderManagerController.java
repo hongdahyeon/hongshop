@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.order;
 
+import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

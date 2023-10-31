@@ -1,10 +1,12 @@
 package hongshop.hongshop.domain.answer.impl;
 
 import hongshop.hongshop.domain.answer.*;
+import hongshop.hongshop.domain.answer.dto.HongAnswerDTO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.domain.post.HongPostRepository;
 import hongshop.hongshop.domain.user.HongUserService;
-import hongshop.hongshop.domain.user.HongUserVO;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

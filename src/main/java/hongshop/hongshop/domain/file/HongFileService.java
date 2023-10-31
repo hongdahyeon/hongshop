@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.file;
 
+import hongshop.hongshop.domain.file.vo.HongFileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

@@ -1,5 +1,9 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.domain.user.dto.HongUserDTO;
+import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -1,6 +1,8 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
+import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 
 /**

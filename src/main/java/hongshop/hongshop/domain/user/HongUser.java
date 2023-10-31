@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

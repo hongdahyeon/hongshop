@@ -1,11 +1,12 @@
 package hongshop.hongshop.domain.postType;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
-import hongshop.hongshop.domain.answer.HongAnswerVO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.domain.post.HongPostService;
-import hongshop.hongshop.domain.post.HongPostVO;
+import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.html.BbsType;
 import hongshop.hongshop.domain.postType.html.CRUD;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.StringEscapeUtils;

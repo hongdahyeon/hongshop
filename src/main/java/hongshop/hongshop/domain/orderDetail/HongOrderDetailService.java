@@ -1,6 +1,8 @@
 package hongshop.hongshop.domain.orderDetail;
 
 import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
 
 import java.util.List;

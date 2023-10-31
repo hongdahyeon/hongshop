@@ -1,5 +1,7 @@
 package hongshop.hongshop.domain.fileGroup;
 
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
+
 /**
 * @fileName HongFileGroupService
 * @author dahyeon

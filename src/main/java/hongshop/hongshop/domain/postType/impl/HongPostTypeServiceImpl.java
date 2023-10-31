@@ -1,8 +1,10 @@
 package hongshop.hongshop.domain.postType.impl;
 
 import hongshop.hongshop.domain.post.HongPostService;
-import hongshop.hongshop.domain.post.HongPostVO;
+import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.*;
+import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

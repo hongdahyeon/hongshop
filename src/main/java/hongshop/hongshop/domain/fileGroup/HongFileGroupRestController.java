@@ -1,6 +1,6 @@
 package hongshop.hongshop.domain.fileGroup;
 
-import hongshop.hongshop.domain.fileGroup.impl.HongFileGroupServiceImpl;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;

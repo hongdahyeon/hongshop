@@ -1,5 +1,7 @@
 package hongshop.hongshop.domain.postType;
 
+import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,5 +1,8 @@
 package hongshop.hongshop.domain.category;
 
+import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
+import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+
 import java.util.List;
 
 /**

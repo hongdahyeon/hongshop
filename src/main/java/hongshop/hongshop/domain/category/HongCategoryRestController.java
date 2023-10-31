@@ -1,6 +1,8 @@
 package hongshop.hongshop.domain.category;
 
 
+import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
+import hongshop.hongshop.domain.category.vo.HongCategoryVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;

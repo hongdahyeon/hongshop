@@ -1,9 +1,11 @@
 package hongshop.hongshop.domain.category.impl;
 
 import hongshop.hongshop.domain.category.*;
+import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
+import hongshop.hongshop.domain.category.vo.HongCategoryVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductRepository;
-import hongshop.hongshop.domain.product.HongProductVO;
+import hongshop.hongshop.domain.product.vo.HongProductVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

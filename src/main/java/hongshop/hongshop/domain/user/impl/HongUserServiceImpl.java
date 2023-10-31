@@ -2,6 +2,9 @@ package hongshop.hongshop.domain.user.impl;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.user.*;
+import hongshop.hongshop.domain.user.dto.HongUserDTO;
+import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -2,8 +2,11 @@ package hongshop.hongshop.domain.order.impl;
 
 import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.order.*;
+import hongshop.hongshop.domain.order.dto.HongOrderDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
-import hongshop.hongshop.domain.orderDetail.HongOrderDetailVO;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.user.HongUser;

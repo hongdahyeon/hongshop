@@ -3,7 +3,7 @@ package hongshop.hongshop.domain.file.impl;
 import hongshop.hongshop.domain.file.HongFile;
 import hongshop.hongshop.domain.file.HongFileRepository;
 import hongshop.hongshop.domain.file.HongFileService;
-import hongshop.hongshop.domain.file.HongFileVO;
+import hongshop.hongshop.domain.file.vo.HongFileVO;
 import hongshop.hongshop.domain.fileGroup.HongFileGroup;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileLog.HongFileLogService;

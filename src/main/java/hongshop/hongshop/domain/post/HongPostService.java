@@ -1,5 +1,8 @@
 package hongshop.hongshop.domain.post;
 
+import hongshop.hongshop.domain.post.dto.HongPostDTO;
+import hongshop.hongshop.domain.post.vo.HongPostVO;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;

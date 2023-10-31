@@ -1,11 +1,13 @@
 package hongshop.hongshop.domain.post.impl;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
-import hongshop.hongshop.domain.answer.HongAnswerVO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
-import hongshop.hongshop.domain.fileGroup.HongFileGroupVO;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.post.*;
+import hongshop.hongshop.domain.post.dto.HongPostDTO;
+import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.HongPostType;
 import hongshop.hongshop.domain.postType.HongPostTypeRepository;
 import hongshop.hongshop.global.util.CookieUtil;

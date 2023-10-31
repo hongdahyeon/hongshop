@@ -2,11 +2,11 @@ package hongshop.hongshop.domain.fileGroup.impl;
 
 import hongshop.hongshop.domain.file.HongFile;
 import hongshop.hongshop.domain.file.HongFileRepository;
-import hongshop.hongshop.domain.file.HongFileVO;
+import hongshop.hongshop.domain.file.vo.HongFileVO;
 import hongshop.hongshop.domain.fileGroup.HongFileGroup;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupRepository;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
-import hongshop.hongshop.domain.fileGroup.HongFileGroupVO;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

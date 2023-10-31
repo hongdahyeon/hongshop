@@ -1,5 +1,8 @@
 package hongshop.hongshop.domain.postType;
 
+import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
+
 import java.util.List;
 
 /**
