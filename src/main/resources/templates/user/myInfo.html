@@ -34,7 +34,10 @@
 
                 <div class="mb-3 mt-3">
                     <label for="userName">이름</label>
-                    <input type="text" class="form-control" id="userName" name="userName" th:value="${user.userName}" required/>
+                    <input type="text" class="form-control" id="userName" name="userName" th:value="${user.userName}" th:disabled="${user.hongSocialUserId != 0}" required/>
+                    <th:block th:if="${user.hongSocialUserId != 0}">
+                        <p class="error-message" style="color: red">소셜 로그인의 경우 이름 변경이 불가능합니다.</p>
+                    </th:block>
                     <div class="invalid-feedback">이름을 입력하세요.</div>
                 </div>
 
@@ -43,9 +46,12 @@
                     <div class="input-group">
                         <input type="hidden" id="originUserEmail" th:value="${user.userEmail}" />
                         <input type="email" class="form-control" id="userEmail" name="userEmail" th:value="${user.userEmail}" disabled required/>
-                        <button class="btn btn-outline-dark" type="button" id="check-Email">이메일 변경</button>
+                        <button class="btn btn-outline-dark" type="button" id="check-Email" th:disabled="${user.hongSocialUserId != 0}">이메일 변경</button>
                         <div class="invalid-feedback">이메일을 입력하세요.</div>
                     </div>
+                    <th:block th:if="${user.hongSocialUserId != 0}">
+                        <p class="error-message" style="color: red">소셜 로그인의 경우 이메일 변경이 불가능합니다.</p>
+                    </th:block>
                     <p class="error-message" id="EmailChkMessage"></p>
                 </div>
 
@@ -82,6 +88,9 @@
                         <div class="invalid-feedback">우편번호를 입력하세요.</div>
                     </div>
                 </div>
+                <th:block th:if="${user.hongSocialUserId != 0 and (#strings.length(user.city) == 0 or #strings.length(user.street) == 0 or #strings.length(user.zipcode) == 0)}">
+                    <p class="error-message" style="color: red">소셜 로그인의 경우 주소정보를 추가로 입력해주세요.</p>
+                </th:block>
 
                 <div style="margin-top: 10px;">
                     <button type="submit" class="btn btn-primary" id="update-info">수정</button>

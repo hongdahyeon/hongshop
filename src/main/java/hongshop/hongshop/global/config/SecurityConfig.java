@@ -1,8 +1,12 @@
 package hongshop.hongshop.global.config;
 
+
+import hongshop.hongshop.global.auth.oauth.PrincipalOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,12 +19,16 @@ import org.springframework.security.web.SecurityFilterChain;
  **/
 
 @Configuration
+@EnableWebSecurity    //Spring Security 활성화하는 어노테이션
 public class SecurityConfig  {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private PrincipalOAuth2UserService principalOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,7 +48,12 @@ public class SecurityConfig  {
                                 .usernameParameter("userId")            // 사용자 이름 필드에 사용되는 매개변수 이름의 기본값인 "username" 대신 "userId" 사용하도록 설정
                                 .loginProcessingUrl("/loginProc")       // 처리를 위해 로그인 양식을 제출할 url을 지정
                                 .defaultSuccessUrl("/")                 // 로그인 성공 후, 리다렉션할 기본 url 설정
-
+                )
+                .oauth2Login(httpSecurityOAuth2LoginConfigurer ->
+                    httpSecurityOAuth2LoginConfigurer
+                            .loginPage("/login")
+                            .userInfoEndpoint()
+                            .userService(principalOAuth2UserService)
                 )
                 .logout(logoutConfigurer ->
                    logoutConfigurer

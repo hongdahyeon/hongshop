@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.social.HongSocialUser;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -48,11 +49,15 @@ public class HongUser {
     @Embedded
     private Address address;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hong_social_user_id")
+    private HongSocialUser hongSocialUser;
 
     @Builder(builderMethodName = "hongUserInsertBuilder")
-    public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail){
+    public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail, HongSocialUser hongSocialUser){
         this.userId = userId;
         this.password = password;
+        this.hongSocialUser = hongSocialUser;
         this.role = role;
         this.address = address;
         this.userName = userName;

@@ -38,16 +38,19 @@
                                 </label>
                             </div>
                             <div class="text-end">
-                                <a id="find-user-password" href="#">아이디/비번 찾기</a>
+                                <a id="find-user-password-userId" href="#">아이디/비번 찾기</a>
                             </div>
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">로그인</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
+                    <img src="/assets/src/kakao.png" id="kakao-login-btn" style="cursor: pointer">
+
                 </div>
             </form>
             <!-- end : Login Form  -->
+
         </div>
 
         <!-- Start : new login form -->
@@ -164,11 +167,13 @@
 
             const idItemKey = 'HONG_SHOP_ID'
 
+            /* 로그인 아이디 기억하기 -> localStorage에서 id가져오기 */
             document.getElementById('form').addEventListener('submit', () => {
                 $('#remember').is(":checked") && localStorage.setItem(idItemKey, $('#userId').val())
                 return true
             })
 
+            /* 로그인 아이디 기억하기 */
             const rememberId = localStorage.getItem(idItemKey);
             if (rememberId) {
                 const checkbox = $("#remember");
@@ -180,6 +185,7 @@
             newPasswordChk.on('input', chckValidate)
         })
 
+        /* 회원가입 -> 비번,비번확인 일치 validation */
         function chckValidate(){
             const passwordVal = newPassword.val()
             const passwordChkVal = newPasswordChk.val()
@@ -190,11 +196,17 @@
             }
         }
 
-        $("#find-user-password").on("click", function(e){
-            console.log("find-user-password clicked")
+        /* 카카오 로그인 */
+        $("#kakao-login-btn").on("click", function(e){
+            window.location.href = '/oauth2/authorization/kakao'
+        })
+
+        /* 아이디/비번 찾기 */
+        $("#find-user-password-userId").on("click", function(e){
             window.location.href = '/front/initialPassword'
         })
 
+        /* 회원가입 -> 이메일 중복 확인 */
         $("#check-Email").click(() => {
             const newUserEmail = $("#userEmail").val()
             console.log("check-Email clicked... : ", newUserEmail)
@@ -221,6 +233,7 @@
             }
         })
 
+        /* 로그인 -> 비번 보이기/숨기기 */
         $("#show-pwd").click(() => {
             const passwordInput = $('#password');
             const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
@@ -229,6 +242,7 @@
             $("#show-pwd").text(text)
         })
 
+        /* 회원가입 -> 아이디 중복 확인 */
         $("#check-Id").click(() => {
             const newUserId = $("#newUserId").val();
 
@@ -254,6 +268,7 @@
             }
         })
 
+        /* 회원가입 */
         window.addEventListener("load", function(event) {
             event.preventDefault(); event.stopPropagation();
             const form = document.getElementById("new-login-form");
