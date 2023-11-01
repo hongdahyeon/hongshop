@@ -100,7 +100,8 @@
                             <thead>
                                 <tr style="text-align: center;">
                                     <th style="width: 5%;" class="text-center">번호</th>
-                                    <th style="width: 10%" class="text-center">다운로드 사용자</th>
+                                    <th style="width: 10%" class="text-center">다운로드 사용자 이름</th>
+                                    <th style="width: 10%" class="text-center">다운로드 사용자 ID</th>
                                     <th style="width: 10%" class="text-center">다운로드날짜</th>
                                 </tr>
                             </thead>
@@ -159,6 +160,7 @@
                         <tr class="text-center">
                             <td class="text-center">${i+1}</td>
                             <td class="text-center">${data['userName']}</td>
+                            <td class="text-center">${data['userId']}</td>
                             <td class="text-center">${data['downloadDate'].toString().substring(0, 10)}</td>
                         </tr>
                         `

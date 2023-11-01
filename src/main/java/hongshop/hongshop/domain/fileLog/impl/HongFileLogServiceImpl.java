@@ -46,7 +46,7 @@ public class HongFileLogServiceImpl implements HongFileLogService {
         List<HongFileLog> fileLog = hongFileLogRepository.findAllByHongFileId(id);
         return fileLog.stream().map(log -> {
             HongUserVO user = hongUserService.getHongUserById(log.getRegId());
-            return new HongFileLogVO(log, user.getUserName());
+            return new HongFileLogVO(log, user);
         }).toList();
     }
 }
