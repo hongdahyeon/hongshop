@@ -46,6 +46,7 @@
                     <button type="submit" class="btn btn-primary">로그인</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
                     <img src="/assets/src/kakao.png" id="kakao-login-btn" style="cursor: pointer">
+                    <img src="/assets/src/naver.png" id="naver-login-btn" style="cursor: pointer">
 
                 </div>
             </form>
@@ -200,6 +201,14 @@
         $("#kakao-login-btn").on("click", function(e){
             window.location.href = '/oauth2/authorization/kakao'
         })
+
+        /* 네이버 로그인 */
+        $("#naver-login-btn").on("click", function(e){
+            console.log("naver-login-btn clicked")
+            window.location.href = '/oauth2/authorization/naver'
+        })
+
+
 
         /* 아이디/비번 찾기 */
         $("#find-user-password-userId").on("click", function(e){
