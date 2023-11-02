@@ -20,10 +20,13 @@
                 <div class="mb-3 mt-3">
                     <label for="newPassword">비밀번호</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="newPassword" name="password" disabled/>
-                        <button class="btn btn-outline-dark" type="button" id="change-pwd">비밀번호 변경</button>
+                        <input type="password" class="form-control" id="newPassword" name="password" disabled required/>
+                        <button class="btn btn-outline-dark" type="button" id="change-pwd" th:disabled="${user.hongSocialUserId != 0}">비밀번호 변경</button>
                         <div class="invalid-feedback">비밀번호를 입력하세요.</div>
                     </div>
+                    <th:block th:if="${user.hongSocialUserId != 0}">
+                        <p class="error-message" style="color: red">소셜 로그인의 경우 비밀번호 변경이 불가능합니다.</p>
+                    </th:block>
                 </div>
 
                 <div class="mb-3 mt-3">
@@ -153,7 +156,7 @@
                     // check duplicate email
                     $.ajax({
                         type: 'GET',
-                        url: `/api/checkEmail?userEmail=${userEmail}`,
+                        url: `/front/api/checkEmail?userEmail=${userEmail}`,
                         dataType: 'json',
                         success: function (data) {
                             if (!data.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
