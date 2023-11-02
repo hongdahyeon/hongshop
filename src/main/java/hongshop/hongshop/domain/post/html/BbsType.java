@@ -1,4 +1,4 @@
-package hongshop.hongshop.domain.postType.html;
+package hongshop.hongshop.domain.post.html;
 
 public enum BbsType {
 

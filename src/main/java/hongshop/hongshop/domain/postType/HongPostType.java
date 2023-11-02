@@ -33,9 +33,17 @@ public class HongPostType {
     @Column(name = "post_name")
     private String postName;
 
+    @Column(name = "use_at")
+    private String useAt;
+
+    @Column(name = "delete_at")
+    private String deleteAt;
+
     @Builder(builderMethodName = "insertPostTypeBuilder")
     public HongPostType(PostType postType, String postName) {
         this.postType = postType;
         this.postName = postName;
+        this.useAt = "Y";
+        this.deleteAt = "N";
     }
 }
