@@ -44,6 +44,11 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
                 email = (String) naverAccount.get("email");
                 name = (String) naverAccount.get("name");
                 break;
+            case "google":
+                userId = provider + "_" + (String) userInfo.get("sub");
+                email = (String) userInfo.get("email");
+                name = (String) userInfo.get("name");
+                break;
         }
 
         log.info("provider: {} -> userId : {}, name : {}, email : {}", provider, userId, name, email);

@@ -45,8 +45,19 @@
 
                     <button type="submit" class="btn btn-primary">로그인</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
-                    <img src="/assets/src/kakao.png" id="kakao-login-btn" style="cursor: pointer">
-                    <img src="/assets/src/naver.png" id="naver-login-btn" style="cursor: pointer">
+
+                    <hr class="hr" />
+
+                    <div class="card-text" style="margin-top: 10px">
+                        <div class="text-start">
+                            <span><b>소셜 로그인</b></span>
+                            <div class="mb-3 mt-3">
+                                <img src="/assets/src/login/kakao.png" id="kakao-login-btn" style="cursor: pointer; ">
+                                <img src="/assets/src/login/naver.png" id="naver-login-btn" style="cursor: pointer; ">
+                                <img src="/assets/src/login/google.png" id="google-login-btn" style="cursor: pointer; ">
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </form>
@@ -206,6 +217,12 @@
         $("#naver-login-btn").on("click", function(e){
             console.log("naver-login-btn clicked")
             window.location.href = '/oauth2/authorization/naver'
+        })
+
+        /* 구글 로그인 */
+        $("#google-login-btn").on("click", function(e){
+            console.log("google-login-btn clicked")
+            window.location.href = '/oauth2/authorization/google'
         })
 
 

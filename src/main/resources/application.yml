@@ -39,6 +39,11 @@ spring:
             authorization-grant-type: authorization_code
             scope: name, email
             client-name: Naver
+          google:
+            client-id: ENC(PvCEupLaywZ7m1v3qQ1qkGJo58+xl5RqrAaIfm3Ii5w8uqTS8rl5qddcthIBonXtU1KgGBaDG8QSy6GLqBCYWYk6AEeBXkMC4LtAqe8aAyq4jSYvzF/PFw==)
+            client-secret: ENC(h3Rbsl4cfBawYuADZYO4wkHVRMZ/Y/LD2wEn6KhWJsfiz3lKePqLXnuJB5+GUeM8)
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            scope: email, profile
         provider:
           kakao:
             authorization_uri: https://kauth.kakao.com/oauth/authorize
