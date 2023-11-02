@@ -107,3 +107,4 @@
 * commit85 : 구글 로그인 구현 (23/11/02)
 * commit86 : 로그인 실패 핸들러 구현 (23/11/03)
   - 원래는 아이디 틀린 경우, 비번 틀린 경우를 나누어 구현하려고 하였으나 보안적인 측면에서 나누는 것은 좋지 않다고 하여 합쳐둠
+* commit87 : 사용하지 않는 Controller 제거 및 HongPostTypeController에서 HongPostController로 변경 및 위치 변경 (23/11/02)
