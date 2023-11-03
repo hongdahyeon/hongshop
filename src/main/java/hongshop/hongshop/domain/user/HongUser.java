@@ -53,6 +53,12 @@ public class HongUser {
     @JoinColumn(name = "hong_social_user_id")
     private HongSocialUser hongSocialUser;
 
+    @Column(name = "pwd_fail_cnt")
+    private Integer pwdFailCnt;
+
+    @Column(name = "user_non_locked")
+    public Boolean userNonLocked;
+
     @Builder(builderMethodName = "hongUserInsertBuilder")
     public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail, HongSocialUser hongSocialUser){
         this.userId = userId;
@@ -62,6 +68,8 @@ public class HongUser {
         this.address = address;
         this.userName = userName;
         this.userEmail = userEmail;
+        this.pwdFailCnt = 0;
+        this.userNonLocked = true;
     }
 
     public void updateHongUser(HongUserDTO hongUserDTO){
@@ -77,5 +85,18 @@ public class HongUser {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updatePwdFailCnt(){
+        this.pwdFailCnt = this.pwdFailCnt + 1;
+    }
+
+    public void updatePwdFailCntAndUserNonLocked(){
+        this.pwdFailCnt = this.pwdFailCnt + 1;
+        this.userNonLocked = false;
+    }
+
+    public void resetPwdFailCntAndUserNonLocked(){
+        this.pwdFailCnt = 0;
     }
 }

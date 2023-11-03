@@ -59,7 +59,6 @@ public class HongUserServiceImpl implements HongUserService {
 
     @Override
     public Optional<HongUser> getHongUser(String userId) {
-        log.info("userId : {} ", userId);
         return hongUserRepository.findByUserId(userId);
     }
 
