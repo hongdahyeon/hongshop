@@ -110,3 +110,7 @@
 * commit87 : 사용하지 않는 Controller 제거 및 HongPostTypeController에서 HongPostController로 변경 및 위치 변경 (23/11/02)
    - postType html 페이지 추가
 * commit88 : 소셜 로그인의 경우 비번 변경 불가능 (23/11/02)
+* commit89 : 게시판 유형 관리 페이지 구현 (23/11/03)
+    - postType테이블 : 사용여부, 삭제여부, 정렬, URL 컬럼 추가
+    - postType테이블 : 사용여부 'Y'일 경우 자동 URL 생성
+    - postType테이블 : CRUD 적영
