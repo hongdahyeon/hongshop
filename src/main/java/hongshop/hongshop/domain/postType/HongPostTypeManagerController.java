@@ -20,6 +20,6 @@ public class HongPostTypeManagerController {
     public String index(Model model){
         List<HongPostTypeVO> list = hongPostTypeService.listWithPost();
         model.addAttribute("postTypeList", list);
-        return "/manage/postType";
+        return "/manager/postType";
     }
 }

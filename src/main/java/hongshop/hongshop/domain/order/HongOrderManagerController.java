@@ -19,6 +19,6 @@ public class HongOrderManagerController {
     public String index(Model model){
         List<HongOrderVO> list = hongOrderService.list();
         model.addAttribute("orderList", list);
-        return "manage/order";
+        return "manager/order";
     }
 }

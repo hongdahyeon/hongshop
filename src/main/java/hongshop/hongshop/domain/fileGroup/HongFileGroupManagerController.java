@@ -19,6 +19,6 @@ public class HongFileGroupManagerController {
     public String fileDownload(Model model){
         List<HongFileGroupVO> list = hongFileGroupService.all();
         model.addAttribute("fileGroupList", list);
-        return "/manage/fileDownload";
+        return "/manager/fileDownload";
     }
 }

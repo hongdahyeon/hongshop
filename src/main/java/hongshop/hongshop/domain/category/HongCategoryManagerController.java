@@ -12,6 +12,6 @@ public class HongCategoryManagerController {
 
     @GetMapping({"/", ""})
     public String index(){
-        return "manage/category";
+        return "manager/category";
     }
 }

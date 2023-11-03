@@ -19,6 +19,6 @@ public class HongUserManagerController {
     public String index(Model model){
         List<HongUserVO> list = hongUserService.list();
         model.addAttribute("userList", list);
-        return "/manage/user";
+        return "/manager/user";
     }
 }
