@@ -115,3 +115,4 @@
     - postType테이블 : 사용여부 'Y'일 경우 자동 URL 생성
     - postType테이블 : CRUD 적영
 * commit90 : manage 폴더 -> manager 변경 (23/11/03)
+* commit91 : 404, 403 페이지 생성 (23/11/03)
