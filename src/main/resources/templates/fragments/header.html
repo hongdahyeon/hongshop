@@ -25,11 +25,7 @@
                        aria-expanded="false">
                         게시판
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                        <li><a class="dropdown-item" href="/bbs/1">QNA</a></li>
-                        <li><a class="dropdown-item" href="/bbs/34">FAQ</a></li>
-                        <li><a class="dropdown-item" href="/bbs/33">NOTICE</a></li>
-                    </ul>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2" id="post-dropdown"></ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown"
@@ -104,9 +100,36 @@
             });
         }
 
+        const drawPostDom = () => {
+            $.ajax({
+                type: 'GET',
+                url: `/api/type/header`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        const category = data.message
+                        let body = ''
+                        const dom = document.getElementById("post-dropdown");
+                        dom.innerHTML = ''
+
+                        category.forEach((data, i) => {
+                            body += `<li><a class="dropdown-item" href="${data['postUrl']}">${data['postName']}</a></li>`
+                        })
+
+                        dom.innerHTML = body
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        }
+
 
         window.onload = function() {
             drawCategoryDom();
+            drawPostDom();
         };
 
     </script>

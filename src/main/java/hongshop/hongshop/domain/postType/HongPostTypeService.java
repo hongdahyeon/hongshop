@@ -17,10 +17,15 @@ public interface HongPostTypeService {
 
     List<HongPostTypeVO> list();
 
+    List<HongPostTypeVO> listForHeader();
+
     List<HongPostTypeVO> listWithPost();
 
     Long join(HongPostTypeDTO hongPostTypeDTO);
 
     HongPostTypeVO view(Long id);
 
+    void update(Long id, HongPostTypeDTO hongPostTypeDTO);
+
+    void delete(Long id);
 }

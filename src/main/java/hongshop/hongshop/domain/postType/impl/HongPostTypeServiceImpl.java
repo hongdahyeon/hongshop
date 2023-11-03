@@ -17,10 +17,12 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-08-08
 * @summary
- *  (1) list : 전체 게시글 타입 리스트
- *  (2) listWithPost : 전체 게시글 타입 리스트 with 게시글
- *  (3) join : 게시글 타입 저장
- *  (4) view : 게시글 타입 단건 조회
+ *  (1) list : 전체 게시글 타입 리스트 -> 삭제여부 / 정렬
+ *  (2) listForHeader : 전체 게시글 타입 리스트 FOR 헤더 -> 사용여부, 삭제여부 / 정렬
+ *  (3) listWithPost : 전체 게시글 타입 리스트 with 게시글
+ *  (4) join : 게시글 타입 저장
+ *  (5) view : 게시글 타입 단건 조회
+ *  (6) update : 게시글 타입 수정
 **/
 
 @Transactional(readOnly = true)
@@ -33,13 +35,19 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
 
     @Override
     public List<HongPostTypeVO> list() {
-        List<HongPostType> all = hongPostTypeRepository.findAll();
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtOrderByOrderNum("N");
+        return all.stream().map(HongPostTypeVO::new).toList();
+    }
+
+    @Override
+    public List<HongPostTypeVO> listForHeader() {
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtAndUseAtOrderByOrderNum("N", "Y");
         return all.stream().map(HongPostTypeVO::new).toList();
     }
 
     @Override
     public List<HongPostTypeVO> listWithPost() {
-        List<HongPostType> all = hongPostTypeRepository.findAll();
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtOrderByOrderNum("N");
         return all.stream().map(type -> {
             List<HongPostVO> hongPostVOS = hongPostService.listByHongPostTypeId(type.getId());
             return new HongPostTypeVO(type, hongPostVOS);
@@ -52,9 +60,18 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
         HongPostType hongPostType = HongPostType.insertPostTypeBuilder()
                 .postType(hongPostTypeDTO.getPostType())
                 .postName(hongPostTypeDTO.getPostName())
+                .useAt(hongPostTypeDTO.getUseAt())
+                .orderNum(hongPostTypeDTO.getOrderNum())
                 .build();
 
         HongPostType save = hongPostTypeRepository.save(hongPostType);
+
+        // if useAt is Y ... make url
+        if("Y".equals(hongPostTypeDTO.getUseAt())) {
+            // update
+            String postUrl = "/bbs/" + save.getId();
+            save.updatePostUrl(postUrl);
+        }
         return save.getId();
     }
 
@@ -62,6 +79,20 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
     public HongPostTypeVO view(Long id) {
         HongPostType hongPostType = hongPostTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no type"));
         return new HongPostTypeVO(hongPostType);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void update(Long id, HongPostTypeDTO hongPostTypeDTO) {
+        HongPostType hongPostType = hongPostTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no type"));
+        hongPostType.updatePostType(hongPostTypeDTO, id);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        HongPostType hongPostType = hongPostTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no type"));
+        hongPostType.deletePostType();
     }
 
 }

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>게시판 관리</h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" id="new-postType">게시판 추가하기</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="cart-table">
+                <thead>
+                <tr style="text-align: center;">
+                    <th style="width: 5%;" class="text-center">번호</th>
+                    <th style="width: 10%" class="text-center">게시판 유형</th>
+                    <th style="width: 10%" class="text-center">게시판 이름</th>
+                    <th style="width: 5%" class="text-center">정렬순서</th>
+                    <th style="width: 5%" class="text-center">사용여부</th>
+                    <th style="width: 5%" class="text-center">게시글 개수</th>
+                    <th style="width: 10%" class="text-center">url</th>
+                    <th style="width: 10%" class="text-center">게시판 보러가기</th>
+                    <th style="width: 10%" class="text-center">수정/삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:if="${postTypeList.size() == 0}">
+                    <tr style="text-align: center;">
+                        <td colspan="9">게시판 유형 정보가 비어있습니다.</td>
+                    </tr>
+                </th:block>
+                <th:block th:unless="${postTypeList.size() == 0}">
+                    <th:block  th:each="post, postStat : ${postTypeList}">
+                        <tr>
+                            <td th:text="${postStat.index + 1}" style="width: 5%; text-align: center;"></td>
+                            <td th:text="${post.postType}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${post.postName}" style="width: 10%; text-align: center;"></td>
+                            <td th:text="${post.orderNum}" style="width: 5%; text-align: center;"></td>
+                            <td th:text="${post.useAt}" style="width: 5%; text-align: center;"></td>
+                            <td th:text="|${post.hongPost.size()}개|" style="width: 5%; text-align: center"></td>
+                            <td th:text="${post.postUrl}" style="width: 10%; text-align: center"></td>
+                            <td style="width: 10%; text-align: center">
+                                <button type="button" class="btn btn-sm btn-outline-primary post-page-btn" th:value="${post.postTypeId}" th:data-useAt="${post.useAt}">보러가기</button>
+                            </td>
+                            <td style="width: 10%; text-align: center">
+                                <button type="button" class="btn btn-sm btn-outline-secondary post-update-btn" th:value="${post.postTypeId}">수정</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger post-delete-btn" th:value="${post.postTypeId}">삭제</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- s: newPostTypeForm -->
+        <form id="new-postType-form" class="needs-validation" novalidate>
+            <div class="modal" id="new-postType-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">게시판 등록하기</h4>
+                            <button type="button" class="btn-close" id="close-new-postType-modal-btn"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="mb-3 mt-3">
+                                    <label>게시판 유형</label>
+                                    <div class="input-group">
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-QNA" name="postType" value="QNA" checked>
+                                            <label class="form-check-label" for="new-QNA">QNA</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-NOTICE" name="postType" value="NOTICE">
+                                            <label class="form-check-label" for="new-NOTICE">NOTICE</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" id="new-FAQ" name="postType" value="FAQ">
+                                            <label class="form-check-label" for="new-FAQ">FAQ</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-postName">게시판 이름<span class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="new-postName" class="form-control" name="postName" required/>
+                                        <div class="invalid-feedback">게시판 이름을 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-orderNum">게시판 순서<span class="text-primary ms-50">*</span></label>
+                                        <input type="number" id="new-orderNum" class="form-control" name="orderNum" required/>
+                                        <div class="invalid-feedback">게시판 순서를 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label>사용여부</label>
+                                    <div class="input-group">
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-useAt-Y" name="useAt" value="Y" checked>
+                                            <label class="form-check-label" for="new-useAt-Y">Y</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-useAt-N" name="useAt" value="N">
+                                            <label class="form-check-label" for="new-useAt-N">N</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-new-postType-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="save-new-postType-btn">저장</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: newPostTypeForm -->
+
+        <!-- s: updatePostTypeForm -->
+        <form id="update-postType-form" class="needs-validation" novalidate>
+            <div class="modal" id="update-postType-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">게시판 수정하기</h4>
+                            <button type="button" class="btn-close" id="close-update-postType-modal-btn"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="mb-3 mt-3">
+                                    <label>게시판 유형</label>
+                                    <div class="input-group">
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="update-QNA" name="postType" value="QNA">
+                                            <label class="form-check-label" for="update-QNA">QNA</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="update-NOTICE" name="postType" value="NOTICE">
+                                            <label class="form-check-label" for="update-NOTICE">NOTICE</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" id="update-FAQ" name="postType" value="FAQ">
+                                            <label class="form-check-label" for="update-FAQ">FAQ</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="update-postName">게시판 이름<span class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="update-postName" class="form-control" name="postName" required/>
+                                        <div class="invalid-feedback">게시판 이름을 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="update-orderNum">게시판 순서<span class="text-primary ms-50">*</span></label>
+                                        <input type="number" id="update-orderNum" class="form-control" name="orderNum" required/>
+                                        <div class="invalid-feedback">게시판 순서를 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label>사용여부</label>
+                                    <div class="input-group">
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="update-useAt-Y" name="useAt" value="Y">
+                                            <label class="form-check-label" for="update-useAt-Y">Y</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="update-useAt-N" name="useAt" value="N">
+                                            <label class="form-check-label" for="update-useAt-N">N</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-update-postType-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="update-postType-btn">저장</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: newPostTypeForm -->
+
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        let postTypeId = ''
+        let postType = ''
+
+        /* 게시판 보러가기 버튼 클릭 이벤트 */
+        $(".post-page-btn").on("click", function(e){
+            const postTypeId = $(this).val()
+            const postUseAt = $(this).attr("data-useAt")
+            if(postUseAt === 'N') alert("해당 게시글은 사용여부가 N이기 때문에 게시판이 생성되지 않았습니다." + '\n' + "사용여부를 Y로 변경해주세요.")
+            else {
+                window.location.href = `/bbs/${postTypeId}`
+            }
+        })
+
+
+        /* 게시판 삭제 버튼 클릭 이벤트 */
+        $(".post-delete-btn").on("click", function(e){
+            const postTypeId = $(this).val()
+            console.log("post-page-btn : ", postTypeId)
+
+            const result = confirm("해당 게시글을 삭제하시겠습니까?")
+            if(result) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/api/type/${postTypeId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.httpStatus === 200) {
+                            alert(`${data.message}`)
+                            window.location.href = '/manager/postType'
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            }
+        })
+
+        /* 게시판 수정 버튼 클릭 이벤트 */
+        $(".post-update-btn").on("click", function(e){
+            const postTypeId = $(this).val()
+            $.ajax({
+                type: 'GET',
+                url: `/api/type/${postTypeId}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        setPostUpdateModal(data.message)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+
+        })
+
+        /* 게시판 수정 버튼 클릭 시, 해당 게시판 정보로 모달 채우고 모달 띄우기 */
+        function setPostUpdateModal(data) {
+            postTypeId = data['postTypeId']
+            postType = data['postType']
+            $("#update-postName").val(data['postName'])
+            $("#update-orderNum").val(data['orderNum'])
+            $(`#update-${data['postType']}`).prop('checked', true)
+            $(`#update-useAt-${data['useAt']}`).prop('checked', true)
+            $("#update-postType-modal").modal('show')
+        }
+
+        /* 게시판 생성 버튼 클릭 이벤트 */
+        $("#new-postType").on("click", function(e){
+            $("#new-postType-modal").modal('show')
+        })
+
+        /* 게시판 생성 모달 -> 취소, x 버튼 클릭 이벤트 */
+        $("#cancel-new-postType-btn, #close-new-postType-modal-btn").on("click", function(e){
+            const result = confirm('작성중인 내용은 저장되지 않습니다.' + '\n' + '작성을 취소하시겠습니까?')
+            if(result) $("#new-postType-modal").modal('hide')
+        })
+
+        /* 게시판 수정 모달 -> 취소, x 버튼 클릭 이벤트 */
+        $("#cancel-update-postType-btn, #close-update-postType-modal-btn").on("click", function(e){
+            const result = confirm('작성중인 내용은 저장되지 않습니다.' + '\n' + '작성을 취소하시겠습니까?')
+            if(result) $("#update-postType-modal").modal('hide')
+        })
+
+        /* 게시판 유형 추가 */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("new-postType-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("new-postType-form").then((obj) => {
+                        console.log("obj : ", obj)
+
+                        $.ajax({
+                            type: 'POST',
+                            url: `/api/type`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    alert("게시판 유형이 추가되었습니다.")
+                                    window.location.href='/manager/postType'
+                                }else {
+                                    alert("해당 게시판 유형 추가에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+                    })
+                }
+            })
+        })
+
+        /* 게시판 유형 수정 */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("update-postType-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("update-postType-form").then((obj) => {
+                        console.log("obj : ", obj)
+
+                        let result = true
+
+                        if(postType === 'QNA' && (postType !== obj['postType'])) result = confirm("만약 QNA 게시판에서 " + obj['postType'] + " 게시판 유형으로 변경하시면," + '\n' + "해당 게시글에 달린 댓글을 볼수 없습니다." + '\n' + '그래도 변경하시겠습니까?')
+                        if(result) {
+                            $.ajax({
+                                type: 'PUT',
+                                url: `/api/type/${postTypeId}`,
+                                dataType: 'json',
+                                data: JSON.stringify(obj),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if (data.httpStatus === 200) {
+                                        alert(data.message)
+                                        window.location.href = '/manager/postType'
+                                    } else {
+                                        alert("해당 게시판 유형 수정에 실패하였습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        })
+
+    </script>
+</th:block>
+
+</html>

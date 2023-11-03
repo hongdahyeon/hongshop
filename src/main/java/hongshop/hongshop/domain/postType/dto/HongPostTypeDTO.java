@@ -16,4 +16,6 @@ import lombok.Setter;
 public class HongPostTypeDTO {
     public PostType postType;
     public String postName;
+    public String useAt;
+    public Integer orderNum;
 }

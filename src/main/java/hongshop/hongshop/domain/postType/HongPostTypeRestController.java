@@ -35,6 +35,14 @@ public class HongPostTypeRestController {
         return Response.ok(list);
     }
 
+    @GetMapping("/type/header")
+    @Operation(summary = "get post type list for header", description = "게시글 타입 리스트 가져오기 - 헤더용")
+    @ApiDocumentResponse
+    public Response listForHeader(){
+        List<HongPostTypeVO> list = hongPostTypeService.listForHeader();
+        return Response.ok(list);
+    }
+
     @PostMapping("/type")
     @Operation(summary = "insert post type", description = "게시글 타입 저장하기")
     @ApiDocumentResponse
@@ -50,4 +58,29 @@ public class HongPostTypeRestController {
         List<HongPostTypeVO> hongPostTypeVOS = hongPostTypeService.listWithPost();
         return Response.ok(hongPostTypeVOS);
     }
+
+    @GetMapping("/type/{id}")
+    @Operation(summary = "get post type view", description = "게시글 타입 단건 조회")
+    @ApiDocumentResponse
+    public Response view(@PathVariable Long id){
+        HongPostTypeVO view = hongPostTypeService.view(id);
+        return Response.ok(view);
+    }
+
+    @PutMapping("/type/{id}")
+    @Operation(summary = "update post type", description = "게시글 타입 수정")
+    @ApiDocumentResponse
+    public Response update(@PathVariable Long id, @RequestBody HongPostTypeDTO hongPostTypeDTO) {
+        hongPostTypeService.update(id, hongPostTypeDTO);
+        return Response.ok("게시글 타입이 수정되었습니다.");
+    }
+
+    @DeleteMapping("/type/{id}")
+    @Operation(summary = "delete post type", description = "게시글 타입 삭제")
+    @ApiDocumentResponse
+    public Response delete(@PathVariable Long id){
+        hongPostTypeService.delete(id);
+        return Response.ok("게시글 타입이 삭제되었습니다.");
+    }
+
 }
