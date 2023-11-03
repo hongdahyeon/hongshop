@@ -4,7 +4,6 @@ package hongshop.hongshop.global.config;
 import hongshop.hongshop.global.auth.oauth.PrincipalOAuth2UserService;
 import hongshop.hongshop.global.handler.CustomFailuerHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,14 +35,15 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().headers().frameOptions().disable();       // csrf 및 frame 옵션 비활서오하 -> 애플리케이션을 iframe에 임베드 가능하도록 한다.
+        http.csrf().disable().headers().frameOptions().disable();       // csrf 및 frame 옵션 비활성화 -> 애플리케이션을 iframe에 임베드 가능하도록 한다.
         http
                 .authorizeRequests(authorize ->                         // url 기반 보안을 구성하는 http 객체의 메서드 -> 다양한 유형의 사용자가 액세스할 수 있는 url 정의
                         authorize
-                                .antMatchers("/login", "/assets/**", "/front/**").permitAll()                                  // 로그인 페이지의 경우 모두 접근 가능
+                                .antMatchers("/login", "/assets/**", "/front/**").permitAll()                                  // 로그인 페이지 및 해당 url의 경우 모두 접근 가능
+                                .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasAnyRole('ROLE_SUPER')")
 //                                .antMatchers("/user/**").access("hasRole('ROLE_USER')")     // "/user/"로 시작하는 모든 url은 "ROLE_USER"의 역할을 갖은 사용자만 액세스 가능
 //                                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")   // "/admin/"로 시작하는 모든 url은 "ROLE_ADMIN"의 역할을 갖은 사용자만 액세스 가능
-                                .anyRequest().authenticated()                                             // 앞선 패턴들을 제외한 다른 요청들은 권한 검사를 한다.
+                                .anyRequest().authenticated()                               // 그 이외의 경우 모두 접근 가능
                         )
                 .formLogin(formLoginConfigurer ->
                         formLoginConfigurer

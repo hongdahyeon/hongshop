@@ -13,6 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 
+/**
+* @fileName CustomFailuerHandler
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-11-03
+* @summary   AuthenticationFailureHandler : 인증 실패를 처리하는 곳
+ *                  - 인증시도에 대한 실패의 경우 호출된다.
+ *                  - 인증 실패 시, 사용자를 오류 페이지로 리디렉션하거나 실패 시도를 기록하는 등의 작업을 구현 가능하다.
+**/
+
 @Component
 @Slf4j
 public class CustomFailuerHandler implements AuthenticationFailureHandler {

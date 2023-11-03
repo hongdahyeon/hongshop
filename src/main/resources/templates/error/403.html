@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/error}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="text-center">
+            <img src="/assets/src/error/403.png">
+        </div>
+        <div class="text-center">
+            <h3><b>403에러</b></h3>
+            <span>접근권한이 없는 페이지입니다. 관리자에게 문의바랍니다.</span>
+        </div>
+        <div class="text-center" style="margin-top: 10px">
+            <button type="button" class="btn btn-sm btn-danger" onclick="location.href='/'" style="margin-top: 10px">홈으로 돌아가기</button>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+</th:block>
+
+</html>

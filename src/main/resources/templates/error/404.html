@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/error}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="container-sm mt-3">
+        <div class="text-center">
+            <img src="/assets/src/error/404.png">
+        </div>
+        <div class="text-center">
+            <h3><b>404에러</b></h3>
+            <span>해당 페이지는 없는 페이지입니다.</span>
+        </div>
+        <div class="text-center" style="margin-top: 10px">
+            <button type="button" class="btn btn-sm btn-danger" onclick="location.href='/'">홈으로 돌아가기</button>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+</th:block>
+
+</html>
