@@ -9,7 +9,16 @@
 
 <th:block layout:fragment="content">
     <div class="container-sm mt-3">
-        content
+        <div class="text-center">
+            <h3><b>Hong Shop</b></h3>
+            <span>Hong Shop 옷 가게 온라인 쇼핑몰입니다.</span>
+        </div>
+        <div class="text-center" style="margin-top: 10px">
+            <button type="button" class="btn btn-outline-info" id="show-new-product">최신상품보러가기</button>
+        </div>
+        <div class="text-center" style="margin-top: 10px">
+            <img src="/assets/src/shop.jpg">
+        </div>
     </div>
 </th:block>
 
@@ -17,6 +26,9 @@
 <th:block layout:fragment="script">
     <script>
         console.log("script...")
+        $("#show-new-product").on("click", function(e){
+            console.log("show-new-product clicked...")
+        })
     </script>
 </th:block>
 
