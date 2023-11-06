@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.product.vo;
 
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class HongProductVO {
     private Integer productCnt;
     private Integer productPrice;
     private Integer productStock;
+    private HongFileGroupVO file;
 
     public HongProductVO(HongProduct hongProduct) {
         this.productId = hongProduct.getId();
@@ -29,5 +31,16 @@ public class HongProductVO {
         this.productCnt = hongProduct.getProductCnt();
         this.productPrice = hongProduct.getProductPrice();
         this.productStock = hongProduct.getProductStock();
+    }
+
+
+    public HongProductVO(HongProduct hongProduct, HongFileGroupVO hongFileGroupVO) {
+        this.productId = hongProduct.getId();
+        this.categoryName = hongProduct.getHongCategory().getCategoryName();
+        this.productName = hongProduct.getProductName();
+        this.productCnt = hongProduct.getProductCnt();
+        this.productPrice = hongProduct.getProductPrice();
+        this.productStock = hongProduct.getProductStock();
+        this.file = hongFileGroupVO;
     }
 }

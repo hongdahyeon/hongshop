@@ -47,13 +47,17 @@ public class HongProduct {
     @Column(name = "delete_yn")
     private String deleteYn;
 
+    @Column(name = "file_group_id")
+    private Long fileGroupId;
+
     @Builder(builderMethodName = "hongProductInsertBuilder")
-    public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice, Integer productStock) {
+    public HongProduct(HongCategory hongCategory, String productName, Integer productCnt, Integer productPrice, Integer productStock, Long fileGroupId) {
         this.hongCategory = hongCategory;
         this.productName = productName;
         this.productCnt = productCnt;
         this.productPrice = productPrice;
         this.productStock = productStock;
+        this.fileGroupId = fileGroupId;
         this.deleteYn = "N";
     }
 
@@ -64,6 +68,7 @@ public class HongProduct {
             this.productStock = this.productStock + (hongProductDTO.getProductCnt() - hongProductDTO.getOriginProductCnt());
         }
         if(hongProductDTO.getProductPrice() != null) this.productPrice = hongProductDTO.getProductPrice();
+        if(hongProductDTO.getFileGroupId() != null) this.fileGroupId = hongProductDTO.getFileGroupId();
     }
 
     public void updateStockCnt(Integer orderCnt){

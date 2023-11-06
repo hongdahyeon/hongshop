@@ -3,6 +3,9 @@ package hongshop.hongshop.domain.product.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
 * @fileName HongProductDTO
 * @author dahyeon
@@ -18,4 +21,7 @@ public class HongProductDTO {
     private Integer productCnt;
     private Integer originProductCnt;
     private Integer productPrice;
+
+    private Long fileGroupId;
+    private List<Long> deleteFile = new ArrayList<>();
 }

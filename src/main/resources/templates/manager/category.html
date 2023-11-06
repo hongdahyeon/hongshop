@@ -161,6 +161,17 @@
                                             <label class="form-label" for="productStock">현재 상품 재고<span class="text-primary ms-50">*</span></label>
                                             <input type="text" id="productStock" class="form-control" name="productStock" disabled/>
                                         </div>
+                                        <div class="mb-3 mt-3">
+                                            <label for="file-container-product">파일첨부</label>
+                                            <input type="file" id="fileUpload-product" name="file" style="display:none"/>
+                                            <button class="btn btn-sm btn-primary" id="btn-upload-product">
+                                                파일 추가
+                                                <i data-feather="upload" class="font-medium-2 ms-50"></i>
+                                            </button>
+                                            <div class="file-container" id="file-container-product">
+                                                <ul id="upload-container-product"></ul>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div style="margin-top: 10px" class="text-end">
                                         <button type="button" class="btn btn-outline-success" id="show-product-order">주문자</button>
@@ -213,6 +224,17 @@
                                     <label class="form-label" for="new-productPrice">상품 가격<span class="text-primary ms-50">*</span></label>
                                     <input type="number" id="new-productPrice" class="form-control" name="productPrice" required/>
                                     <div class="invalid-feedback">상품의 가격을 입력하세요.</div>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="file-container-new-product">파일첨부</label>
+                                    <input type="file" id="fileUpload-new-product" name="file" style="display:none"/>
+                                    <button class="btn btn-sm btn-primary" id="btn-upload-new-product">
+                                        파일 추가
+                                        <i data-feather="upload" class="font-medium-2 ms-50"></i>
+                                    </button>
+                                    <div class="file-container" id="file-container-new-product">
+                                        <ul id="upload-container-new-product"></ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -297,14 +319,14 @@
                     <div class="modal-body">
                         <table class="table table-hover table-bordered" id="product-user-table">
                             <thead>
-                            <tr style="text-align: center;">
-                                <th style="width: 10%;" class="text-center">번호</th>
-                                <th style="width: 20%" class="text-center">주문자</th>
-                                <th style="width: 10%" class="text-center">주문상태</th>
-                                <th style="width: 10%" class="text-center">주문개수</th>
-                                <th style="width: 10%" class="text-center">주문가격</th>
-                                <th style="width: 20%" class="text-center">주문날짜</th>
-                            </tr>
+                                <tr style="text-align: center;">
+                                    <th style="width: 10%;" class="text-center">번호</th>
+                                    <th style="width: 20%" class="text-center">주문자</th>
+                                    <th style="width: 10%" class="text-center">주문상태</th>
+                                    <th style="width: 10%" class="text-center">주문개수</th>
+                                    <th style="width: 10%" class="text-center">주문가격</th>
+                                    <th style="width: 20%" class="text-center">주문날짜</th>
+                                </tr>
                             </thead>
                             <tbody id="product-user-tbody"></tbody>
                         </table>
@@ -326,9 +348,12 @@
 
 <th:block layout:fragment="script">
     <script th:src="@{'/assets/js/page/caregory.nav.js'}"></script>
+    <script th:src="@{'/assets/js/core/file.js'}"></script>
     <script th:inline="javascript">
 
         const nav = new navTab("navTab")
+        const uploadFile = new File("upload-container-product")
+        const newUploadFile = new File("upload-container-new-product")
 
         $(document).ready(function() {
 
@@ -349,6 +374,10 @@
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.httpStatus === 200) {
+
+                            uploadFile.domEmptyAndFileGroupIdNull()
+                            if(data.message['file'] != null) uploadFile.setFileGroupId(data.message['file']['id']).setData(data.message['file']['fileList']).setFiles()
+
                             $("#productName").val(data.message['productName'])
                             $("#hongProductId").val(data.message['productId'])
                             $("#productCnt").val(data.message['productCnt'])
@@ -396,6 +425,7 @@
             $("#navTab").on("click", "#add-product-btn", function(e) {
                 const hongCategoryId = $(this).attr("data-num")
                 $("#new-product-hongCategoryId").val(hongCategoryId)
+                newUploadFile.domEmptyAndFileGroupIdNull()
                 $("#new-product-modal").modal('show')
             })
 
@@ -509,6 +539,7 @@
             $("#new-productName").val('')
             $("#new-productCnt").val('')
             $("#new-productPrice").val('')
+            newUploadFile.domEmptyAndFileGroupIdNull()
 
             const form = document.getElementById("new-product-form")
             form.classList.remove("was-validated")
@@ -603,6 +634,9 @@
                         const productId = $("#hongProductId").val()
                         const limitProduct = parseInt(obj['originProductCnt']) - $("#productStock").val()
 
+                        if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
+                        obj['deleteFile'] = uploadFile.getDeleteFile()
+
                         if(obj['productCnt'] < limitProduct) alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`)
                         else {
                             $.ajax({
@@ -678,6 +712,9 @@
 
                     FormDataToObj.getParameter("new-product-form").then((obj) => {
 
+                        if(newUploadFile.getFileGroupId()) obj['fileGroupId'] = newUploadFile.getFileGroupId()
+                        obj['deleteFile'] = newUploadFile.getDeleteFile()
+
                         $.ajax({
                             type: 'POST',
                             url: `/api/product`,
@@ -712,6 +749,74 @@
             categoryModalEmpty()
             productModalEmpty()
         }
+
+        $('#btn-upload-product').on("click", function (e) {
+            e.preventDefault();
+            const numberOfLiElements = [...document.querySelectorAll("#upload-container-product li")].length;
+            if(numberOfLiElements === 1) alert("최대 업로드 개수는 1개입니다.")
+            else $('#fileUpload-product').click();
+        });
+
+        $('#btn-upload-new-product').on("click", function(e){
+            e.preventDefault();
+            const numberOfLiElements = [...document.querySelectorAll("#upload-container-new-product li")].length;
+            if(numberOfLiElements === 1) alert("최대 업로드 개수는 1개입니다.")
+            else $('#fileUpload-new-product').click();
+        })
+
+        $("#fileUpload-product").on("change", function (e) {
+            const selectedFile = e.target.files[0];
+            const fileName = selectedFile.name
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
+
+            $.ajax({
+                type: "POST",
+                url: "/api/uploadFile",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.httpStatus === 200) {
+                        uploadFile.setFileGroupId(response.message.fileGroupId)
+                        uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("File upload error:", error);
+                }
+            });
+        })
+
+        $("#fileUpload-new-product").on("change", function (e) {
+            const selectedFile = e.target.files[0];
+            const fileName = selectedFile.name
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            if(newUploadFile.getFileGroupId()) formData.append("fileGroupId", newUploadFile.getFileGroupId());
+
+            $.ajax({
+                type: "POST",
+                url: "/api/uploadFile",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.httpStatus === 200) {
+                        newUploadFile.setFileGroupId(response.message.fileGroupId)
+                        newUploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("File upload error:", error);
+                }
+            });
+        })
 
     </script>
 </th:block>

@@ -2,9 +2,14 @@ package hongshop.hongshop.domain.product.impl;
 
 import hongshop.hongshop.domain.category.HongCategory;
 import hongshop.hongshop.domain.category.HongCategoryRepository;
+import hongshop.hongshop.domain.file.HongFileService;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
-import hongshop.hongshop.domain.product.*;
+import hongshop.hongshop.domain.product.HongProduct;
+import hongshop.hongshop.domain.product.HongProductRepository;
+import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.product.dto.HongProductDTO;
 import hongshop.hongshop.domain.product.vo.HongPrdouctUserVO;
 import hongshop.hongshop.domain.product.vo.HongProductVO;
@@ -36,6 +41,8 @@ public class HongProductServiceImpl implements HongProductService {
     private final HongProductRepository hongProductRepository;
     private final HongCategoryRepository hongCategoryRepository;
     private final HongOrderDetailService hongOrderDetailService;
+    private final HongFileService hongFileService;
+    private final HongFileGroupService hongFileGroupService;
 
     @Override
     @Transactional(readOnly = false)
@@ -43,13 +50,32 @@ public class HongProductServiceImpl implements HongProductService {
 
         HongCategory hongCategory = hongCategoryRepository.findById(hongProductDTO.getHongCategoryId()).orElseThrow(() -> new IllegalArgumentException("there is no category"));
 
-        HongProduct hongProduct = HongProduct.hongProductInsertBuilder()
-                .hongCategory(hongCategory)
-                .productName(hongProductDTO.getProductName())
-                .productCnt(hongProductDTO.getProductCnt())
-                .productPrice(hongProductDTO.getProductPrice())
-                .productStock(hongProductDTO.getProductCnt())
-                .build();
+        // 1. delete file from list : deleteFile
+        if(hongProductDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongProductDTO.getDeleteFile());
+        }
+
+        HongProduct hongProduct = null;
+        if(hongProductDTO.getFileGroupId() == null) {
+
+            hongProduct = HongProduct.hongProductInsertBuilder()
+                    .hongCategory(hongCategory)
+                    .productName(hongProductDTO.getProductName())
+                    .productCnt(hongProductDTO.getProductCnt())
+                    .productPrice(hongProductDTO.getProductPrice())
+                    .productStock(hongProductDTO.getProductCnt())
+                    .build();
+        }else {
+            hongFileService.updateFileState(hongProductDTO.getFileGroupId());
+            hongProduct = HongProduct.hongProductInsertBuilder()
+                    .hongCategory(hongCategory)
+                    .productName(hongProductDTO.getProductName())
+                    .productCnt(hongProductDTO.getProductCnt())
+                    .productPrice(hongProductDTO.getProductPrice())
+                    .productStock(hongProductDTO.getProductCnt())
+                    .fileGroupId(hongProductDTO.getFileGroupId())
+                    .build();
+        }
 
         HongProduct save = hongProductRepository.save(hongProduct);
 
@@ -65,7 +91,10 @@ public class HongProductServiceImpl implements HongProductService {
     @Override
     public HongProductVO view(Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
-        return new HongProductVO(hongProduct);
+        if(hongProduct.getFileGroupId() != null) {
+            HongFileGroupVO list = hongFileGroupService.list(hongProduct.getFileGroupId());
+            return new HongProductVO(hongProduct, list);
+        }else return new HongProductVO(hongProduct);
     }
 
     @Override
@@ -77,6 +106,10 @@ public class HongProductServiceImpl implements HongProductService {
     @Transactional(readOnly = false)
     public void update(HongProductDTO hongProductDTO, Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
+        if(hongProductDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongProductDTO.getDeleteFile());
+        }
+        if(hongProductDTO.getFileGroupId() != null) hongFileService.updateFileState(hongProductDTO.getFileGroupId());
         hongProduct.updateProduct(hongProductDTO);
     }
 
