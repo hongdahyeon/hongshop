@@ -130,3 +130,6 @@
    - 상품 이미지 등록의 경우 이미지 파일만 가능하도록 처리
    - file.js script.html로 이동
    - listwithDeleteYnAndFileState 메소드 deleteYn, FileStat값 하드코딩에서 직접 받아오도록 처리
+* commit97 (23/11/06)
+   - 상품테이블 newProductYn 컬럼 추가 -> 해당 상품들은 최산상품으로 구분
+   - 상품 메뉴 dropdwon -> button으로 변경
