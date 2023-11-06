@@ -123,6 +123,10 @@
     - file.js 추가를 통한 파일 업로드,삭제 공통처리
     - 상품 테이블에 이미지 Id 추가 -> 후에 상품 주문 화면에서 해당 이미지 보여주기 위함
 * commit95 (23/11/06)
- - 게시판 -> file.js 적용
- - 파일 삭제 시, deleteYn 'Y'로 변경
- - 파일 조회 시, deleteYn & fileState 조건절로 적용
+   - 게시판 -> file.js 적용
+   - 파일 삭제 시, deleteYn 'Y'로 변경
+   - 파일 조회 시, deleteYn & fileState 조건절로 적용
+* commit96 (23/11/06)
+   - 상품 이미지 등록의 경우 이미지 파일만 가능하도록 처리
+   - file.js script.html로 이동
+   - listwithDeleteYnAndFileState 메소드 deleteYn, FileStat값 하드코딩에서 직접 받아오도록 처리
