@@ -41,9 +41,9 @@ public class HongFileGroupServiceImpl implements HongFileGroupService {
     }
 
     @Override
-    public HongFileGroupVO listwithDeleteYnAndFileState(Long id) {
+    public HongFileGroupVO listwithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState) {
         HongFileGroup fileGroup = fileGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no file gorup"));
-        List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(id, "N", FileState.SAVED);
+        List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(id, deleteYn, fileState);
         List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
         return new HongFileGroupVO(fileGroup, listOfFileVO);
     }

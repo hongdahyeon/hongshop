@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.product.impl;
 
 import hongshop.hongshop.domain.category.HongCategory;
 import hongshop.hongshop.domain.category.HongCategoryRepository;
+import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
@@ -92,7 +93,7 @@ public class HongProductServiceImpl implements HongProductService {
     public HongProductVO view(Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         if(hongProduct.getFileGroupId() != null) {
-            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId());         // if has file-group-id, show together
+            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
             return new HongProductVO(hongProduct, list);
         }else return new HongProductVO(hongProduct);
     }

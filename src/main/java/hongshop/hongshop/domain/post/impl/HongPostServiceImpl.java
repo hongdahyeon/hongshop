@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.post.impl;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
+import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
@@ -102,7 +103,7 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostVO postWithFile(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId());
+        HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
         return new HongPostVO(hongPost, list);
     }
 
@@ -112,7 +113,7 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         HongFileGroupVO list = null;
         if(hongPost.getFileGroupId() != null){
-             list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId());
+             list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
         }
         return new HongPostVO(hongPost, list, listOfAnswer);
     }
@@ -123,7 +124,7 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(postTypeId, "N");
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
-            if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId());
+            if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId(), "N", FileState.SAVED);
             List<HongAnswerVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
             return new HongPostVO(post, list, hongAnswerVOS);
         }).toList();

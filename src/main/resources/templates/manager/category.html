@@ -334,7 +334,7 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger" id="cancel-product-user-btn" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-outline-danger" id="cancel-product-user-btn" data-bs-dismiss="modal">닫기</button>
                     </div>
 
                 </div>
@@ -348,7 +348,6 @@
 
 <th:block layout:fragment="script">
     <script th:src="@{'/assets/js/page/caregory.nav.js'}"></script>
-    <script th:src="@{'/assets/js/core/file.js'}"></script>
     <script th:inline="javascript">
 
         const nav = new navTab("navTab")
@@ -765,57 +764,70 @@
         })
 
         $("#fileUpload-product").on("change", function (e) {
-            const selectedFile = e.target.files[0];
-            const fileName = selectedFile.name
+            if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
+            else {
+                const selectedFile = e.target.files[0];
+                const fileName = selectedFile.name
 
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
+                if(!selectedFile.type.startsWith("image/")) alert("이미지 파일만 업로드 가능합니다.")
+                else {
+                    const formData = new FormData();
+                    formData.append("file", selectedFile);
+                    if (uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
-            $.ajax({
-                type: "POST",
-                url: "/api/uploadFile",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if(response.httpStatus === 200) {
-                        uploadFile.setFileGroupId(response.message.fileGroupId)
-                        uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                    }
-                },
-                error: function(error) {
-                    // Handle the error response
-                    console.error("File upload error:", error);
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/uploadFile",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.httpStatus === 200) {
+                                uploadFile.setFileGroupId(response.message.fileGroupId)
+                                uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
+                            }
+                        },
+                        error: function (error) {
+                            // Handle the error response
+                            console.error("File upload error:", error);
+                        }
+                    });
                 }
-            });
+            }
         })
 
         $("#fileUpload-new-product").on("change", function (e) {
-            const selectedFile = e.target.files[0];
-            const fileName = selectedFile.name
+            if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
+            else {
+                const selectedFile = e.target.files[0];
+                const fileName = selectedFile.name
 
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            if(newUploadFile.getFileGroupId()) formData.append("fileGroupId", newUploadFile.getFileGroupId());
+                if(!selectedFile.type.startsWith("image/")) alert("이미지 파일만 업로드 가능합니다.")
+                else {
 
-            $.ajax({
-                type: "POST",
-                url: "/api/uploadFile",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if(response.httpStatus === 200) {
-                        newUploadFile.setFileGroupId(response.message.fileGroupId)
-                        newUploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                    }
-                },
-                error: function(error) {
-                    // Handle the error response
-                    console.error("File upload error:", error);
+                    const formData = new FormData();
+                    formData.append("file", selectedFile);
+                    if (newUploadFile.getFileGroupId()) formData.append("fileGroupId", newUploadFile.getFileGroupId());
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/uploadFile",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.httpStatus === 200) {
+                                newUploadFile.setFileGroupId(response.message.fileGroupId)
+                                newUploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
+                            }
+                        },
+                        error: function (error) {
+                            // Handle the error response
+                            console.error("File upload error:", error);
+                        }
+                    });
                 }
-            });
+            }
         })
 
     </script>

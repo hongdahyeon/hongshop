@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.fileGroup;
 
+import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface HongFileGroupService {
 
     List<HongFileGroupVO> all();
-    HongFileGroupVO listwithDeleteYnAndFileState(Long id);
+    HongFileGroupVO listwithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState);
 
     HongFileGroup saveFileGroup();
 
