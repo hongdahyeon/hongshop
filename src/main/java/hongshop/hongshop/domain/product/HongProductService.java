@@ -31,4 +31,6 @@ public interface HongProductService {
     void delete(Long id);
 
     HongPrdouctUserVO productUser(Long id);
+
+    List<HongProductVO> getNewProdcuts();
 }

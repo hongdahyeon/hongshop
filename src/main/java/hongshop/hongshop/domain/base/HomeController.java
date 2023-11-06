@@ -30,9 +30,9 @@ public class HomeController {
 
     @CrossOrigin
     @GetMapping("/image")
-    public ResponseEntity<?> returnImage(@RequestParam String imageName) {
+    public ResponseEntity<?> returnImage(@RequestParam String imageId) {
         String path = "D:\\hongFile\\";
-        Resource resource = new FileSystemResource(path + imageName);
+        Resource resource = new FileSystemResource(path + imageId);
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 }

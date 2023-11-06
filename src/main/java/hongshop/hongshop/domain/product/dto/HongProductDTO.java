@@ -24,4 +24,6 @@ public class HongProductDTO {
 
     private Long fileGroupId;
     private List<Long> deleteFile = new ArrayList<>();
+
+    private String newProductYn;
 }

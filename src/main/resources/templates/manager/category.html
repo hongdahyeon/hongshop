@@ -36,6 +36,7 @@
 
         <section id="faq-tabs" class="mt-2">
             <div class="row">
+
                 <!-- s: category & product nav-tab -->
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="faq-navigation d-flex justify-content-between flex-column mb-2 mb-md-0">
@@ -75,8 +76,7 @@
                                     <div class="row">
                                         <div class="col-md-6 col-12">
                                             <div class="mb-1">
-                                                <label class="form-label" for="categoryName">카테고리 이름<span
-                                                        class="text-primary ms-50">*</span></label>
+                                                <label class="form-label" for="categoryName">카테고리 이름<span class="text-primary ms-50">*</span></label>
                                                 <input type="text" id="categoryName" class="form-control" name="categoryName" required/>
                                                 <div class="invalid-feedback">카테고리 이름을 입력해주세요.</div>
                                             </div>
@@ -153,6 +153,19 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-12 margin-10">
+                                            <label>최산상품 여부</label>
+                                            <div class="input-group">
+                                                <div class="form-check" style="margin-right: 20px;">
+                                                    <input type="radio" class="form-check-input" id="newProductYn-Y" name="newProductYn" value="Y">
+                                                    <label class="form-check-label" for="newProductYn-Y">Y</label>
+                                                </div>
+                                                <div class="form-check" style="margin-right: 20px;">
+                                                    <input type="radio" class="form-check-input" id="newProductYn-N" name="newProductYn" value="N">
+                                                    <label class="form-check-label" for="newProductYn-N">N</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12 margin-10">
                                             <label class="form-label" for="productPrice">상품 가격<span class="text-primary ms-50">*</span></label>
                                             <input type="number" id="productPrice" class="form-control" name="productPrice" required disabled/>
                                             <div class="invalid-feedback">상품의 가격을 입력하세요.</div>
@@ -225,6 +238,19 @@
                                     <input type="number" id="new-productPrice" class="form-control" name="productPrice" required/>
                                     <div class="invalid-feedback">상품의 가격을 입력하세요.</div>
                                 </div>
+                                <div class="col-md-6 col-12 margin-10">
+                                    <label>최산상품 여부</label>
+                                    <div class="input-group">
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-newProductYn-Y" name="newProductYn" value="Y">
+                                            <label class="form-check-label" for="new-newProductYn-Y">Y</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-newProductYn-N" name="newProductYn" value="N" checked>
+                                            <label class="form-check-label" for="new-newProductYn-N">N</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="mb-3 mt-3">
                                     <label for="file-container-new-product">파일첨부</label>
                                     <input type="file" id="fileUpload-new-product" name="file" style="display:none"/>
@@ -251,7 +277,7 @@
         </form>
         <!-- e: newProductModal -->
 
-        <!-- s: newProductModal -->
+        <!-- s: newCategoryModal -->
         <form id="new-category-form" class="needs-validation" novalidate>
             <div class="modal" id="new-category-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered">
@@ -302,7 +328,7 @@
                 </div>
             </div>
         </form>
-        <!-- e: newProductModal -->
+        <!-- e: newCategoryModal -->
 
         <!-- s: productUserModal -->
         <div class="modal modal-lg" id="product-user-modal">
@@ -364,7 +390,7 @@
 
                 document.getElementById("empty-div").style.display = 'none'
                 document.getElementById("category-div").style.display = 'none'
-                document.getElementById("product-div").style.display = 'block'
+                document.getElementById("product-div").style.display = 'block'      // show
 
                 $.ajax({
                     type: 'GET',
@@ -377,12 +403,13 @@
                             uploadFile.domEmptyAndFileGroupIdNull()
                             if(data.message['file'] != null) uploadFile.setFileGroupId(data.message['file']['id']).setData(data.message['file']['fileList']).setFiles()
 
-                            $("#productName").val(data.message['productName'])
-                            $("#hongProductId").val(data.message['productId'])
-                            $("#productCnt").val(data.message['productCnt'])
-                            $("#originProductCnt").val(data.message['productCnt'])
-                            $("#productPrice").val(data.message['productPrice'])
-                            $("#productStock").val(data.message['productStock'])
+                            $("#productName").val(data.message['productName'])                          // 상품 이름
+                            $("#hongProductId").val(data.message['productId'])                          // 상품 Id
+                            $("#productCnt").val(data.message['productCnt'])                            // 상품 개수 (변동)
+                            $("#originProductCnt").val(data.message['productCnt'])                      // 상품 개수 (hidden)
+                            $("#productPrice").val(data.message['productPrice'])                        // 상품 가격
+                            $("#productStock").val(data.message['productStock'])                        // 상품 재고
+                            $(`#newProductYn-${data.message['newProductYn']}`).prop('checked', true)    // 최산 상품 여부
                         }
                     },
                     error: function (xhr, status, error) {
@@ -396,7 +423,7 @@
                 const hongCategoryId = $(this).attr("data-num")
 
                 document.getElementById("empty-div").style.display = 'none'
-                document.getElementById("category-div").style.display = 'block'
+                document.getElementById("category-div").style.display = 'block'     // show
                 document.getElementById("product-div").style.display = 'none'
 
                 $.ajax({
@@ -406,10 +433,10 @@
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.httpStatus === 200) {
-                            $("#hongCategoryId").val(data.message['categoryId'])
-                            $("#orderNum").val(data.message['orderNum'])
-                            $("#categoryName").val(data.message['categoryName'])
-                            $("#description").html(data.message['description'])
+                            $("#hongCategoryId").val(data.message['categoryId'])                                        // 카테고리 Id
+                            $("#orderNum").val(data.message['orderNum'])                                                // 카테고리 순서
+                            $("#categoryName").val(data.message['categoryName'])                                        // 카테고리 이름
+                            $("#description").html(data.message['description'])                                         // 카테고리 설명
                             if(data.message['productList'].length) $("#delete-category-btn").prop('disabled', true)     // 하위 상품 존재시, 카테고리 삭제 불가능
                             else $("#delete-category-btn").prop('disabled', false)
                         }
@@ -423,8 +450,8 @@
             /* [왼쪽] "+상품" 클릭 */
             $("#navTab").on("click", "#add-product-btn", function(e) {
                 const hongCategoryId = $(this).attr("data-num")
-                $("#new-product-hongCategoryId").val(hongCategoryId)
-                newUploadFile.domEmptyAndFileGroupIdNull()
+                $("#new-product-hongCategoryId").val(hongCategoryId)        // 카테고리 Id (hidden)
+                newUploadFile.domEmptyAndFileGroupIdNull()                  // 파일 첨부 영역 dom.empty()
                 $("#new-product-modal").modal('show')
             })
 
@@ -529,6 +556,7 @@
             $("#new-categoryName").val('')
             $("#new-description").val('')
 
+            // validation 지우기
             const form = document.getElementById("new-category-form")
             form.classList.remove("was-validated")
         }
@@ -538,8 +566,9 @@
             $("#new-productName").val('')
             $("#new-productCnt").val('')
             $("#new-productPrice").val('')
-            newUploadFile.domEmptyAndFileGroupIdNull()
+            newUploadFile.domEmptyAndFileGroupIdNull()  // product modal file dom.empty()
 
+            // validation 지우기
             const form = document.getElementById("new-product-form")
             form.classList.remove("was-validated")
         }
@@ -550,6 +579,7 @@
             dom.empty();
 
             productUser.forEach((data, i) => {
+                const price = data['orderPrice'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 const body =
                     `
                     <tr>
@@ -557,7 +587,7 @@
                         <td style="width: 20%" class="text-center">${data['userId']}</td>
                         <td style="width: 10%" class="text-center">${data['orderStatus']}</td>
                         <td style="width: 10%" class="text-center">${data['orderCnt']}</td>
-                        <td style="width: 10%" class="text-center">${data['orderPrice']}</td>
+                        <td style="width: 10%" class="text-center">${price}</td>
                         <td style="width: 10%" class="text-center">${data['orderDate'].toString().substring(0, 10)}</td>
                     </tr>
                     `
@@ -739,16 +769,16 @@
         })
 
         function defaultPage(){
-            document.getElementById("empty-div").style.display = 'block'
+            document.getElementById("empty-div").style.display = 'block'        // show
             document.getElementById("category-div").style.display = 'none'
             document.getElementById("product-div").style.display = 'none'
             getCategoryWithProduct()
-            drawCategoryDom()           // 상품구경하기 header 재구성
 
             categoryModalEmpty()
             productModalEmpty()
         }
 
+        /* [오른쪽] 상품 정보 수정 -> 파일 업로드 */
         $('#btn-upload-product').on("click", function (e) {
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-product li")].length;
@@ -756,6 +786,7 @@
             else $('#fileUpload-product').click();
         });
 
+        /* [+상품] 새로운 상품등록 모달 -> 파일 업로드 */
         $('#btn-upload-new-product').on("click", function(e){
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-new-product li")].length;
@@ -763,6 +794,7 @@
             else $('#fileUpload-new-product').click();
         })
 
+        /* [오른쪽] 상품 정보 수정 -> 파일 업로드 */
         $("#fileUpload-product").on("change", function (e) {
             if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
             else {
@@ -796,6 +828,7 @@
             }
         })
 
+        /* [+상품] 새로운 상품등록 모달 -> 파일 업로드 */
         $("#fileUpload-new-product").on("change", function (e) {
             if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
             else {

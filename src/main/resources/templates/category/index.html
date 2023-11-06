@@ -5,6 +5,37 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
+    <style>
+        .nav-link {
+            margin-top: 10px; /* Adjust the margin-top value as needed */
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 6 columns */
+            gap: 10px; /* Spacing between items */
+        }
+
+        .image-item {
+            text-align: center;
+        }
+
+        .image-item img {
+            width: 100%; /* Resize images to fit their container */
+        }
+
+        .product-info {
+            display: inline-block;
+            vertical-align: top; /* Align the elements to the top of the line */
+            margin-right: 10px; /* Add some spacing between the two <p> tags */
+        }
+
+        .image-name {
+            text-align: center; /* Align text to the left */
+            margin: 0; /* Remove any default margins */
+            padding: 0; /* Remove any default padding */
+            font-weight: bold;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -12,60 +43,71 @@
         <div class="card-header" style="margin-bottom: 10px">
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
-                    <h3 th:text="${categories.categoryName}"></h3>
+                    <h3 id="category-name">최신상품</h3>
                 </div>
                 <div class="text-end"></div>
             </div>
         </div>
         <div class="card-body">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <!-- Vertical tabs -->
-                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <a class="nav-link active" id="searchUserId-tab" data-bs-toggle="tab" href="#searchUserId" role="tab" aria-controls="searchUserId" aria-selected="true">searchUserId</a>
-                            <a class="nav-link" id="searchUserId2-tab" data-bs-toggle="tab" href="#searchUserId2" role="tab" aria-controls="searchUserId2" aria-selected="false">searchUserId2</a>
-                            <a class="nav-link" id="searchUserId3-tab" data-bs-toggle="tab" href="#searchUserId3" role="tab" aria-controls="searchUserId3" aria-selected="false">searchUserId3</a>
-                            <a class="nav-link" id="searchUserId4-tab" data-bs-toggle="tab" href="#searchUserId4" role="tab" aria-controls="searchUserId4" aria-selected="false">searchUserId4</a>
-                        </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <!-- Vertical tabs -->
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active nav-category-link" id="newProdcuts-tab" data-bs-toggle="tab" href="#newProdcuts" role="tab" aria-controls="newProdcuts" aria-selected="true">최신상품</a>
+                        <a th:each="cat, catStaa: ${categories}" class="nav-link nav-category-link"  data-bs-toggle="tab" role="tab" aria-selected="false" th:id="|product-${cat.categoryId}-tab|" th:href="'#product'+${cat.categoryId}" th:aria-controls="|product${cat.categoryId}|" th:text="${cat.categoryName}"></a>
                     </div>
-                    <div class="col-md-9">
-                        <!-- Tab content -->
-                        <div class="tab-content" id="tab-content">
+                </div>
+                <div class="col-md-9">
+                    <!-- Tab content -->
+                    <div class="tab-content" id="tab-content">
 
-                            <!-- s: searchUserId-tab -->
-                            <div class="tab-pane fade show active" id="searchUserId" role="tabpanel" aria-labelledby="searchUserId-tab">
-                                <!-- Content for the '아이디 찾기' tab -->
-                                <h3>아이디찾기</h3>
-                                <!-- Your form and content here -->
-                            </div>
-                            <!-- e: searchUserId-tab -->
+                        <!-- s: newProdcuts-tab -->
+                        <div class="tab-pane fade show active" id="newProdcuts" role="tabpanel" aria-labelledby="newProdcuts-tab">
 
-                            <!-- s: searchUserId2-tab -->
-                            <div class="tab-pane fade" id="searchUserId2" role="tabpanel" aria-labelledby="searchUserId2-tab">
-                                <!-- Content for the '아이디 찾기' tab -->
-                                <h3>아이디찾기2</h3>
-                                <!-- Your form and content here -->
+                            <div class="image-grid">
+                                <div class="image-item" th:each="product, productStat : ${newProdcuts}">
+                                    <button class="btn img-btn" type="button" th:id="|btn-${product.productId}|" th:data-num="${product.productId}" th:data-stock="${product.productStock}">
+                                        <img th:src="'/image?imageId=' + ${product.getFile().getFileList().get(0).getSavedFileName()}" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                                    </button>
+                                    <div class="product-info">
+                                        <p class="image-name">
+                                            <span th:text="${product.productName}"></span>
+                                            <i data-feather="star" class="font-medium-2 ms-50"></i>
+                                        </p>
+                                        <p th:text="|가격: ${product.productPrice}|" class="image-name"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- e: searchUserId2-tab -->
-
-                            <!-- s: searchUserId3-tab -->
-                            <div class="tab-pane fade" id="searchUserId3" role="tabpanel" aria-labelledby="searchUserId3-tab">
-                                <!-- Content for the '아이디 찾기' tab -->
-                                <h3>아이디찾기3</h3>
-                                <!-- Your form and content here -->
-                            </div>
-                            <!-- e: searchUserId3-tab -->
-
-                            <!-- s: searchUserId4-tab -->
-                            <div class="tab-pane fade" id="searchUserId4" role="tabpanel" aria-labelledby="searchUserId4-tab">
-                                <!-- Content for the '아이디 찾기' tab -->
-                                <h3>아이디찾기4</h3>
-                                <!-- Your form and content here -->
-                            </div>
-                            <!-- e: searchUserId4-tab -->
 
                         </div>
+                        <!-- e: newProdcuts-tab -->
+
+
+                        <th:block th:each="cat, catStat : ${categories}">
+                            <!-- s -->
+                            <div class="tab-pane fade" th:id="|product${cat.categoryId}|" role="tabpanel" th:aria-labelledby="|product-${cat.categoryId}-tab|">
+                                <div class="image-grid">
+                                    <div class="image-item" th:each="product, productStat : ${cat.productList}">
+                                        <button class="btn img-btn" type="button" th:id="|btn-${product.productId}|" th:data-num="${product.productId}" th:data-stock="${product.productStock}">
+                                            <th:block th:if="${product.getFile() != null}">
+                                                <img th:src="'/image?imageId=' + ${product.getFile().getFileList().get(0).getSavedFileName()}" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                                            </th:block>
+                                            <th:block th:unless="${product.getFile() != null}">
+                                                <img src="/assets/src/shop/noImage.png" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                                            </th:block>
+                                        </button>
+                                        <div class="product-info">
+                                            <p class="image-name">
+                                                <span th:text="${product.productName}"></span>
+                                                <i th:if="${product.newProductYn == 'Y'}" data-feather="star" class="font-medium-2 ms-50"></i>
+                                            </p>
+                                            <p th:text="|가격: ${product.productPrice}|" class="image-name"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- e -->
+                        </th:block>
                     </div>
                 </div>
             </div>
@@ -76,10 +118,31 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        const categoryId = [[${id}]]
-        const categories = [[${categories}]]
-        console.log("categoryId : ", categoryId)
+        const newProdcuts = /*[[${newProdcuts}]]*/[]
+        const categories = /*[[${categories}]]*/{}
+        console.log("newProdcuts : ", newProdcuts)
         console.log("categories : ", categories)
+
+        $(document).ready(function(e){
+            feather.replace()
+        })
+
+        $(".nav-category-link").on("click", function(e){
+            const categoryName = $(this).text();
+            $("#category-name").text(categoryName)
+        })
+
+        $(".img-btn").on("click", function(e){
+            const productId = $(this).attr("data-num")
+            const productStock = $(this).attr("data-stock")
+            console.log("productId : ", productId)
+            console.log("productStock : ", productStock)
+
+            if(productStock == 0) alert("해당 상품은 현재 재고가 없어서 구입이 불가능합니다. \n해당 물품 구입을 원하신다면 문의글을 남겨주세요.")
+            else {
+                console.log("product")
+            }
+        })
     </script>
 </th:block>
 

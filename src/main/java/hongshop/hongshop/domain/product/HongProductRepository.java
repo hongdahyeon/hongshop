@@ -15,4 +15,6 @@ import java.util.List;
 public interface HongProductRepository extends JpaRepository<HongProduct, Long> {
 
     List<HongProduct> findAllByHongCategoryIdAndDeleteYnIs(Long id, String deleteYn);
+
+    List<HongProduct> findAllByDeleteYnAndNewProductYn(String deleteYn, String newProductYn);
 }

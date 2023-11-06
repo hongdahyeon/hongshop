@@ -1,8 +1,13 @@
 package hongshop.hongshop.domain.category.impl;
 
-import hongshop.hongshop.domain.category.*;
+import hongshop.hongshop.domain.category.HongCategory;
+import hongshop.hongshop.domain.category.HongCategoryRepository;
+import hongshop.hongshop.domain.category.HongCategoryService;
 import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
 import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.file.FileState;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductRepository;
 import hongshop.hongshop.domain.product.vo.HongProductVO;
@@ -27,6 +32,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
 
     private final HongCategoryRepository hongCategoryRepository;
     private final HongProductRepository hongProductRepository;
+    private final HongFileGroupService hongFileGroupService;
 
     @Override
     @Transactional(readOnly = false)
@@ -53,8 +59,13 @@ public class HongCategoryServiceImpl implements HongCategoryService {
         List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIsOrderByOrderNum("N");
         return all.stream().map(category -> {
             List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(category.getId(), "N");
-            List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
-            return new HongCategoryVO(category, list);
+            List<HongProductVO> productVOList = productList.stream().map(hongProduct -> {
+                if (hongProduct.getFileGroupId() != null) {
+                    HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+                    return new HongProductVO(hongProduct, list);
+                } else return new HongProductVO(hongProduct);
+            }).toList();
+            return new HongCategoryVO(category, productVOList);
         }).toList();
     }
 

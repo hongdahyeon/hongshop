@@ -22,6 +22,7 @@ public class HongProductVO {
     private Integer productCnt;
     private Integer productPrice;
     private Integer productStock;
+    private String newProductYn;
     private HongFileGroupVO file;
 
     public HongProductVO(HongProduct hongProduct) {
@@ -31,6 +32,7 @@ public class HongProductVO {
         this.productCnt = hongProduct.getProductCnt();
         this.productPrice = hongProduct.getProductPrice();
         this.productStock = hongProduct.getProductStock();
+        this.newProductYn = hongProduct.getNewProductYn();
     }
 
 
@@ -41,6 +43,7 @@ public class HongProductVO {
         this.productCnt = hongProduct.getProductCnt();
         this.productPrice = hongProduct.getProductPrice();
         this.productStock = hongProduct.getProductStock();
+        this.newProductYn = hongProduct.getNewProductYn();
         this.file = hongFileGroupVO;
     }
 }

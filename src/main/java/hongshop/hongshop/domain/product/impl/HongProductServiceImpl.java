@@ -32,6 +32,7 @@ import java.util.List;
  *              (5) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
  *              (6) delete : 상품 삭제 (deleteYn)
  *              (7) productUser : 상품ID를 통한 주문자 리스트 조회
+ *              (8) getNewProdcuts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
 **/
 
 @Service
@@ -65,6 +66,7 @@ public class HongProductServiceImpl implements HongProductService {
                     .productCnt(hongProductDTO.getProductCnt())
                     .productPrice(hongProductDTO.getProductPrice())
                     .productStock(hongProductDTO.getProductCnt())
+                    .newProductYn(hongProductDTO.getNewProductYn())
                     .build();
         }else {
             hongFileService.updateFileState(hongProductDTO.getFileGroupId());
@@ -75,6 +77,7 @@ public class HongProductServiceImpl implements HongProductService {
                     .productPrice(hongProductDTO.getProductPrice())
                     .productStock(hongProductDTO.getProductCnt())
                     .fileGroupId(hongProductDTO.getFileGroupId())           // if has file, insert file-group-id
+                    .newProductYn(hongProductDTO.getNewProductYn())
                     .build();
         }
 
@@ -133,5 +136,16 @@ public class HongProductServiceImpl implements HongProductService {
         HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);
         return new HongPrdouctUserVO(product, orderDetails);
+    }
+
+    @Override
+    public List<HongProductVO> getNewProdcuts() {
+        List<HongProduct> products = hongProductRepository.findAllByDeleteYnAndNewProductYn("N", "Y");// deleteYn: N , newProductYn: Y
+        return products.stream().map(hongProduct -> {
+            if(hongProduct.getFileGroupId() != null) {
+                HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+                return new HongProductVO(hongProduct, list);
+            }else return new HongProductVO(hongProduct);
+        }).toList();
     }
 }

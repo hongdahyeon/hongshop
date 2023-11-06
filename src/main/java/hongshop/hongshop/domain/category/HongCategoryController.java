@@ -1,12 +1,15 @@
 package hongshop.hongshop.domain.category;
 
 import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.product.HongProductService;
+import hongshop.hongshop.domain.product.vo.HongProductVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -14,16 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HongCategoryController {
 
     private final HongCategoryService hongCategoryService;
+    private final HongProductService hongProductService;
     @GetMapping("/new")
     public String newCategory(Model model){
-        model.addAttribute("imageName", "672e9509-a9a8-4a3c-a61e-550465352093.png");
-        return "category/new";
-    }
+        List<HongProductVO> newProdcuts = hongProductService.getNewProdcuts();
+        List<HongCategoryVO> list = hongCategoryService.listWithProduct();
 
-    @GetMapping("/{id}")
-    public String category(@PathVariable Long id, Model model){
-        HongCategoryVO list = hongCategoryService.showWithProduct(id);
+        model.addAttribute("newProdcuts", newProdcuts);
         model.addAttribute("categories", list);
+
         return "category/index";
     }
 }
