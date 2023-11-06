@@ -116,7 +116,7 @@ public class HongFileServiceImpl implements HongFileService {
     @Override
     @Transactional(readOnly = false)
     public void updateFileState(Long fileGroupId) {
-        List<HongFile> fileList = hongFileRepository.findAllByHongFileGroupId(fileGroupId);
+        List<HongFile> fileList = hongFileRepository.findAllByHongFileGroupIdAndDeleteYn(fileGroupId, "N");
         for (HongFile hongFile : fileList) {
             hongFile.updateFileState();
         }
@@ -155,7 +155,7 @@ public class HongFileServiceImpl implements HongFileService {
     public void deleteFiles(List<Long>  deleteFile) {
          for (Long fileId : deleteFile) {
             HongFile hongFile = hongFileRepository.findById(fileId).orElseThrow(() -> new IllegalArgumentException("there is no file"));
-            hongFileRepository.delete(hongFile);
+            hongFile.deleteFile();
         }
     }
 }

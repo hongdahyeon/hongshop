@@ -102,7 +102,7 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostVO postWithFile(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        HongFileGroupVO list = hongFileGroupService.list(hongPost.getFileGroupId());
+        HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId());
         return new HongPostVO(hongPost, list);
     }
 
@@ -112,9 +112,8 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         HongFileGroupVO list = null;
         if(hongPost.getFileGroupId() != null){
-             list = hongFileGroupService.list(hongPost.getFileGroupId());
+             list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId());
         }
-
         return new HongPostVO(hongPost, list, listOfAnswer);
     }
 
@@ -124,7 +123,7 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(postTypeId, "N");
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
-            if(post.getFileGroupId() != null) list = hongFileGroupService.list(post.getFileGroupId());
+            if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId());
             List<HongAnswerVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
             return new HongPostVO(post, list, hongAnswerVOS);
         }).toList();

@@ -31,7 +31,7 @@ public class HongFileGroupRestController {
     @Operation(summary = "get file group view with files", description = "파일 그룹 정보 & 파일 리스트")
     @ApiDocumentResponse
     public Response viewWithFiles(@PathVariable Long id){
-        HongFileGroupVO viewWithFiles = hongFileGroupService.list(id);
+        HongFileGroupVO viewWithFiles = hongFileGroupService.listwithDeleteYnAndFileState(id);
         return Response.ok(viewWithFiles);
     }
 }

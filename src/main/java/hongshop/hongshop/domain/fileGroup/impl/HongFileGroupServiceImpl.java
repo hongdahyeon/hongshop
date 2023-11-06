@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.fileGroup.impl;
 
+import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFile;
 import hongshop.hongshop.domain.file.HongFileRepository;
 import hongshop.hongshop.domain.file.vo.HongFileVO;
@@ -33,16 +34,16 @@ public class HongFileGroupServiceImpl implements HongFileGroupService {
     public List<HongFileGroupVO> all() {
         List<HongFileGroup> all = fileGroupRepository.findAll();
         return all.stream().map(group -> {
-            List<HongFile> fileList = fileRepository.findAllByHongFileGroupId(group.getId());
+            List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(group.getId(), "N", FileState.SAVED);
             List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
             return new HongFileGroupVO(group, listOfFileVO);
         }).filter(hongFileGroupVO -> !hongFileGroupVO.getFileList().isEmpty()).toList();
     }
 
     @Override
-    public HongFileGroupVO list(Long id) {
+    public HongFileGroupVO listwithDeleteYnAndFileState(Long id) {
         HongFileGroup fileGroup = fileGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no file gorup"));
-        List<HongFile> fileList = fileRepository.findAllByHongFileGroupId(id);
+        List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(id, "N", FileState.SAVED);
         List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
         return new HongFileGroupVO(fileGroup, listOfFileVO);
     }

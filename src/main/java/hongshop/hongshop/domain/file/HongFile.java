@@ -85,4 +85,7 @@ public class HongFile extends BaseEntity {
         this.fileState = FileState.SAVED;
     }
 
+    public void deleteFile(){
+        this.deleteYn = "Y";
+    }
 }

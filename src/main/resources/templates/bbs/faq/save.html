@@ -58,11 +58,11 @@
 
 
 <th:block layout:fragment="script">
+    <script th:src="@{'/assets/js/core/file.js'}"></script>
     <script th:inline="javascript">
 
         const type = /*[[${type}]]*/ {}
-        let fileGroupId = null;
-        let deleteFile = []
+        const uploadFile = new File("upload-container")
 
         console.log("type : ",type)
 
@@ -77,10 +77,10 @@
 
             $("#save-btn").on("click", function(e){
                 console.log("clicked")
-                console.log("deleteFile : ", deleteFile)
+                console.log("deleteFile : ", uploadFile.getDeleteFile())
                 console.log("content : ", ckEditor.getData())
                 console.log("title : ", $("#title").val())
-                console.log("fileGroupId : ", fileGroupId)
+                console.log("fileGroupId : ", uploadFile.getFileGroupId())
 
 
                 if(ckEditor.getData().length === 0) alert("내용을 입력해주세요.")
@@ -89,11 +89,11 @@
                         'title' : $("#title").val(),
                         'content': ckEditor.getData(),
                         'hongPostTypeId' : type['postTypeId'],
-                        'deleteFile': deleteFile
+                        'deleteFile': uploadFile.getDeleteFile()
                     }
 
-                    if(fileGroupId !== null) obj['fileGroupId'] = fileGroupId
-                    console.log("obj : ", obj)
+                    if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
+
                     $.ajax({
                         type: "POST",
                         url: `/api/post`,
@@ -123,7 +123,7 @@
 
                 const formData = new FormData();
                 formData.append("file", selectedFile);
-                if(fileGroupId) formData.append("fileGroupId", fileGroupId);
+                if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
                 $.ajax({
                     type: "POST",
@@ -133,8 +133,8 @@
                     processData: false,
                     success: function(response) {
                         if(response.httpStatus === 200) {
-                            fileGroupId = response.message.fileGroupId
-                            addFileList({'originalFileName': fileName, 'id': response.message.id})
+                            uploadFile.setFileGroupId(response.message.fileGroupId)
+                            uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
                         }
                     },
                     error: function(error) {
@@ -144,28 +144,6 @@
                 });
             })
         })
-
-        const addFileList = (file = []) => {
-            const dom = $("#upload-container")
-            const body =
-                `
-                <li style="margin-top: 10px;" data-file-id="${file.id}">
-                    <a href="#" onclick="trashFile(${file.id})">
-                        <i data-feather="trash" class="front-medium-2"></i>
-                    </a>
-                    [임시저장] ${file['originalFileName']}
-                </li>
-                `
-            dom.append(body)
-            feather.replace()
-        }
-
-        function trashFile(id){
-            deleteFile.push(id)
-            const listItem = $(`[data-file-id="${id}"]`);
-            listItem.remove();
-        }
-
 
         let ckEditor;
         ClassicEditor

@@ -73,7 +73,7 @@ public class HongProductServiceImpl implements HongProductService {
                     .productCnt(hongProductDTO.getProductCnt())
                     .productPrice(hongProductDTO.getProductPrice())
                     .productStock(hongProductDTO.getProductCnt())
-                    .fileGroupId(hongProductDTO.getFileGroupId())
+                    .fileGroupId(hongProductDTO.getFileGroupId())           // if has file, insert file-group-id
                     .build();
         }
 
@@ -92,7 +92,7 @@ public class HongProductServiceImpl implements HongProductService {
     public HongProductVO view(Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         if(hongProduct.getFileGroupId() != null) {
-            HongFileGroupVO list = hongFileGroupService.list(hongProduct.getFileGroupId());
+            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId());         // if has file-group-id, show together
             return new HongProductVO(hongProduct, list);
         }else return new HongProductVO(hongProduct);
     }
@@ -107,7 +107,7 @@ public class HongProductServiceImpl implements HongProductService {
     public void update(HongProductDTO hongProductDTO, Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         if(hongProductDTO.getDeleteFile().size() != 0){
-            hongFileService.deleteFiles(hongProductDTO.getDeleteFile());
+            hongFileService.deleteFiles(hongProductDTO.getDeleteFile());            // if has delete-files, delete it
         }
         if(hongProductDTO.getFileGroupId() != null) hongFileService.updateFileState(hongProductDTO.getFileGroupId());
         hongProduct.updateProduct(hongProductDTO);

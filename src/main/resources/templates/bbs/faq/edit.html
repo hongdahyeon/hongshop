@@ -58,16 +58,16 @@
 
 
 <th:block layout:fragment="script">
+    <script th:src="@{'/assets/js/core/file.js'}"></script>
     <script th:inline="javascript">
 
         const post = /*[[${post}]]*/ {}
         console.log("post : ", post)
-        let fileGroupId = null;
-        if(post['file']) fileGroupId = post['file'].id
-        let deleteFile = []
+        const uploadFile = new File("upload-container")
+        if(post['file']) uploadFile.setFileGroupId(post['file'].id)
 
         $(document).ready(function(){
-            if(post['file']) setFileList(post['file']['fileList']);
+            if(post['file'])  uploadFile.setData(post['file']['fileList']).setFiles()
 
             $("#list-btn").on("click", function(e){
                 const result = confirm("수정 정보가 저장되지 않을수도 있습니다." + '\n' + "목록으로 돌아가시겠습니까?")
@@ -78,11 +78,10 @@
 
             $("#save-btn").on("click", function(e){
                 console.log("clicked")
-                console.log("deleteFile : ", deleteFile)
+                console.log("deleteFile : ", uploadFile.getDeleteFile())
                 console.log("content : ", ckEditor.getData())
                 console.log("title : ", $("#title").val())
-                console.log("fileGroupId : ", fileGroupId)
-                // window.location.href = ``
+                console.log("fileGroupId : ", uploadFile.getFileGroupId())
 
                 if(ckEditor.getData().length === 0) alert("내용을 입력해주세요.")
                 else {
@@ -90,10 +89,10 @@
                         'title' : $("#title").val(),
                         'content': ckEditor.getData(),
                         'hongPostTypeId' : post['typeId'],
-                        'deleteFile': deleteFile
+                        'deleteFile': uploadFile.getDeleteFile()
                     }
 
-                    if(fileGroupId !== null) obj['fileGroupId'] = fileGroupId
+                    if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
 
                     $.ajax({
                         type: "PUT",
@@ -124,7 +123,7 @@
 
                 const formData = new FormData();
                 formData.append("file", selectedFile);
-                if(fileGroupId) formData.append("fileGroupId", fileGroupId);
+                if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
                 $.ajax({
                     type: "POST",
@@ -134,8 +133,8 @@
                     processData: false,
                     success: function(response) {
                         if(response.httpStatus === 200) {
-                            fileGroupId = response.message.fileGroupId
-                            addFileList({'originalFileName': fileName, 'id': response.message.id})
+                            uploadFile.setFileGroupId(response.message.fileGroupId)
+                            uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
                         }
                     },
                     error: function(error) {
@@ -145,46 +144,6 @@
                 });
             });
         })
-
-        const setFileList = (file = []) => {
-            const dom = $("#upload-container")
-            dom.empty()
-
-            file.forEach((value, i) => {
-                const body =
-                    `
-                    <li style="margin-top: 10px;" data-file-id="${value.id}">
-                        <a href="#" onclick="trashFile(${value.id})">
-                            <i data-feather="trash" class="front-medium-2"></i>
-                        </a>
-                        ${value['originalFileName']}
-                    </li>
-                    `
-                dom.append(body)
-            });
-            feather.replace()
-        }
-
-        const addFileList = (file = []) => {
-            const dom = $("#upload-container")
-            const body =
-                `
-                <li style="margin-top: 10px;" data-file-id="${file.id}">
-                    <a href="#" onclick="trashFile(${file.id})">
-                        <i data-feather="trash" class="front-medium-2"></i>
-                    </a>
-                    [임시저장] ${file['originalFileName']}
-                </li>
-                `
-            dom.append(body)
-            feather.replace()
-        }
-
-        function trashFile(id){
-            deleteFile.push(id)
-            const listItem = $(`[data-file-id="${id}"]`);
-            listItem.remove();
-        }
 
         let ckEditor;
         ClassicEditor

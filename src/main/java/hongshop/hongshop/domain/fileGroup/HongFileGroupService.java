@@ -15,7 +15,7 @@ import java.util.List;
 public interface HongFileGroupService {
 
     List<HongFileGroupVO> all();
-    HongFileGroupVO list(Long id);
+    HongFileGroupVO listwithDeleteYnAndFileState(Long id);
 
     HongFileGroup saveFileGroup();
 
