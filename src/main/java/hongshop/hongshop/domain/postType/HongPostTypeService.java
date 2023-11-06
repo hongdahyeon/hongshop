@@ -28,4 +28,6 @@ public interface HongPostTypeService {
     void update(Long id, HongPostTypeDTO hongPostTypeDTO);
 
     void delete(Long id);
+
+    HongPostTypeVO getQnaPost();
 }

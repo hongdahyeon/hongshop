@@ -23,6 +23,8 @@ import java.util.List;
  *  (4) join : 게시글 타입 저장
  *  (5) view : 게시글 타입 단건 조회
  *  (6) update : 게시글 타입 수정
+ *  (7) delete : 게시글 타입 삭제
+ *  (8) getQnaPost : 질의응답 게시글 타입 가져오기
 **/
 
 @Transactional(readOnly = true)
@@ -95,4 +97,12 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
         hongPostType.deletePostType();
     }
 
+    @Override
+    public HongPostTypeVO getQnaPost() {
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtAndUseAtAndPostType("N", "Y", PostType.QNA);
+        if(all.size()>= 1) {
+            HongPostType hongPostType = all.get(0);
+            return new HongPostTypeVO(hongPostType);
+        }else return null;
+    }
 }

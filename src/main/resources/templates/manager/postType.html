@@ -61,7 +61,7 @@
                             </td>
                             <td style="width: 10%; text-align: center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary post-update-btn" th:value="${post.postTypeId}">수정</button>
-                                <button type="button" class="btn btn-sm btn-outline-danger post-delete-btn" th:value="${post.postTypeId}">삭제</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger post-delete-btn" th:value="${post.postTypeId}"  th:data-num="${post.hongPost.size()}">삭제</button>
                             </td>
                         </tr>
                     </th:block>
@@ -243,35 +243,37 @@
         $(".post-page-btn").on("click", function(e){
             const postTypeId = $(this).val()
             const postUseAt = $(this).attr("data-useAt")
-            if(postUseAt === 'N') alert("해당 게시글은 사용여부가 N이기 때문에 게시판이 생성되지 않았습니다." + '\n' + "사용여부를 Y로 변경해주세요.")
+            if(postUseAt === 'N') alert("해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다." + '\n' + "사용여부를 Y로 변경해주세요.")
             else {
                 window.location.href = `/bbs/${postTypeId}`
             }
         })
 
-
         /* 게시판 삭제 버튼 클릭 이벤트 */
         $(".post-delete-btn").on("click", function(e){
             const postTypeId = $(this).val()
-            console.log("post-page-btn : ", postTypeId)
+            const postLen = $(this).attr("data-num")
 
-            const result = confirm("해당 게시글을 삭제하시겠습니까?")
-            if(result) {
-                $.ajax({
-                    type: 'DELETE',
-                    url: `/api/type/${postTypeId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.httpStatus === 200) {
-                            alert(`${data.message}`)
-                            window.location.href = '/manager/postType'
+            if(postLen > 0) alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.")
+            else {
+                const result = confirm("해당 게시판을 삭제하시겠습니까?")
+                if (result) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/api/type/${postTypeId}`,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if (data.httpStatus === 200) {
+                                alert(`${data.message}`)
+                                window.location.href = '/manager/postType'
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
-                    }
-                });
+                    });
+                }
             }
         })
 

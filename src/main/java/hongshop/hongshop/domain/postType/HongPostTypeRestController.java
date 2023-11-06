@@ -72,7 +72,7 @@ public class HongPostTypeRestController {
     @ApiDocumentResponse
     public Response update(@PathVariable Long id, @RequestBody HongPostTypeDTO hongPostTypeDTO) {
         hongPostTypeService.update(id, hongPostTypeDTO);
-        return Response.ok("게시글 타입이 수정되었습니다.");
+        return Response.ok("게시판 유형이 수정되었습니다.");
     }
 
     @DeleteMapping("/type/{id}")
@@ -80,7 +80,7 @@ public class HongPostTypeRestController {
     @ApiDocumentResponse
     public Response delete(@PathVariable Long id){
         hongPostTypeService.delete(id);
-        return Response.ok("게시글 타입이 삭제되었습니다.");
+        return Response.ok("게시판 유형이 삭제되었습니다.");
     }
 
 }
