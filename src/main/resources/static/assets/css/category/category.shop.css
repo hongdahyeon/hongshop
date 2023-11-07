@@ -1,0 +1,62 @@
+/* 상품 보기 page -> 상품 모달 -> 상품 컨테이너 */
+.product-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 상품 보기 page -> 상품 모달 -> 상품 이미지 */
+.product-image {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 상품 보기 page -> 상품 모달 -> 상품 이름 */
+.product-name {
+    margin: 10px 0;
+}
+
+/* 상품 보기 page -> 상품 모달 -> 상품 가격 */
+.product-price {
+    font-weight: bold;
+}
+
+/* 상품 보기 page -> 상품 모달 -> 상품 재고 */
+.product-stock {
+    color: green;
+}
+
+/* 상품 보기 page -> 이미지 그리드 (1줄 6개) */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    gap: 10px; /* Spacing between items */
+    justify-content: center; /* Center horizontally within the container */
+    align-content: center; /* Center vertically within the container */
+}
+
+/* 상품 보기 page -> 이미지 & 상품이름 & 가격 그리드 */
+.image-item {
+    text-align: center;
+}
+
+/* 상품 보기 page -> 상품 이미지 */
+.image-item img {
+    width: 100%; /* Resize images to fit their container */
+}
+
+/* 상품 보기 page -> 상품 이름 & 가격 그리드 */
+.product-info {
+    display: inline-block;
+    vertical-align: top; /* Align the elements to the top of the line */
+    margin-right: 10px; /* Add some spacing between the two <p> tags */
+}
+
+/* 상품 보기 page -> 상품 이름, 가격 */
+.image-name {
+    text-align: center; /* Align text to the left */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+    font-weight: bold;
+}

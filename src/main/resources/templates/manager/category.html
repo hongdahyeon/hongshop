@@ -20,11 +20,15 @@
             margin-top: 10px
         }
 
+        th, tr,td {
+            text-align: center;
+        }
+
     </style>
 </th:block>
 
 <th:block layout:fragment="content">
-    <div class="container-sm mt-3">
+    <div class="mt-3">
 
         <div class="card-header" style="margin-bottom: 10px">
             <div class="card-text d-flex justify-content-between">
@@ -345,13 +349,13 @@
                     <div class="modal-body">
                         <table class="table table-hover table-bordered" id="product-user-table">
                             <thead>
-                                <tr style="text-align: center;">
-                                    <th style="width: 10%;" class="text-center">번호</th>
-                                    <th style="width: 20%" class="text-center">주문자</th>
-                                    <th style="width: 10%" class="text-center">주문상태</th>
-                                    <th style="width: 10%" class="text-center">주문개수</th>
-                                    <th style="width: 10%" class="text-center">주문가격</th>
-                                    <th style="width: 20%" class="text-center">주문날짜</th>
+                                <tr>
+                                    <th style="width: 10%;">번호</th>
+                                    <th style="width: 20%">주문자</th>
+                                    <th style="width: 10%">주문상태</th>
+                                    <th style="width: 10%">주문개수</th>
+                                    <th style="width: 10%">주문가격</th>
+                                    <th style="width: 20%">주문날짜</th>
                                 </tr>
                             </thead>
                             <tbody id="product-user-tbody"></tbody>
@@ -583,12 +587,12 @@
                 const body =
                     `
                     <tr>
-                        <td style="width: 10%" class="text-center">${i+1}</td>
-                        <td style="width: 20%" class="text-center">${data['userId']}</td>
-                        <td style="width: 10%" class="text-center">${data['orderStatus']}</td>
-                        <td style="width: 10%" class="text-center">${data['orderCnt']}</td>
-                        <td style="width: 10%" class="text-center">${price}</td>
-                        <td style="width: 10%" class="text-center">${data['orderDate'].toString().substring(0, 10)}</td>
+                        <td style="width: 10%">${i+1}</td>
+                        <td style="width: 20%">${data['userId']}</td>
+                        <td style="width: 10%">${data['orderStatus']}</td>
+                        <td style="width: 10%">${data['orderCnt']}</td>
+                        <td style="width: 10%">${price}</td>
+                        <td style="width: 10%">${data['orderDate'].toString().substring(0, 10)}</td>
                     </tr>
                     `
                 dom.append(body)

@@ -10,11 +10,17 @@
             text-align: center;
             vertical-align: middle;
         }
+        tr{
+            text-align: center;
+        }
+        .margin-10 {
+            margin-top: 10px
+        }
     </style>
 </th:block>
 
 <th:block layout:fragment="content">
-    <div class="container-sm mt-3">
+    <div class="mt-3">
         <div class="card-header" style="margin-bottom: 10px">
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
@@ -28,38 +34,38 @@
         <div class="card-body">
             <table class="table table-bordered" id="cart-table">
                 <thead>
-                <tr style="text-align: center;">
-                    <th style="width: 5%;" class="text-center">번호</th>
-                    <th style="width: 10%" class="text-center">게시판 유형</th>
-                    <th style="width: 10%" class="text-center">게시판 이름</th>
-                    <th style="width: 5%" class="text-center">정렬순서</th>
-                    <th style="width: 5%" class="text-center">사용여부</th>
-                    <th style="width: 5%" class="text-center">게시글 개수</th>
-                    <th style="width: 10%" class="text-center">url</th>
-                    <th style="width: 10%" class="text-center">게시판 보러가기</th>
-                    <th style="width: 10%" class="text-center">수정/삭제</th>
+                <tr>
+                    <th style="width: 5%;">번호</th>
+                    <th style="width: 10%">게시판 유형</th>
+                    <th style="width: 10%">게시판 이름</th>
+                    <th style="width: 5%">정렬순서</th>
+                    <th style="width: 5%">사용여부</th>
+                    <th style="width: 5%">게시글 개수</th>
+                    <th style="width: 10%">url</th>
+                    <th style="width: 10%">게시판 보러가기</th>
+                    <th style="width: 10%">수정/삭제</th>
                 </tr>
                 </thead>
                 <tbody>
                 <th:block th:if="${postTypeList.size() == 0}">
-                    <tr style="text-align: center;">
+                    <tr>
                         <td colspan="9">게시판 유형 정보가 비어있습니다.</td>
                     </tr>
                 </th:block>
                 <th:block th:unless="${postTypeList.size() == 0}">
                     <th:block  th:each="post, postStat : ${postTypeList}">
                         <tr>
-                            <td th:text="${postStat.index + 1}" style="width: 5%; text-align: center;"></td>
-                            <td th:text="${post.postType}" style="width: 10%; text-align: center;"></td>
-                            <td th:text="${post.postName}" style="width: 10%; text-align: center;"></td>
-                            <td th:text="${post.orderNum}" style="width: 5%; text-align: center;"></td>
-                            <td th:text="${post.useAt}" style="width: 5%; text-align: center;"></td>
-                            <td th:text="|${post.hongPost.size()}개|" style="width: 5%; text-align: center"></td>
-                            <td th:text="${post.postUrl}" style="width: 10%; text-align: center"></td>
-                            <td style="width: 10%; text-align: center">
+                            <td th:text="${postStat.index + 1}" style="width: 5%"></td>
+                            <td th:text="${post.postType}" style="width: 10%"></td>
+                            <td th:text="${post.postName}" style="width: 10%"></td>
+                            <td th:text="${post.orderNum}" style="width: 5%"></td>
+                            <td th:text="${post.useAt}" style="width: 5%"></td>
+                            <td th:text="|${post.hongPost.size()}개|" style="width: 5%"></td>
+                            <td th:text="${post.postUrl}" style="width: 10%"></td>
+                            <td style="width: 10%">
                                 <button type="button" class="btn btn-sm btn-outline-primary post-page-btn" th:value="${post.postTypeId}" th:data-useAt="${post.useAt}">보러가기</button>
                             </td>
-                            <td style="width: 10%; text-align: center">
+                            <td style="width: 10%">
                                 <button type="button" class="btn btn-sm btn-outline-secondary post-update-btn" th:value="${post.postTypeId}">수정</button>
                                 <button type="button" class="btn btn-sm btn-outline-danger post-delete-btn" th:value="${post.postTypeId}"  th:data-num="${post.hongPost.size()}">삭제</button>
                             </td>
