@@ -37,51 +37,50 @@
 
                         <!-- s: newProdcuts-tab -->
                         <div class="tab-pane fade show active" id="newProdcuts" role="tabpanel" aria-labelledby="newProdcuts-tab">
-
                             <div class="image-grid">
                                 <div class="image-item" th:each="product, productStat : ${newProdcuts}">
                                     <button class="btn img-btn" type="button" th:id="|btn-${product.productId}|" th:data-num="${product.productId}" th:data-stock="${product.productStock}">
-                                        <img th:src="'/image?imageId=' + ${product.getFile().getFileList().get(0).getSavedFileName()}" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                                        <img th:src="${(product.getFile() != null and product.getFile().getFileList().size() >= 1) ? '/image?imageId=' + product.getFile().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
+                                             th:id="|img-${product.productId}|" class="rounded" alt="Image" style="width: 150px; height: 150px">
                                     </button>
                                     <div class="product-info">
                                         <p class="image-name">
-                                            <span th:text="${product.productName}"></span>
+                                            <span th:text="${product.productName}" th:id="|name-${product.productId}|"></span>
                                             <i data-feather="star" class="font-medium-2 ms-50"></i>
                                         </p>
-                                        <p th:text="|가격: ${product.productPrice}|" class="image-name"></p>
+                                        <p th:text="|가격: ${#numbers.formatInteger(product.productPrice, 0, 'COMMA')} 원|" class="image-name" th:id="|price-${product.productId}|" th:data-price="${product.productPrice}"></p>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <!-- e: newProdcuts-tab -->
 
 
                         <th:block th:each="cat, catStat : ${categories}">
-                            <!-- s -->
+                            <!-- s: product-tab -->
                             <div class="tab-pane fade" th:id="|product${cat.categoryId}|" role="tabpanel" th:aria-labelledby="|product-${cat.categoryId}-tab|">
                                 <div class="image-grid">
                                     <div class="image-item" th:each="product, productStat : ${cat.productList}">
                                         <button class="btn img-btn" type="button" th:id="|btn-${product.productId}|" th:data-num="${product.productId}" th:data-stock="${product.productStock}">
-                                            <th:block th:if="${product.getFile() != null}">
-                                                <img th:src="'/image?imageId=' + ${product.getFile().getFileList().get(0).getSavedFileName()}" class="rounded" alt="Image" style="width: 150px; height: 150px">
-                                            </th:block>
-                                            <th:block th:unless="${product.getFile() != null}">
-                                                <img src="/assets/src/shop/noImage.png" class="rounded" alt="Image" style="width: 150px; height: 150px">
-                                            </th:block>
+                                            <img th:src="${(product.getFile() != null and product.getFile().getFileList().size() >= 1) ? '/image?imageId=' + product.getFile().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
+                                                 th:id="|img-${product.productId}|"
+                                                 class="rounded"
+                                                 alt="Image"
+                                                 style="width: 150px; height: 150px">
                                         </button>
                                         <div class="product-info">
                                             <p class="image-name">
-                                                <span th:text="${product.productName}"></span>
+                                                <span th:text="${product.productName}" th:id="|name-${product.productId}|"></span>
                                                 <i th:if="${product.newProductYn == 'Y'}" data-feather="star" class="font-medium-2 ms-50"></i>
                                             </p>
-                                            <p th:text="|가격: ${product.productPrice}|" class="image-name"></p>
+                                            <p th:text="|가격: ${#numbers.formatInteger(product.productPrice, 0, 'COMMA')} 원|" class="image-name" th:id="|price-${product.productId}|" th:data-price="${product.productPrice}"></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- e -->
+                            <!-- e: product-tab -->
                         </th:block>
+
                     </div>
                 </div>
             </div>
@@ -122,49 +121,20 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12 col-12" style="margin-bottom: 10px; align-content: center">
-<!--                                        <div class="image-grid">-->
-<!--                                            <div class="image-item">-->
-<!--                                               -->
-
-<!--                                                <div class="product-info">-->
-<!--                                                    <p class="image-name">-->
-<!--                                                        <span id="product-name">빵</span>-->
-<!--                                                        <i data-feather="star" class="font-medium-2 ms-50" disabled id="product-new-yn"></i>-->
-<!--                                                    </p>-->
-<!--                                                    <p id="product-price" class="image-name">가격: 2,000</p>-->
-<!--                                                    <p id="product-cnt" class="image-name">재고: 3개</p>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
                                         <div class="product-container">
                                             <img src="/assets/src/shop/noImage.png" class="rounded" alt="Image" style="width: 150px; height: 150px" id="product-img">
-                                            <div class="product-name">Product Name</div>
-                                            <div class="product-price">$19.99</div>
-                                            <div class="product-stock">In Stock</div>
+                                            <div class="product-name" id="product-name"></div>
+                                            <div class="product-price" id="product-price"></div>
+                                            <div class="product-stock" id="product-stock"></div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-12">
+                                    <div class="col-md-12 col-12">
                                         <div class="mb-1">
-                                            <label class="form-label" for="hongCategoryId">카테고리 순서<span class="text-primary ms-50">*</span></label>
+                                            <label class="form-label" for="product-order-num">주문 개수<span class="text-primary ms-50">*</span></label>
                                             <div class="input_wrap">
-                                                <input type="text" class="form-control" id="orderNum" name="orderNum" required/>
-                                                <div class="invalid-feedback">카테고리 순서를 입력해주세요.</div>
+                                                <input type="number" class="form-control" id="product-order-num" name="product-order-num" min="1" required/>
+                                                <div class="invalid-feedback" id="product-invalid-feedback">주문 개수를 입력해주세요.</div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-12">
-                                        <div class="mb-1 margin-10">
-                                            <label class="form-label" for="hongCategoryId">카테고리 ID<span class="text-primary ms-50">*</span></label>
-                                            <div class="input_wrap">
-                                                <input type="text" class="form-control" id="hongCategoryId" name="hongCategoryId" disabled/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-12">
-                                        <div class="mb-1 margin-10">
-                                            <label class="form-label" for="description">설명<span class="text-primary ms-50">*</span></label>
-                                            <textarea class="form-control" id="description" name="description" required></textarea>
-                                            <div class="invalid-feedback">카테고리에 대한 설명을 입력해주세요.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -202,11 +172,18 @@
 
         /* 상품구매 모달창 닫기 */
         $("#close-productModal, #close-product-purchase-modal-btn").on("click", function(e){
-            // validation 지우기
+            $("#product-order-num").val('')
             const form = document.getElementById("product-purchase-form")
-            form.classList.remove("was-validated")
+            form.classList.remove("was-validated")      // validation 지우기
             $("#product-purchase-modal").modal('hide')
         })
+
+        /* 상품구매 모달창 닫힐때 -> validation 초기화 및 주문개수 초기화 */
+        $("#product-purchase-modal").on('hidden.bs.modal', function (e) {
+            $("#product-order-num").val('')
+            const form = document.getElementById("product-purchase-form")
+            form.classList.remove("was-validated")      // validation 지우기
+        });
 
         /* alertModal 모달창 닫기 */
         $("#close-alertModal").on("click", function(e){
@@ -226,11 +203,22 @@
         $(".img-btn").on("click", function(e){
             const productId = $(this).attr("data-num")
             const productStock = $(this).attr("data-stock")
-            console.log("productId : ", productId)
-            console.log("productStock : ", productStock)
+            const productName = $(`#name-${productId}`).text()
+            const productImg = $(`#img-${productId}`).attr('src')
+            const productPrice = $(`#price-${productId}`).attr('data-price')
 
             if(productStock == 0) $("#alertModal").modal('show')
-            else $("#product-purchase-modal").modal('show')
+            else {
+                const price = productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                $("#product-name").text(productName)                        // 상품 이름
+                $("#product-price").text(`가격: ${price} 원`)                // 상품 가격
+                $("#product-stock").text(`재고: ${productStock}`)            // 상품 재고
+                $("#product-img").attr("src", productImg)                   // 상품 이미지
+
+                $("#product-order-num").attr('max', productStock)                                   // 상품 최대 주문 개수
+                $("#product-invalid-feedback").text(`최대 주문가능 개수는 ${productStock}개 입니다.`)    // 상품 주문 form -> validation text
+                $("#product-purchase-modal").modal('show')
+            }
         })
 
         /* 상품 구매하기 form */
@@ -245,6 +233,11 @@
 
                     FormDataToObj.getParameter("product-purchase-form").then((obj) => {
                         console.log("obj : ", obj)
+                        /*
+                        * 주문하기 -> 주문 상세 화면으로 이동
+                        * 장바구니   -> 장바구니에 insert 후 장바구니 이동할 것인지 물어보고 화면 이동?
+                        *          -> 장바구니 담길 경우, 재고 변경 없음
+                        * */
                     })
                 }
             })
