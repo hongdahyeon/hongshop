@@ -38,4 +38,6 @@ public interface HongUserService {
     boolean initialPassword(String userEmail, String userName);
 
     boolean findUserId(String userEmail, String userName);
+
+    void updateUserNonLocked(String userId);
 }

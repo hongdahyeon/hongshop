@@ -73,4 +73,13 @@ public class HongUserRestController {
         hongUserService.updateUserRole(id, hongUserRoleDTO);
         return Response.ok("해당 사용자의 권한 정보가 변경되었습니다.");
     }
+
+    @PutMapping("/reset/userNonLocked/{userId}")
+    @Operation(summary = "update user nonLocked", description = "회원 계정 잠김 여부 변경")
+    @ApiDocumentResponse
+    public Response updateUserNonLocked(@PathVariable String userId){
+        hongUserService.updateUserNonLocked(userId);
+        return Response.ok("해당 사용자의 계정 정지가 풀렸습니다.");
+    }
+
 }

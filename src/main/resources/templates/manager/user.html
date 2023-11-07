@@ -32,7 +32,7 @@
                     <tr>
                         <th style="width: 5%;" rowspan="2">번호</th>
                         <th style="width: 10%" rowspan="2">사용자ID</th>
-                        <th style="width: 10%" rowspan="2">계정정지여부</th>
+                        <th style="width: 10%" rowspan="2">계정정지 여부</th>
                         <th style="width: 10%" rowspan="2">ROLE</th>
                         <th style="width: 10%" rowspan="2">이름</th>
                         <th style="width: 10%" rowspan="2">이메일</th>
@@ -56,7 +56,14 @@
                         <tr>
                             <td th:text="${userStat.index + 1}" style="width: 5%"></td>
                             <td th:text="${user.userId}" style="width: 10%"></td>
-                            <td th:text="${user.userNonLocked == false ? '정지' : '-'}" style="width: 10%"></td>
+                            <td style="width: 10%">
+                                <th:block th:if="${user.userNonLocked == false}">
+                                    <a href="#" class="user-is-unlocked" th:data-num="${user.userId}">정지</a>
+                                </th:block>
+                                <th:block th:unless="${user.userNonLocked == false}">
+                                    <a>-</a>
+                                </th:block>
+                            </td>
                             <td th:text="${user.role}" style="width: 10%"></td>
                             <td th:text="${user.userName}" style="width: 10%"></td>
                             <td th:text="${user.userEmail}" style="width: 20%"></td>
@@ -76,6 +83,26 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- s: Alert Modal -->
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <input type="hidden" id="locked-userId" />
+                            <p>해당 사용자의 경우 비밀번호 5회 오류로 계정이 정지되었습니다.</p>
+                            <div style="margin-top: 10px" class="text-end">
+                                <button type="button" class="btn btn-outline-secondary" id="close-alertModal">닫기</button>
+                                <button type="button" class="btn btn-outline-primary" id="change-userNonLocked">사용자계정 풀기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- e: Alert Modal -->
+
     </div>
 </th:block>
 
@@ -84,6 +111,40 @@
     <script th:inline="javascript">
 
         $(document).ready(function(e){
+
+            $(".user-is-unlocked").on("click", function(e){
+                const userId = $(this).attr("data-num")
+                $("#locked-userId").val(userId)
+                $("#alertModal").modal('show')
+            })
+
+            $("#change-userNonLocked").on("click", function(e) {
+                const userId = $("#locked-userId").val();
+                $.ajax({
+                    type: 'PUT',
+                    url: `/api/reset/userNonLocked/${userId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            alert(`${data.message}`)
+                            window.location.href='/manager/user'
+                        }else {
+                            alert("해당 사용자의 계정 정지 해제에 실패했습니다.")
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
+            })
+
+            /* alertModal 모달창 닫기 */
+            $("#close-alertModal").on("click", function(e){
+                $("#alertModal").modal('hide')
+            })
+
+            /* 사용자 권한 바꾸기 이벤트 */
             $(".userRole-select").on("change", function(e){
                 const id = $(this).attr("data-num")
                 const userId = $(this).attr("data-userId")
@@ -119,8 +180,6 @@
                 }
             })
         })
-
-
 
     </script>
 </th:block>

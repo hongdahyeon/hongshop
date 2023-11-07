@@ -98,5 +98,6 @@ public class HongUser {
 
     public void resetPwdFailCntAndUserNonLocked(){
         this.pwdFailCnt = 0;
+        this.userNonLocked = true;
     }
 }
