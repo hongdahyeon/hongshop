@@ -152,3 +152,4 @@
    - order, order-detail, deliver insert
    - cart deletYn to Y, product stock update
 * commit105 : 배송 주문 관리 화면 구현 (23/11/07)
+* commit106 : 주문시, 꼭 사용자의 주소 정보가 아닌 다른 주소 정보로도 주문 가능 (23/11/07)
