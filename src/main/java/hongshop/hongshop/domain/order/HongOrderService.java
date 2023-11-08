@@ -20,7 +20,7 @@ public interface HongOrderService {
 
     Long save(List<HongOrderDTO> hongOrderDTO, HongUser hongUser);
 
-    Long saveFromCart(List<HongOrderFromCartDTO> hongOrderDTO, HongUser hongUser);
+    Long saveFromCart(HongOrderFromCartDTO hongOrderDTO);
 
     List<HongOrderVO> list();
 

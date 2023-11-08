@@ -3,9 +3,13 @@ package hongshop.hongshop.domain.order.impl;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
-import hongshop.hongshop.domain.order.*;
+import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.order.HongOrderRepository;
+import hongshop.hongshop.domain.order.HongOrderService;
+import hongshop.hongshop.domain.order.OrderStatus;
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDetailsDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
@@ -14,7 +18,6 @@ import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserService;
-import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,7 +93,9 @@ public class HongOrderServiceImpl implements HongOrderService {
 
     @Override
     @Transactional(readOnly = false)
-    public Long saveFromCart(List<HongOrderFromCartDTO> listofOrders, HongUser hongUser) {
+    public Long saveFromCart(HongOrderFromCartDTO hongOrderFromCartDTO) {
+
+        HongUser hongUser = hongUserService.getHongUser(hongOrderFromCartDTO.getUserId()).get();
 
         // 1. first you need to make order
         HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
@@ -100,31 +105,30 @@ public class HongOrderServiceImpl implements HongOrderService {
                 .build();
         saveOrder = hongOrderRepository.save(saveOrder);
 
-        for(HongOrderFromCartDTO hongOrderDTO : listofOrders){
+        for(HongOrderFromCartDetailsDTO detailsDTO : hongOrderFromCartDTO.getOrders()){
             // 1. find product by productId first
-            HongProduct product = hongProductService.productInfo(hongOrderDTO.getHongProductId());
+            HongProduct product = hongProductService.productInfo(detailsDTO.getHongProductId());
 
             // ** if orderCnt is larger then stock throw error
-            if(product.getProductStock() < hongOrderDTO.getOrderCnt()) {
+            if(product.getProductStock() < detailsDTO.getOrderCnt()) {
                 hongOrderRepository.delete(saveOrder);
                 throw new IllegalArgumentException("stock is smaller than order count");
             }
 
             // 3. then save order details
-            Integer orderPrice = hongOrderDTO.getOrderCnt() * product.getProductPrice();
-            hongOrderDetailService.saveOrderDetails(saveOrder, product, hongOrderDTO.getOrderCnt(), orderPrice);
+            Integer orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice();
+            hongOrderDetailService.saveOrderDetails(saveOrder, product, detailsDTO.getOrderCnt(), orderPrice);
 
             // 4. update product removing stock
-            hongProductService.updateStockCnt(hongOrderDTO.getOrderCnt(), product);
+            hongProductService.updateStockCnt(detailsDTO.getOrderCnt(), product);
 
             // 5. then you need to remove prdocut from cart
-            Long hongCartId = hongOrderDTO.getHongCartId();
+            Long hongCartId = detailsDTO.getHongCartId();
             hongCartService.delete(hongCartId);
         }
 
         // 6. finally save deliver
-        HongUserVO user = hongUserService.getHongUserById(hongUser.getId());
-        Address address = new Address(user.getCity(), user.getStreet(), user.getZipcode());
+        Address address = new Address(hongOrderFromCartDTO.getCity(), hongOrderFromCartDTO.getStreet(), hongOrderFromCartDTO.getZipcode());
         hongDeliverService.join(address, saveOrder);
 
         return saveOrder.getId();

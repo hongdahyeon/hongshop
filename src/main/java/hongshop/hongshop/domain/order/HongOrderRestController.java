@@ -43,8 +43,8 @@ public class HongOrderRestController {
     @PostMapping("/order-from-cart")
     @Operation(summary = "insert order", description = "주문 저장")
     @ApiDocumentResponse
-    public Response saveFromCart(@RequestBody List<HongOrderFromCartDTO> hongOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        Long saveId = hongOrderService.saveFromCart(hongOrderDTO, principalDetails.getUser());
+    public Response saveFromCart(@RequestBody HongOrderFromCartDTO hongOrderFromCartDTO){
+        Long saveId = hongOrderService.saveFromCart(hongOrderFromCartDTO);
         return Response.ok(saveId);
     }
 

@@ -68,7 +68,7 @@
                                     <div class="invalid-feedback">zipcode를 입력하세요.</div>
                                 </div>
                                 <div class="text-end">
-                                    <button type="button" class="btn btn-outline-primary" id="change-address-btn">주소 변경하기</button>
+                                    <button type="button" class="btn btn-outline-primary" id="change-address-btn">새로운 주소 작성하기</button>
                                     <button type="submit" class="btn btn-primary" id="update-address" style="display: none;">저장</button>
                                     <button type="button" class="btn btn-outline-secondary" id="update-address-cancel" style="display: none;">취소</button>
                                 </div>
@@ -102,6 +102,7 @@
         const ids = /*[[${ids}]]*/ [];
         const chooseLst = /*[[${chooseLst}]]*/ []
         const id = /*[[${id}]]*/ "";
+        const userId = /*[[${userId}]]*/ "";
 
         const addressInput = $("#city, #street, #zipcode")                      // 배송 주문 주소 input-text
         const updateAddressBtn = $("#update-address, #update-address-cancel")   // 배송 주문 주소 수정 및 취소 버튼
@@ -126,10 +127,16 @@
 
         /* 결제하기 버튼 이벤트 */
         $("#purchase-btn").on("click", function(e) {
-            const obj = []
+            const orders = []
+            const city = $("#city").val()
+            const street = $("#street").val()
+            const zipcode = $("#zipcode").val()
+
             chooseLst.forEach(choose => {
-                obj.push({'hongProductId': choose['productId'], 'orderCnt': choose['cartCnt'], 'hongCartId': choose['id']})
+                orders.push({'hongProductId': choose['productId'], 'orderCnt': choose['cartCnt'], 'hongCartId': choose['id']})
             })
+
+            const obj = {'userId': userId, 'city': city, 'street': street, 'zipcode': zipcode, 'orders': orders}
 
             $.ajax({
                 type: 'POST',
@@ -182,27 +189,32 @@
                     form.classList.add("was-validated")
                 }else{
                     event.preventDefault();
-                    FormDataToObj.getParameter("update-address-form").then(obj => {
 
-                        $.ajax({
-                            type: 'PUT',
-                            url: `/api/user`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    alert("주소 정보를 변경하였습니다.")
-                                    addressChanging(true)
-                                }else {
-                                    alert("주소 변경에 실패하였습니다.")
+                    const result = confirm("현재 주소를 사용자 주소 정보로 수정하시겠습니까?")
+                    if(result) {
+                        FormDataToObj.getParameter("update-address-form").then(obj => {
+                            $.ajax({
+                                type: 'PUT',
+                                url: `/api/user`,
+                                dataType: 'json',
+                                data: JSON.stringify(obj),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if (data.httpStatus === 200) {
+                                        alert("주소 정보를 변경하였습니다.")
+                                        addressChanging(true)
+                                    } else {
+                                        alert("주소 변경에 실패하였습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
-                            }
-                        });
-                    })
+                            });
+                        })
+                    } else {
+                        addressChanging(true)
+                    }
                 }
             });
         });
