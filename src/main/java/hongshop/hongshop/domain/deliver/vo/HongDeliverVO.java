@@ -17,17 +17,19 @@ import lombok.Setter;
 
 @Getter @Setter
 public class HongDeliverVO {
+    private Long deliverId;
     private String orderUser;
     private OrderStatus orderStatus;
     private String orderDate;
-    private DeliverStatus deliverStatus;
+    private String deliverStatus;
     private Address address;
 
     public HongDeliverVO(HongDeliver hongDeliver) {
+        this.deliverId = hongDeliver.getId();
         this.orderUser = hongDeliver.getHongOrder().getHongUser().getUserId();
         this.orderStatus = hongDeliver.getHongOrder().getOrderStatus();
         this.orderDate = hongDeliver.getHongOrder().getOrderDate();
-        this.deliverStatus = hongDeliver.getDeliverStatus();
+        this.deliverStatus = hongDeliver.getDeliverStatus().toString();
         this.address = hongDeliver.getAddress();
     }
 }

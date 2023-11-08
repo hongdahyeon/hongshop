@@ -3,11 +3,14 @@ package hongshop.hongshop.domain.deliver.impl;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.deliver.*;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
+import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
 * @fileName HongDeliverServiceImpl
@@ -48,5 +51,20 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     public void update(HongDeliverDTO hongDeliverDTO, Long id) {
         HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
         hongDeliver.updateDeliver(hongDeliverDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id) {
+        HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
+        System.out.println("id = " + id);
+        System.out.println("hongDeliverStatusDTO.getStatus() = " + hongDeliverStatusDTO.getStatus());
+        hongDeliver.updateStatus(hongDeliverStatusDTO);
+    }
+
+    @Override
+    public List<HongDeliverVO> all() {
+        List<HongDeliver> all = hongDeliverRepository.findAll();
+        return all.stream().map(HongDeliverVO::new).toList();
     }
 }

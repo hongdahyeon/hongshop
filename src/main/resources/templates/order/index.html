@@ -103,36 +103,33 @@
         const chooseLst = /*[[${chooseLst}]]*/ []
         const id = /*[[${id}]]*/ "";
 
-        const addressInput = $("#city, #street, #zipcode")
-        const updateAddressBtn = $("#update-address, #update-address-cancel")
-        const changeAddressBtn = $("#change-address-btn")
-        let addressChange = false
+        const addressInput = $("#city, #street, #zipcode")                      // 배송 주문 주소 input-text
+        const updateAddressBtn = $("#update-address, #update-address-cancel")   // 배송 주문 주소 수정 및 취소 버튼
+        const changeAddressBtn = $("#change-address-btn")                       // 배송 주문 주소 수정하기 활성화 버튼
+        let addressChange = false                                               // 배송 주문 주소 변경중 여부
 
         $(document).ready(function(e) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            if(ids !== null) alert("선택하신 상품들에 대한 정보 및 주소정보를 확인해주세요.")
+            if(ids !== null) alert("선택하신 상품들에 대한 정보 및 주소정보를 확인해주세요.")       // 만일 장바구니 선택 없이 넘어오게되면 내보내기
             else {
                 alert("잘못된 접근입니다.")
                 window.location.href = "/"
             }
         })
 
+        // change-address-btn: 배송 주문 주소 정보 변경하기 활성화
+        // update-address-cancel: 배송 주문 주소 정보 변경하기 활성화 취소
         $("#change-address-btn, #update-address-cancel").on("click", function(e) {
             console.log("change-address-btn")
             addressChanging(addressChange)
         })
 
+        /* 결제하기 버튼 이벤트 */
         $("#purchase-btn").on("click", function(e) {
-            console.log("purchase-btn clicked")
-            console.log("chooseLst : ", chooseLst)
-
             const obj = []
-
             chooseLst.forEach(choose => {
                 obj.push({'hongProductId': choose['productId'], 'orderCnt': choose['cartCnt'], 'hongCartId': choose['id']})
             })
-
-            console.log("obj : ", obj)
 
             $.ajax({
                 type: 'POST',
@@ -154,6 +151,7 @@
             });
         })
 
+        /* 배송 주문 주소 input-text disable, 버튼 show & hide */
         function addressChanging(chk){
             if(chk) {
                 addressInput.prop('disabled', true)
@@ -168,10 +166,12 @@
             }
         }
 
+        /* 장바구니 화면 돌아가기 버튼 */
         $("#goto-cart").on("click", function(e) {
             window.location.href = `/cart/${id}`
         })
 
+        /* 주소 정보 수정하기 (update) */
         window.addEventListener("load", function(event) {
             event.preventDefault();
             const form = document.getElementById("update-address-form");
@@ -183,7 +183,6 @@
                 }else{
                     event.preventDefault();
                     FormDataToObj.getParameter("update-address-form").then(obj => {
-                        console.log("obj : ", obj)
 
                         $.ajax({
                             type: 'PUT',

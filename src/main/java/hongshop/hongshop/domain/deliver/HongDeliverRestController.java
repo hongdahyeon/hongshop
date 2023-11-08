@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
+import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -39,5 +40,13 @@ public class HongDeliverRestController {
     public Response update(@PathVariable Long id, @RequestBody HongDeliverDTO hongDeliverDTO){
         hongDeliverService.update(hongDeliverDTO, id);
         return Response.ok("updated");
+    }
+
+    @PutMapping("/deliver-status/{id}")
+    @Operation(summary = "update deliver status", description = "배송 상태 정보 업데이트")
+    @ApiDocumentResponse
+    public Response updateStatus(@PathVariable Long id, @RequestBody HongDeliverStatusDTO hongDeliverStatusDTO){
+        hongDeliverService.updateStatus(hongDeliverStatusDTO, id);
+        return Response.ok("해당 배송 상태정보를 변경하였습니다.");
     }
 }
