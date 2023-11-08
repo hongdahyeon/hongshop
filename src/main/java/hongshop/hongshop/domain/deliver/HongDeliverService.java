@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.deliver.dto.HongDeliverAddressDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
@@ -25,8 +26,11 @@ public interface HongDeliverService {
     void update(HongDeliverDTO hongDeliverDTO, Long id);
 
     void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id);
+
     List<HongDeliverVO> all();
 
     HongDeliverVO getByOrderId(Long orderId);
+
+    void updateAddres(Long id, HongDeliverAddressDTO hongDeliverAddressDTO);
 
 }

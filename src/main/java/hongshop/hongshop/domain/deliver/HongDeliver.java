@@ -54,4 +54,8 @@ public class HongDeliver {
     public void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO){
         this.deliverStatus = hongDeliverStatusDTO.getStatus();
     }
+
+    public void updateAddress(Address address) {
+        this.address = address;
+    }
 }

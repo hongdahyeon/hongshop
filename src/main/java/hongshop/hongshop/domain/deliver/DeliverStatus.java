@@ -11,5 +11,19 @@ package hongshop.hongshop.domain.deliver;
 **/
 
 public enum DeliverStatus {
-    DELIVERING, DELIVERED, AWAIT
+    DELIVERING("배송중"), DELIVERED("배송완료"), AWAIT("대기");
+
+    private String text;
+    DeliverStatus(String text){
+        this.text = text;
+    }
+
+    public static String getText(String status) {
+        for(DeliverStatus deliverStatus : DeliverStatus.values()){
+            if(deliverStatus.name().equals(status)){
+                return deliverStatus.text;
+            }
+        }
+        throw new IllegalArgumentException("error");
+    }
 }

@@ -12,5 +12,19 @@ package hongshop.hongshop.domain.order;
 **/
 
 public enum OrderStatus {
-    CHARGED, CANCEL, DELIVER_SUCCESS, DELIVER_ING;
+    CHARGED("계산 완료"), CANCEL("주문 취소"), DELIVER_SUCCESS("배송 성공"), DELIVER_ING("배송중");
+    private String text;
+
+    OrderStatus(String text) {
+        this.text = text;
+    }
+
+    public static String getText(String status) {
+        for(OrderStatus orderStatus : OrderStatus.values()) {
+            if(orderStatus.name().equals(status)) {
+                return orderStatus.text;
+            }
+        }
+        throw new IllegalArgumentException("error");
+    }
 }

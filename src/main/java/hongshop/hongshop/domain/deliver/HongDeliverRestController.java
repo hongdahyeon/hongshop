@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.deliver;
 
+import hongshop.hongshop.domain.deliver.dto.HongDeliverAddressDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
@@ -49,4 +50,13 @@ public class HongDeliverRestController {
         hongDeliverService.updateStatus(hongDeliverStatusDTO, id);
         return Response.ok("해당 배송 상태정보를 변경하였습니다.");
     }
+
+    @PutMapping("/deliver-address/{id}")
+    @Operation(summary = "update deliver address", description = "배송 주소 정보 업데이트")
+    @ApiDocumentResponse
+    public Response updateAddress(@PathVariable Long id, @RequestBody HongDeliverAddressDTO hongDeliverAddressDTO) {
+        hongDeliverService.updateAddres(id, hongDeliverAddressDTO);
+        return Response.ok("해당 배송 주소정보를 변경하였습니다.");
+    }
+
 }

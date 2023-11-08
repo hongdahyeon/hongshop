@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.deliver.impl;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.deliver.*;
+import hongshop.hongshop.domain.deliver.dto.HongDeliverAddressDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
@@ -70,5 +71,13 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     public HongDeliverVO getByOrderId(Long orderId) {
         HongDeliver hongDeliver = hongDeliverRepository.findByHongOrder_Id(orderId);
         return new HongDeliverVO(hongDeliver);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateAddres(Long id, HongDeliverAddressDTO hongDeliverAddressDTO) {
+        HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
+        Address address = new Address(hongDeliverAddressDTO.getCity(), hongDeliverAddressDTO.getStreet(), hongDeliverAddressDTO.getZipcode());
+        hongDeliver.updateAddress(address);
     }
 }

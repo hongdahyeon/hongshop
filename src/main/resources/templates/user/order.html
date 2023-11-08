@@ -37,7 +37,7 @@
                         <th style="width: 10%" COLSPAN="3">주문상세정보</th>
                         <th style="width: 10%" rowspan="2">배송상태</th>
                         <th style="width: 10%" COLSPAN="3">주소</th>
-                        <th style="width: 10%" rowspan="2">배송지 변경하기</th>
+                        <th style="width: 10%" rowspan="2">배송지 <br/> 변경하기</th>
                     </tr>
                     <tr>
                         <th>상품명</th>
@@ -58,17 +58,17 @@
                     <th:block  th:each="order, orderStat : ${orders}">
                         <tr>
                             <td th:text="${orderStat.index + 1}" style="width: 5%" th:rowspan="${order.orderDetails.size()}"></td>
-                            <td th:text="${order.orderStatus}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
+                            <td th:text="${order.orderStatStr}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${#strings.substring(order.orderDate, 0, 10)}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${order.orderDetails.get(0).productName}" style="width: 10%"></td>
                             <td th:text="|${order.orderDetails.get(0).orderCnt} 개|" style="width: 10%"></td>
                             <td th:text="|${#numbers.formatInteger(order.orderDetails.get(0).orderPrice, 0, 'COMMA')} 원|" style="width: 10%"></td>
-                            <td th:text="${order.deliverStatus}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
+                            <td th:text="${order.deliverStatStr}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${order.address.city}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${order.address.street}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${order.address.zipcode}" style="width: 10%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td style="width: 10%" th:rowspan="${order.orderDetails.size()}">
-                                <button type="button" class="btn btn-outline-primary chg-address" th:data-deliver="${order.deliverId}" th:data-city="${order.address.city}"
+                                <button type="button" class="btn btn-outline-primary chg-address" th:data-deliver="${order.deliverId}" th:data-city="${order.address.city}" th:data-status="${order.deliverStatus}"
                                         th:data-street="${order.address.street}" th:data-zipcode="${order.address.zipcode}">변경</button>
                             </td>
                         </tr>
@@ -88,6 +88,63 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- s: change Address Modal -->
+        <form id="change-address-form" class="needs-validation" novalidate>
+            <input type="hidden" id="deliverId" />
+            <div class="modal fade" id="change-address-modal" tabindex="-1" aria-labelledby="changeAddressModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">주소지 변경하기</h4>
+                            <button type="button" class="btn-close" id="close-change-address-modal-btn"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="city">city<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="text" class="form-control" id="city" name="city" required/>
+                                                <div class="invalid-feedback" id="product-invalid-feedback">city를 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="street">street<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="text" class="form-control" id="street" name="street" required/>
+                                                <div class="invalid-feedback" id="product-invalid-feedback">street를 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12">
+                                        <div class="mb-1">
+                                            <label class="form-label" for="zipcode">zipcode<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="text" class="form-control" id="zipcode" name="zipcode" required/>
+                                                <div class="invalid-feedback" id="product-invalid-feedback">zipcode를 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px" class="text-end">
+                                    <button type="button" class="btn btn-outline-secondary" id="close-addressChangeModal">닫기</button>
+                                    <button type="submit" class="btn btn-outline-primary" id="save-address">수정</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: Product Purchase Modal -->
+
     </div>
 </th:block>
 
@@ -95,14 +152,78 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         const orderAndDeliver = /*[[${orders}]]*/ [];
-        console.log("orderAndDeliver : ", orderAndDeliver)
+        const id = /*[[${id}]]*/ null;
 
+        /* 주소 수정 모달창 닫기 */
+        $("#close-addressChangeModal, #close-change-address-modal-btn").on("click", function(e) {
+            $("#city").val('')
+            $("#street").val('')
+            $("#zipcode").val('')
+            const form = document.getElementById("change-address-form")
+            form.classList.remove("was-validated")      // validation 지우기
+            $("#change-address-modal").modal('hide')
+        })
+
+        /* 상품구매 모달창 닫힐때 -> validation 초기화 및 주문개수 초기화 */
+        $("#change-address-modal").on('hidden.bs.modal', function (e) {
+            $("#city").val('')
+            $("#street").val('')
+            $("#zipcode").val('')
+            const form = document.getElementById("change-address-form")
+            form.classList.remove("was-validated")      // validation 지우기
+        });
+
+        /* 주소변경 버튼 클릭 이벤트 */
         $(".chg-address").on("click", function(e) {
             const deliverId = $(this).attr("data-deliver")
             const city = $(this).attr("data-city")
             const street = $(this).attr("data-street")
             const zipcode = $(this).attr("data-zipcode")
-            console.log(`${deliverId} -> ${city}. ${street}. ${zipcode}`)
+            const deliverStatus = $(this).attr("data-status")
+
+            if(deliverStatus != 'AWAIT') alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.")
+            else {
+                $("#city").val(city)
+                $("#street").val(street)
+                $("#zipcode").val(zipcode)
+                $("#deliverId").val(deliverId)
+                $("#change-address-modal").modal('show')
+            }
+        })
+
+        /* 주소 변경하기 form */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("change-address-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("change-address-form").then((obj) => {
+                        const deliverId = $("#deliverId").val()
+                        $.ajax({
+                            type: 'PUT',
+                            url: `/api/deliver-address/${deliverId}`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    alert(`${data.message}`)
+                                    window.location.href=`/user/order/${id}`
+                                }else {
+                                    alert("해당 배송 주소정보 변경에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+                    })
+                }
+            })
         })
     </script>
 </th:block>
