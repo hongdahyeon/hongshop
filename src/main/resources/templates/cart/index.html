@@ -15,72 +15,123 @@
                     <h3>🛒 장바구니 🛒</h3>
                 </div>
                 <div class="text-end">
-                    <button type="button" class="btn btn-info" onclick="location.href='/category/new'">상품보러가기</button>
+                    <button type="button" class="btn btn-success" id="chk-all">✔ 전체 선택</button>
+                    <button type="button" class="btn btn-outline-info" onclick="location.href='/category/new'">상품보러가기</button>
+                    <button type="button" class="btn btn-outline-primary" id="order-btn">주문하기</button>
+                    <button type="button" class="btn btn-outline-danger" id="delete-btn">삭제</button>
                 </div>
             </div>
         </div>
-        <div class="card-body">
-            <table class="table table-hover table-bordered" id="cart-table">
-                <thead>
-                    <tr style="text-align: center;">
-                        <th>번호</th>
-                        <th>상품명</th>
-                        <th>상품개수</th>
-                        <th>가격</th>
-                        <th>삭제</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <th:block th:if="${cart.size() == 0}">
-                        <tr style="text-align: center;">
-                            <td colspan="5">장바구니가 비어있습니다.</td>
-                        </tr>
-                    </th:block>
-                    <th:block th:unless="${cart.size() == 0}">
-                        <tr th:each="ct, ctStat : ${cart}">
-                            <td th:text="${ctStat.index + 1}" style="width: 10%; text-align: center;"></td>
-                            <td th:text="${ct.productName}" style="width: 40%"></td>
-                            <td th:text="|${ct.cartCnt} 개|" style="width: 10%; text-align: center;"></td>
-                            <td th:text="${#numbers.formatInteger(ct.cartPrice, 0, 'COMMA')}" style="width: 30%"></td>
-                            <td style="width: 10%; text-align: center;">
-                                <button th:value="${ct.id}" type="button" class="btn btn-outline-secondary delete-cart">삭제</button>
-                            </td>
-                        </tr>
-                    </th:block>
-                </tbody>
-            </table>
+
+        <!-- s: empty card -->
+        <div class="card" id="empty-div" th:if="${cart.size() == 0}" style="margin-top: 40px">
+            <div class="card-body" style="text-align: center">
+                <h4>장바구니가 비어있습니다.</h4>
+            </div>
         </div>
+        <!-- e: empty card -->
+
+        <!-- s: cart card -->
+        <div class="card-body" th:unless="${cart.size() == 0}">
+            <div class="image-grid" style="margin-top: 40px">
+                <div class="image-item" th:each="ct, ctStat : ${cart}">
+                    <div class="top-checkbox">
+                        <input type="checkbox" class="image-checkbox" th:id="|chk-${ct.id}|" th:value="|${ct.id}|">
+                    </div>
+                    <button class="btn img-btn" type="button" th:id="|btn-${ct.id}|" th:data-num="${ct.id}">
+                        <img th:src="${(ct.getFileGroup() != null and ct.getFileGroup().getFileList().size() >= 1) ? '/image?imageId=' + ct.getFileGroup().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
+                             th:id="|img-${ct.id}|" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                    </button>
+                    <div class="product-info">
+                        <p class="image-name" th:text="${ct.productName}" th:id="|name-${ct.id}|"></p>
+                        <p class="image-name" style="color: green; font-weight: bold" th:id="|order-${ct.cartCnt}|" th:data-order="${ct.cartCnt}" th:text="|주문개수: ${ct.cartCnt} 개|"></p>
+                        <p class="image-name" style="color: blue; font-weight: bold" th:id="|price-${ct.cartPrice}|" th:data-price="${ct.cartPrice}" th:text="|총가격: ${#numbers.formatInteger(ct.cartPrice, 0, 'COMMA')} 원|"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- e: cart card -->
+
     </div>
 </th:block>
 
 
 <th:block layout:fragment="script">
-    <script>
-        console.log("script...")
+    <script th:inline="javascript">
+        const cart = /*[[${cart}]]*/ [];
+        const id = /*[[${id}]]*/ "";
 
-        $(".delete-cart").on("click", function(e) {
-            const cartId = $(this).val()
-            const row = $(this).closest('tr')
+        /* 체크박스 전체 선택/해제 버튼 */
+        $("#chk-all").on("click", function(e) {
+            if(cart.length === 0) alert("아직 장바구니가 비어있습니다." + '\n' + "상품을 먼저 담아주세요.")
+            else {
+                const checkboxes = $(".image-checkbox")
+                const checkedLen = getCheckedChkBox().length
+                const chkTF = (checkedLen === cart.length) ? false : true
+                const mssg = (checkedLen === cart.length) ? '✔ 전체 선택' : '전체선택 해제'
 
-            const result = confirm("장바구니에서 삭제하시겠습니까?")
-            if(result) {
+                $("#chk-all").text(mssg)
+                checkboxes.each(function () {
+                    $(this).prop('checked', chkTF);
+                });
+            }
+        })
+
+        /* 이미지버튼 클릭시 -> 해당 체크박스 클릭 */
+        $(".img-btn").on("click", function(e) {
+            const cartId = $(this).attr('data-num')
+            const checkbox =  $(`#chk-${cartId}`)
+            checkbox.prop('checked', !checkbox.prop('checked'))
+        })
+
+        /* 장바구니 삭제 버튼 */
+        $("#delete-btn").on("click", function(e) {
+            const ids = getCheckedChkBox()
+
+            if(ids.length === 0) alert("삭제할 상품을 선택해주세요.")
+            else {
                 $.ajax({
                     type: 'DELETE',
-                    url: `/api/cart/${cartId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
+                    url: "/api/cart",
+                    data: {'ids': ids},
+                    traditional: true,
                     success: function (data) {
-                        if(data.httpStatus === 200) {
+                        if (data.httpStatus === 200) {
                             alert(`${data.message}`)
-                            row.remove()
+                            window.location = `/cart/${id}`
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error('Error getting password:', error);
                     }
-                });
+                })
             }
         })
+
+        /* 체크박스 리스트 가져오기 */
+        function getCheckedChkBox(){
+            const checkboxes = $(".image-checkbox:checked")
+            const checkedValues = checkboxes.map(function() {
+                return $(this).val();
+            }).get();
+            return checkedValues;
+        }
+
+        /* 상품 주문하기 */
+        $("#order-btn").on("click", function(e) {
+            const ids = getCheckedChkBox()
+
+            if(ids.length === 0) alert("주문할 상품을 선택해주세요.")
+            else {
+                console.log("ids : ", ids)
+                const queryString = '?ids=' + ids.join('&ids=');
+                console.log("queryString : ", queryString)
+
+                const result = confirm("해당 상품들을 주문하시겠습니까?")
+                if(result) window.location.href = `/order${queryString}`
+            }
+        })
+
     </script>
 </th:block>
 

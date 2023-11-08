@@ -21,6 +21,7 @@ public class HongCartController {
     public String index(@PathVariable Long id, Model model){
         List<HongCartVO> cart = hongCartService.getUsersListOfCartById(id);
         model.addAttribute("cart", cart);
+        model.addAttribute("id", id);
         return "cart/index";
     }
 }

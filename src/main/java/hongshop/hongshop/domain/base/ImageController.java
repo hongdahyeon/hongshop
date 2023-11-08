@@ -9,22 +9,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
-public class HomeController {
+public class ImageController {
 
-    @GetMapping("/login")
-    public String login(){
-        return "/login";
-    }
-
-    @GetMapping({"/", ""})
-    public String index(){
-        return "index";
-    }
-
-    @GetMapping("/front/initialPassword")
-    public String initialPassword(){
-        return "initialPassword";
+    private final String rootPath = "D:\\hongFile\\";
+    @CrossOrigin
+    @GetMapping("/image")
+    public ResponseEntity<?> returnImage(@RequestParam String imageId) {
+        Resource resource = new FileSystemResource(rootPath + imageId);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 }

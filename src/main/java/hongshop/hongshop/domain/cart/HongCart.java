@@ -42,11 +42,19 @@ public class HongCart {
     @Column(name = "cart_price")
     private Integer cartPrice;
 
+    @Column(name = "delete_yn")
+    private String deleteYn;
+
     @Builder(builderMethodName = "hongCartInsertBuilder")
     public HongCart(HongUser hongUser, HongProduct hongProduct, Integer cartCnt, Integer cartPrice) {
         this.hongUser = hongUser;
         this.hongProduct = hongProduct;
         this.cartCnt = cartCnt;
         this.cartPrice = cartPrice;
+        this.deleteYn = "N";
+    }
+
+    public void deleteCart(){
+        this.deleteYn = "Y";
     }
 }

@@ -3,6 +3,9 @@ package hongshop.hongshop.domain.cart.impl;
 import hongshop.hongshop.domain.cart.*;
 import hongshop.hongshop.domain.cart.dto.HongCartDTO;
 import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.file.FileState;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.user.HongUser;
@@ -17,7 +20,9 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary      (1) save : 장바구니 저장
+ *              (2) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
+ *              (3) delete : 장바구니 삭제
 **/
 
 @Service
@@ -27,6 +32,7 @@ public class HongCartServiceImpl implements HongCartService {
 
     private final HongCartRepository hongCartRepository;
     private final HongProductService hongProductService;
+    private final HongFileGroupService hongFileGroupService;
 
     @Override
     @Transactional(readOnly = false)
@@ -55,22 +61,28 @@ public class HongCartServiceImpl implements HongCartService {
     }
 
     @Override
-    public List<HongCartVO> getUsersListOfCartByLoginUser(HongUser hongUser) {
-        List<HongCart> listOfCart = hongCartRepository.findAllByHongUserId(hongUser.getId());
-        return listOfCart.stream().map(HongCartVO::new).toList();
-    }
-
-    @Override
     public List<HongCartVO> getUsersListOfCartById(Long id) {
-        List<HongCart> listOfCart = hongCartRepository.findAllByHongUserId(id);
-        return listOfCart.stream().map(HongCartVO::new).toList();
+        List<HongCart> listOfCart = hongCartRepository.findAllByHongUserIdAndDeleteYn(id, "N");
+        return listOfCart.stream().map(hongCart -> {
+            Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
+            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
+            return new HongCartVO(hongCart, list);
+        }).toList();
     }
 
     @Override
     @Transactional(readOnly = false)
     public void delete(Long id) {
         HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
-        hongCartRepository.delete(hongCart);
+        hongCart.deleteCart();
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void deleteSeveral(Long[] ids) {
+        for(Long id : ids) {
+            HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
+            hongCart.deleteCart();
+        }
+    }
 }

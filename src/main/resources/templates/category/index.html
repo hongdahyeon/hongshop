@@ -55,11 +55,20 @@
                         </div>
                         <!-- e: newProdcuts-tab -->
 
-
                         <th:block th:each="cat, catStat : ${categories}">
                             <!-- s: product-tab -->
                             <div class="tab-pane fade" th:id="|product${cat.categoryId}|" role="tabpanel" th:aria-labelledby="|product-${cat.categoryId}-tab|">
-                                <div class="image-grid">
+
+                                <!-- s: empty card -->
+                                <div class="card" id="empty-div" th:if="${cat.productList.size() == 0}">
+                                    <div class="card-body" style="text-align: center">
+                                        <h4>상품이 아직 없습니다.</h4>
+                                    </div>
+                                </div>
+                                <!-- e: empty card -->
+
+
+                                <div class="image-grid" th:unless="${cat.productList.size() == 0}">
                                     <div class="image-item" th:each="product, productStat : ${cat.productList}">
                                         <button class="btn img-btn" type="button" th:id="|btn-${product.productId}|" th:data-num="${product.productId}" th:data-stock="${product.productStock}">
                                             <img th:src="${(product.getFile() != null and product.getFile().getFileList().size() >= 1) ? '/image?imageId=' + product.getFile().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"

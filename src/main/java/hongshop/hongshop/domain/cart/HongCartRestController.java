@@ -29,14 +29,6 @@ public class HongCartRestController {
 
     private final HongCartService hongCartService;
 
-    @GetMapping("/cart")
-    @Operation(summary = "get login user's cart list", description = "로그인한 사용자의 장바구니 리스트 가져오기")
-    @ApiDocumentResponse
-    public Response listOfCartByLoginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<HongCartVO> usersListOfCart = hongCartService.getUsersListOfCartByLoginUser(principalDetails.getUser());
-        return Response.ok(usersListOfCart);
-    }
-
     @GetMapping("/cart/{id}")
     @Operation(summary = "get login user's cart list", description = "로그인한 사용자의 장바구니 리스트 가져오기")
     @ApiDocumentResponse
@@ -54,12 +46,19 @@ public class HongCartRestController {
     }
 
     @DeleteMapping("/cart/{id}")
-    @Operation(summary = "delete cart", description = "장바구니 삭제")
+    @Operation(summary = "delete cart one", description = "장바구니 단건 삭제")
     @ApiDocumentResponse
     public Response delete(@PathVariable Long id){
         hongCartService.delete(id);
         return Response.ok("삭제되었습니다.");
     }
 
+    @DeleteMapping("/cart")
+    @Operation(summary = "delete cart several", description = "장바구니 여러개 삭제")
+    @ApiDocumentResponse
+    public Response deleteSeveral(Long[] ids) {
+        hongCartService.deleteSeveral(ids);
+        return Response.ok("해당 장바구니들을 정상적으로 삭제하였습니다.");
+    }
 
 }

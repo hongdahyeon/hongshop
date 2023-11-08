@@ -62,3 +62,18 @@
     padding: 0; /* Remove any default padding */
     font-weight: bold;
 }
+
+/* 장바구니 page -> checkbox div */
+.top-checkbox {
+    position: relative;
+}
+
+/* 장바구니 page -> checkbox */
+.image-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    margin: 5px; /* Adjust as needed */
+    transform: scale(2); /* Adjust the scale factor as needed to make it larger */
+}

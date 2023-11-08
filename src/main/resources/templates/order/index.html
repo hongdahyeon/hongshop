@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>주문하기</h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-outline-info" id="goto-cart">장바구니 돌아가기</button>
+                    <button type="button" class="btn btn-outline-primary" id="order-btn">주문하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="image-grid" style="margin-top: 40px">
+                <div class="image-item">
+                    <button class="btn img-btn" type="button" id="btn-9" data-num="9">
+                        <img src="/image?imageId=5ababcf6-a085-4f18-a739-139b2c10d9e4.png" id="img-9" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                    </button>
+                    <div class="product-info">
+                        <p class="image-name" id="name-9">빵</p>
+                        <p class="image-name" style="color: green; font-weight: bold" id="order-1" data-order="1">주문개수: 1 개</p>
+                        <p class="image-name" style="color: blue; font-weight: bold" id="price-2000" data-price="2000">총가격: 2,000 원</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        const ids = /*[[${ids}]]*/ [];
+        const userid = /*[[${userid}]]*/ "";
+        console.log("ids : ", ids)
+        console.log("userid: ", userid)
+
+        $(document).ready(function(e) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            if(ids !== null) alert("선택하신 상품들에 대한 정보 및 주소정보를 확인해주세요.")
+            else {
+                alert("잘못된 접근입니다.")
+                window.location.href = "/"
+            }
+        })
+
+        $("#goto-cart").on("click", function(e) {
+            window.location.href = `/cart/${userid}`
+        })
+
+    </script>
+</th:block>
+
+</html>
