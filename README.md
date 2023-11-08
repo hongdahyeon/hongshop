@@ -149,5 +149,6 @@
    - 장바구니에서 삭제 구현, 주문 화면 넘어가기 구현
 * commit104 (23/11/07)
    - 장바구니에서 상품 주문 하기
-   -> order, order-detail, deliver insert
-   -> cart deletYn to Y, product stock update
+   - order, order-detail, deliver insert
+   - cart deletYn to Y, product stock update
+* commit105 : 배송 주문 관리 화면 구현 (23/11/07)
