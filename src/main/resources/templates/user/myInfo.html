@@ -106,8 +106,9 @@
 
 
 <th:block layout:fragment="script">
-    <script>
+    <script th:inline="javascript">
 
+        const user = /*[[${user}]]*/ null;
         let changePwd = false
         let changeEmail = false
         let emailChk = true
@@ -115,6 +116,8 @@
         const newPasswordChk = $("#newPasswordChk")
 
         $(document).ready(function() {
+            if(user.city.length == 0 || user.street.length == 0 || user.zipcode.length == 0) alert("주소 정보를 입력해주세요.")
+
             newPassword.on('input', chckValidate)
             newPasswordChk.on('input', chckValidate)
         })

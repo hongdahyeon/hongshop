@@ -61,6 +61,8 @@ public class SecurityConfig  {
                             .loginPage("/login")
                             .userInfoEndpoint()
                             .userService(principalOAuth2UserService)
+                            .and()
+                            .successHandler(customLoginSuccessHandler)
                 )
                 .logout(logoutConfigurer ->
                    logoutConfigurer

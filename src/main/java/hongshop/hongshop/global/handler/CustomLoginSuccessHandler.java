@@ -42,6 +42,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         HongUser hongUser = hongUserRepository.findByUserId(userId).get();
         hongUser.resetPwdFailCntAndUserNonLocked();
 
-        response.sendRedirect("/");
+        if(hongUser.getAddress().getCity().length() == 0 || hongUser.getAddress().getStreet().length() == 0 || hongUser.getAddress().getZipcode().length() == 0) response.sendRedirect("/user/myInfo");
+        else response.sendRedirect("/");
     }
 }
