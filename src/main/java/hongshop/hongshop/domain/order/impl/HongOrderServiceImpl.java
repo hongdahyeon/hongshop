@@ -1,8 +1,11 @@
 package hongshop.hongshop.domain.order.impl;
 
+import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.order.*;
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
@@ -10,6 +13,8 @@ import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.user.HongUser;
+import hongshop.hongshop.domain.user.HongUserService;
+import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.util.TimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,7 @@ import java.util.List;
  *               한개의 order에 대해 여러개의 order-detail을 갖는다.
  *               만약 여러개의 order-detail 중에 'out of stock'이 있다면 -> throw와 함께 주문을 삭제 시킨다.
  *               ** 해당 물품이 재고가 있다면, 주문 저장 후, 재고값도 차감시켜준다.
+ *          (2) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
  *          (2) view
  *               order-id에 대해 order-detail-list 값을 함께 불러온다.
  *          (3) listOfUserOrder
@@ -43,6 +49,8 @@ public class HongOrderServiceImpl implements HongOrderService {
     private final HongOrderDetailService hongOrderDetailService;
     private final HongProductService hongProductService;
     private final HongDeliverService hongDeliverService;
+    private final HongCartService hongCartService;
+    private final HongUserService hongUserService;
 
     @Override
     @Transactional(readOnly = false)
@@ -76,6 +84,48 @@ public class HongOrderServiceImpl implements HongOrderService {
 
         // 5. finally save deliver
         hongDeliverService.join(hongUser.getAddress(), saveOrder);
+
+        return saveOrder.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Long saveFromCart(List<HongOrderFromCartDTO> listofOrders, HongUser hongUser) {
+
+        // 1. first you need to make order
+        HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
+                .hongUser(hongUser)
+                .orderStatus(OrderStatus.CHARGED)
+                .orderDate(TimeUtil.nowDate())
+                .build();
+        saveOrder = hongOrderRepository.save(saveOrder);
+
+        for(HongOrderFromCartDTO hongOrderDTO : listofOrders){
+            // 1. find product by productId first
+            HongProduct product = hongProductService.productInfo(hongOrderDTO.getHongProductId());
+
+            // ** if orderCnt is larger then stock throw error
+            if(product.getProductStock() < hongOrderDTO.getOrderCnt()) {
+                hongOrderRepository.delete(saveOrder);
+                throw new IllegalArgumentException("stock is smaller than order count");
+            }
+
+            // 3. then save order details
+            Integer orderPrice = hongOrderDTO.getOrderCnt() * product.getProductPrice();
+            hongOrderDetailService.saveOrderDetails(saveOrder, product, hongOrderDTO.getOrderCnt(), orderPrice);
+
+            // 4. update product removing stock
+            hongProductService.updateStockCnt(hongOrderDTO.getOrderCnt(), product);
+
+            // 5. then you need to remove prdocut from cart
+            Long hongCartId = hongOrderDTO.getHongCartId();
+            hongCartService.delete(hongCartId);
+        }
+
+        // 6. finally save deliver
+        HongUserVO user = hongUserService.getHongUserById(hongUser.getId());
+        Address address = new Address(user.getCity(), user.getStreet(), user.getZipcode());
+        hongDeliverService.join(address, saveOrder);
 
         return saveOrder.getId();
     }

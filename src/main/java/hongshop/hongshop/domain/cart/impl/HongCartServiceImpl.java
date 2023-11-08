@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,5 +85,19 @@ public class HongCartServiceImpl implements HongCartService {
             HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
             hongCart.deleteCart();
         }
+    }
+
+    @Override
+    public List<HongCartVO> listOfChoose(List<Long> ids) {
+        List<HongCartVO> hongCarts = new ArrayList<>();
+        if(ids != null && ids.size() > 0 ) {
+            for (Long id : ids) {
+                HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
+                Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
+                HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
+                hongCarts.add(new HongCartVO(hongCart, list));
+            }
+        }
+        return hongCarts;
     }
 }

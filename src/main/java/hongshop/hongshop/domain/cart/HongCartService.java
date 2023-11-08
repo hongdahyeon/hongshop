@@ -22,4 +22,6 @@ public interface HongCartService {
     void delete(Long id);
 
     void deleteSeveral(Long[] ids);
+
+    List<HongCartVO> listOfChoose(List<Long> ids);
 }

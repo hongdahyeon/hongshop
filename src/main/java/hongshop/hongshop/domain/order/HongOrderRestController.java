@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.order;
 
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -36,6 +37,14 @@ public class HongOrderRestController {
     public Response save(@RequestBody List<HongOrderDTO> hongOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
         if(principalDetails == null) throw new IllegalArgumentException("you need to login first");
         Long saveId = hongOrderService.save(hongOrderDTO, principalDetails.getUser());
+        return Response.ok(saveId);
+    }
+
+    @PostMapping("/order-from-cart")
+    @Operation(summary = "insert order", description = "주문 저장")
+    @ApiDocumentResponse
+    public Response saveFromCart(@RequestBody List<HongOrderFromCartDTO> hongOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        Long saveId = hongOrderService.saveFromCart(hongOrderDTO, principalDetails.getUser());
         return Response.ok(saveId);
     }
 

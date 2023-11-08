@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.order;
 
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.user.HongUser;
@@ -18,6 +19,8 @@ import java.util.List;
 public interface HongOrderService {
 
     Long save(List<HongOrderDTO> hongOrderDTO, HongUser hongUser);
+
+    Long saveFromCart(List<HongOrderFromCartDTO> hongOrderDTO, HongUser hongUser);
 
     List<HongOrderVO> list();
 

@@ -9,6 +9,7 @@ import lombok.Setter;
 public class HongCartVO {
 
     private Long id;
+    private Long productId;
     private String productName;
     private Integer cartCnt;
     private Integer cartPrice;
@@ -16,6 +17,7 @@ public class HongCartVO {
 
     public HongCartVO(HongCart hongCart) {
         this.id = hongCart.getId();
+        this.productId = hongCart.getHongProduct().getId();
         this.productName = hongCart.getHongProduct().getProductName();
         this.cartCnt = hongCart.getCartCnt();
         this.cartPrice = hongCart.getCartPrice();
@@ -23,6 +25,7 @@ public class HongCartVO {
 
     public HongCartVO(HongCart hongCart, HongFileGroupVO fileGroupVO) {
         this.id = hongCart.getId();
+        this.productId = hongCart.getHongProduct().getId();
         this.productName = hongCart.getHongProduct().getProductName();
         this.cartCnt = hongCart.getCartCnt();
         this.cartPrice = hongCart.getCartPrice();

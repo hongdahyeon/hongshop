@@ -21,19 +21,77 @@
             </div>
         </div>
 
+        <hr class="hr">
+
         <div class="card-body">
-            <div class="image-grid" style="margin-top: 40px">
-                <div class="image-item">
-                    <button class="btn img-btn" type="button" id="btn-9" data-num="9">
-                        <img src="/image?imageId=5ababcf6-a085-4f18-a739-139b2c10d9e4.png" id="img-9" class="rounded" alt="Image" style="width: 150px; height: 150px">
+
+            <div class="card-header">
+                <h4 style="font-weight: bold">주문 상품 정보</h4>
+            </div>
+
+            <div class="image-grid" style="margin-top: 30px">
+                <div class="image-item" th:each="ch, chStat : ${chooseLst}">
+                    <button class="btn img-btn" type="button" th:id="|btn-${ch.id}|" th:data-num="${ch.id}">
+                        <img th:src="${(ch.getFileGroup() != null and ch.getFileGroup().getFileList().size() >= 1) ? '/image?imageId=' + ch.getFileGroup().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
+                                th:id="|img-${ch.id}|" class="rounded" alt="Image" style="width: 150px; height: 150px">
                     </button>
                     <div class="product-info">
-                        <p class="image-name" id="name-9">빵</p>
-                        <p class="image-name" style="color: green; font-weight: bold" id="order-1" data-order="1">주문개수: 1 개</p>
-                        <p class="image-name" style="color: blue; font-weight: bold" id="price-2000" data-price="2000">총가격: 2,000 원</p>
+                        <p class="image-name" th:id="|name-${ch.id}|" th:text="${ch.productName}"></p>
+                        <p class="image-name" style="color: green; font-weight: bold" th:id="|order-${ch.id}|" th:data-order="${ch.cartCnt}" th:text="|주문개수: ${ch.cartCnt} 개|"></p>
+                        <p class="image-name" style="color: blue; font-weight: bold" th:id="|price-${ch.cartPrice}|" th:data-price="${ch.cartPrice}" th:text="|총가격: ${#numbers.formatInteger(ch.cartPrice, 0, 'COMMA')} 원|"></p>
                     </div>
                 </div>
             </div>
+
+            <hr class="hr">
+
+            <div class="card-body" style="margin-top: 30px;">
+                <div class="row">
+                    <div class="col">
+                        <div class="card-header">
+                            <h4 style="font-weight: bold">주문 사용자 주소 정보</h4>
+                            <form id="update-address-form" class="needs-validation" novalidate>
+                                <input type="hidden" th:value="${userId}" name="userId" id="userId" />
+                                <div class="mb-3 mt-3">
+                                    <label for="city">city</label>
+                                    <input type="text" class="form-control" id="city" name="city" th:value="${address.city}" disabled required/>
+                                    <div class="invalid-feedback">city를 입력하세요.</div>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="street">street</label>
+                                    <input type="text" class="form-control" id="street" name="street" th:value="${address.street}" disabled required/>
+                                    <div class="invalid-feedback">street를 입력하세요.</div>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="zipcode">zipcode</label>
+                                    <input type="text" class="form-control" id="zipcode" name="zipcode" th:value="${address.zipcode}" disabled required/>
+                                    <div class="invalid-feedback">zipcode를 입력하세요.</div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-outline-primary" id="change-address-btn">주소 변경하기</button>
+                                    <button type="submit" class="btn btn-primary" id="update-address" style="display: none;">저장</button>
+                                    <button type="button" class="btn btn-outline-secondary" id="update-address-cancel" style="display: none;">취소</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card-header">
+                            <h4 style="font-weight: bold">주문 가격</h4>
+                            <div class="mb-3 mt-3">
+                                <label for="totalPrice">총 주문 가격</label>
+                                <input type="text" class="form-control" id="totalPrice" name="totalPrice" th:value="${totalPrice}" readonly/>
+                            </div>
+
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary" id="purchase-btn">결제하기</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </th:block>
@@ -42,9 +100,13 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         const ids = /*[[${ids}]]*/ [];
-        const userid = /*[[${userid}]]*/ "";
-        console.log("ids : ", ids)
-        console.log("userid: ", userid)
+        const chooseLst = /*[[${chooseLst}]]*/ []
+        const id = /*[[${id}]]*/ "";
+
+        const addressInput = $("#city, #street, #zipcode")
+        const updateAddressBtn = $("#update-address, #update-address-cancel")
+        const changeAddressBtn = $("#change-address-btn")
+        let addressChange = false
 
         $(document).ready(function(e) {
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -55,9 +117,96 @@
             }
         })
 
-        $("#goto-cart").on("click", function(e) {
-            window.location.href = `/cart/${userid}`
+        $("#change-address-btn, #update-address-cancel").on("click", function(e) {
+            console.log("change-address-btn")
+            addressChanging(addressChange)
         })
+
+        $("#purchase-btn").on("click", function(e) {
+            console.log("purchase-btn clicked")
+            console.log("chooseLst : ", chooseLst)
+
+            const obj = []
+
+            chooseLst.forEach(choose => {
+                obj.push({'hongProductId': choose['productId'], 'orderCnt': choose['cartCnt'], 'hongCartId': choose['id']})
+            })
+
+            console.log("obj : ", obj)
+
+            $.ajax({
+                type: 'POST',
+                url: `/api/order-from-cart`,
+                dataType: 'json',
+                data: JSON.stringify(obj),
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        alert(`${data.message}번으로 주문되었습니다.`)
+                        window.location.href = '/'  // 후에는 배송 정보 화면 이동?
+                    }else {
+                        alert("주문에 실패했습니다.")
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        })
+
+        function addressChanging(chk){
+            if(chk) {
+                addressInput.prop('disabled', true)
+                addressChange = false
+                updateAddressBtn.hide()
+                changeAddressBtn.show()
+            }else {
+                addressInput.prop('disabled', false)
+                addressChange = true
+                updateAddressBtn.show()
+                changeAddressBtn.hide()
+            }
+        }
+
+        $("#goto-cart").on("click", function(e) {
+            window.location.href = `/cart/${id}`
+        })
+
+        window.addEventListener("load", function(event) {
+            event.preventDefault();
+            const form = document.getElementById("update-address-form");
+
+            form.addEventListener("submit", function(event) {
+                if(form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                }else{
+                    event.preventDefault();
+                    FormDataToObj.getParameter("update-address-form").then(obj => {
+                        console.log("obj : ", obj)
+
+                        $.ajax({
+                            type: 'PUT',
+                            url: `/api/user`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    alert("주소 정보를 변경하였습니다.")
+                                    addressChanging(true)
+                                }else {
+                                    alert("주소 변경에 실패하였습니다.")
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
+                    })
+                }
+            });
+        });
 
     </script>
 </th:block>
