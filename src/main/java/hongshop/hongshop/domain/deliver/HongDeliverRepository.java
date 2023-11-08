@@ -11,4 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 **/
 
 public interface HongDeliverRepository extends JpaRepository<HongDeliver, Long> {
+
+    HongDeliver findByHongOrder_Id(Long id);
 }

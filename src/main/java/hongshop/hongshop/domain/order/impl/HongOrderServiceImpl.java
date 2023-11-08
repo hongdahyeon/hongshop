@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.order.impl;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
+import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.HongOrderService;
@@ -11,6 +12,7 @@ import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDetailsDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
@@ -41,6 +43,7 @@ import java.util.List;
  *               현재 로그인한 user의 주문 정보를 불러온다.
  *          (4) updateStatus : 주문 상태값 변경
  *          (5) list: 전체 주문 조회 with 주문 상세
+ *          (6) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
 **/
 
 @Service
@@ -164,5 +167,15 @@ public class HongOrderServiceImpl implements HongOrderService {
     public void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO) {
         HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
         hongOrder.updateStatus(hongOrderStatusDTO.getOrderStatus());
+    }
+
+    @Override
+    public List<HongOrderDeliverVO> getOrderAndDeliverByUserId(Long id) {
+        List<HongOrder> hongOrders = hongOrderRepository.findAllByHongUserId(id);
+        return hongOrders.stream().map(order -> {
+            List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
+            HongDeliverVO byOrderId = hongDeliverService.getByOrderId(order.getId());
+            return new HongOrderDeliverVO(order, orderDetails, byOrderId);
+        }).toList();
     }
 }

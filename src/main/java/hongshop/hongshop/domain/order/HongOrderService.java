@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.order;
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.user.HongUser;
 
@@ -29,4 +30,6 @@ public interface HongOrderService {
     List<HongOrderVO> listOfUserOrder(Long id);
 
     void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO);
+
+    List<HongOrderDeliverVO> getOrderAndDeliverByUserId(Long id);
 }

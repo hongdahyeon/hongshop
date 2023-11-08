@@ -27,4 +27,6 @@ public interface HongDeliverService {
     void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id);
     List<HongDeliverVO> all();
 
+    HongDeliverVO getByOrderId(Long orderId);
+
 }

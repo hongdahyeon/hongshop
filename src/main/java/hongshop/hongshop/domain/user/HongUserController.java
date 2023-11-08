@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.order.HongOrderService;
+import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -30,6 +33,8 @@ public class HongUserController {
     @GetMapping("/order/{id}")
     public String orderUser(@PathVariable Long id, Model model) {
         // 배송 및 주문 정보 화면
+        List<HongOrderDeliverVO> orders = hongOrderService.getOrderAndDeliverByUserId(id);
+        model.addAttribute("orders", orders);
         return "user/order";
     }
 

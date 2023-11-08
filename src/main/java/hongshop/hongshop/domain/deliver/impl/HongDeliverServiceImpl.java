@@ -57,8 +57,6 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     @Transactional(readOnly = false)
     public void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id) {
         HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
-        System.out.println("id = " + id);
-        System.out.println("hongDeliverStatusDTO.getStatus() = " + hongDeliverStatusDTO.getStatus());
         hongDeliver.updateStatus(hongDeliverStatusDTO);
     }
 
@@ -66,5 +64,11 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     public List<HongDeliverVO> all() {
         List<HongDeliver> all = hongDeliverRepository.findAll();
         return all.stream().map(HongDeliverVO::new).toList();
+    }
+
+    @Override
+    public HongDeliverVO getByOrderId(Long orderId) {
+        HongDeliver hongDeliver = hongDeliverRepository.findByHongOrder_Id(orderId);
+        return new HongDeliverVO(hongDeliver);
     }
 }
