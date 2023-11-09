@@ -21,7 +21,8 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary      (1) save : 장바구니 저장
+* @summary      (1) saveLst : 장바구니 저장 (여러개)
+ *              (2) save : 장바구니 저장 (단건)
  *              (2) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
  *              (3) delete : 장바구니 삭제
  *              (4) deleteSeveral : 장바구니 여러개 삭제
@@ -39,7 +40,7 @@ public class HongCartServiceImpl implements HongCartService {
 
     @Override
     @Transactional(readOnly = false)
-    public Integer save(List<HongCartDTO> cartDTOList, HongUser hongUser) {
+    public Integer saveLst(List<HongCartDTO> cartDTOList, HongUser hongUser) {
 
         int savedCart = 0;
 
@@ -61,6 +62,23 @@ public class HongCartServiceImpl implements HongCartService {
 
         }
         return savedCart;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Long save(HongCartDTO hongCartDTO, HongUser hongUser) {
+
+        HongProduct product = hongProductService.productInfo(hongCartDTO.getHongProductId());
+        Integer orderPrice = hongCartDTO.getCartCnt() * product.getProductPrice();
+
+        HongCart hongCart = HongCart.hongCartInsertBuilder()
+                .hongUser(hongUser)
+                .hongProduct(product)
+                .cartCnt(hongCartDTO.getCartCnt())
+                .cartPrice(orderPrice)
+                .build();
+        HongCart save = hongCartRepository.save(hongCart);
+        return save.getId();
     }
 
     @Override

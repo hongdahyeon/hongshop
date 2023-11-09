@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.user;
 
+import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
@@ -40,4 +41,6 @@ public interface HongUserService {
     boolean findUserId(String userEmail, String userName);
 
     void updateUserNonLocked(String userId);
+
+    Address getAddress(Long id);
 }

@@ -150,4 +150,10 @@ public class HongUserServiceImpl implements HongUserService {
         HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         hongUser.resetPwdFailCntAndUserNonLocked();
     }
+
+    @Override
+    public Address getAddress(Long id) {
+        HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return hongUser.getAddress();
+    }
 }

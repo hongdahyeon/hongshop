@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.order;
 
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -41,10 +42,18 @@ public class HongOrderRestController {
     }
 
     @PostMapping("/order-from-cart")
-    @Operation(summary = "insert order", description = "주문 저장 - 결제하기")
+    @Operation(summary = "insert order", description = "주문 저장 - 결제하기 from 장바구니")
     @ApiDocumentResponse
     public Response saveFromCart(@RequestBody HongOrderFromCartDTO hongOrderFromCartDTO){
         Long saveId = hongOrderService.saveFromCart(hongOrderFromCartDTO);
+        return Response.ok(saveId);
+    }
+
+    @PostMapping("/order-from-shop")
+    @Operation(summary = "insert order", description = "주문 저장 - 결제하기 from 상품 화면")
+    @ApiDocumentResponse
+    public Response saveFromShop(@RequestBody HongOrderFromShopDTO hongOrderFromShopDTO){
+        Long saveId = hongOrderService.saveFromShop(hongOrderFromShopDTO);
         return Response.ok(saveId);
     }
 

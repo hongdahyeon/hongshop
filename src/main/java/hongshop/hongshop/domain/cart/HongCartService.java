@@ -15,7 +15,9 @@ import java.util.List;
 **/
 
 public interface HongCartService {
-    Integer save(List<HongCartDTO> cartDTOList, HongUser hongUser);
+    Integer saveLst(List<HongCartDTO> cartDTOList, HongUser hongUser);
+
+    Long save(HongCartDTO cartDTO, HongUser hongUser);
 
     List<HongCartVO> getUsersListOfCartById(Long id);
 

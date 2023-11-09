@@ -3,8 +3,9 @@ package hongshop.hongshop.domain.order;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.product.HongProductService;
+import hongshop.hongshop.domain.product.vo.HongProductVO;
 import hongshop.hongshop.domain.user.HongUserService;
-import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,13 +24,14 @@ public class HongOrderController {
 
     private final HongCartService hongCartService;
     private final HongUserService hongUserService;
+    private final HongProductService hongProductService;
 
-    @GetMapping({"", "/"})
+    // 장바구니에서 선택한 정보들로 구매 화면 이동
+    @GetMapping("/cart")
     public String index(@RequestParam(name = "ids", required = false) List<Long> ids, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long id = principalDetails.getUser().getId();
-        HongUserVO user = hongUserService.getHongUserById(id);
-        String userId = user.getUserId();
-        Address address = new Address(user.getCity(), user.getStreet(), user.getZipcode());
+        String userId = principalDetails.getUser().getUserId();
+        Address address = hongUserService.getAddress(id);
         List<HongCartVO> chooseLst = hongCartService.listOfChoose(ids);
 
         Integer totalPrice = 0;
@@ -45,7 +47,26 @@ public class HongOrderController {
         model.addAttribute("chooseLst", chooseLst);     // 선택한 cart 정보lst
         model.addAttribute("address", address);
         model.addAttribute("totalPrice", totalPrice);
-        return "order/index";
+        return "order/cartIndex";
+    }
+
+    // 상품 리스트 화면에서 선택한 정보들로 구매 화면 이동
+    @GetMapping("/shop")
+    public String shop(@RequestParam(name = "productId", required = true) Long productId, @RequestParam(name= "orderNum", required = true) Integer orderNum, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        Long id = principalDetails.getUser().getId();
+        String userId = principalDetails.getUser().getUserId();
+        Address address = hongUserService.getAddress(id);
+
+        HongProductVO product = hongProductService.view(productId);
+        Integer totalPrice = product.getProductPrice() * orderNum;
+
+        model.addAttribute("product", product);
+        model.addAttribute("orderNum", orderNum);
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("address", address);
+        model.addAttribute("userId", userId);
+
+        return "order/shopIndex";
     }
 
 }

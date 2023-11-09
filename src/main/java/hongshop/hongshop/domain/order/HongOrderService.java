@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.order;
 
 import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
@@ -22,6 +23,8 @@ public interface HongOrderService {
     Long save(List<HongOrderDTO> hongOrderDTO, HongUser hongUser);
 
     Long saveFromCart(HongOrderFromCartDTO hongOrderDTO);
+
+    Long saveFromShop(HongOrderFromShopDTO hongOrderFromShopDTO);
 
     List<HongOrderVO> list();
 

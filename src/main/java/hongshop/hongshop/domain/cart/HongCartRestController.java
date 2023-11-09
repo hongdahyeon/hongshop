@@ -37,12 +37,20 @@ public class HongCartRestController {
         return Response.ok(usersListOfCartById);
     }
 
+    @PostMapping("/cart-list")
+    @Operation(summary = "insert cart", description = "장바구니 저장")
+    @ApiDocumentResponse
+    public Response saveLst(@RequestBody List<HongCartDTO> hongCartDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        Integer savedCart = hongCartService.saveLst(hongCartDTO, principalDetails.getUser());
+        return Response.ok(savedCart);
+    }
+
     @PostMapping("/cart")
     @Operation(summary = "insert cart", description = "장바구니 저장")
     @ApiDocumentResponse
-    public Response save(@RequestBody List<HongCartDTO> hongCartDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        Integer savedCart = hongCartService.save(hongCartDTO, principalDetails.getUser());
-        return Response.ok(savedCart);
+    public Response save(@RequestBody HongCartDTO hongCartDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        Long saveId = hongCartService.save(hongCartDTO, principalDetails.getUser());
+        return Response.ok(saveId);
     }
 
     @DeleteMapping("/cart/{id}")
