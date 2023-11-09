@@ -5,6 +5,11 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
+    <style>
+        th, tr, td {
+            text-align: center;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -22,30 +27,30 @@
         <div class="card-body">
             <table class="table table-hover table-bordered" id="qna-table">
                 <thead>
-                    <tr style="text-align: center;">
-                        <th style="width: 5%" class="text-center"></th>
-                        <th style="width: 10%;" class="text-center">번호</th>
+                    <tr>
+                        <th style="width: 5%"></th>
+                        <th style="width: 10%;">번호</th>
                         <th style="width: 30%">제목</th>
-                        <th style="width: 10%" class="text-center">첨부파일</th>
-                        <th style="width: 10%" class="text-center">조회수</th>
-                        <th style="width: 10%" class="text-center">답변</th>
+                        <th style="width: 10%">첨부파일</th>
+                        <th style="width: 10%">조회수</th>
+                        <th style="width: 10%">답변</th>
                     </tr>
                 </thead>
                 <tbody id="qna-tbody">
                     <th:block th:if="${postList.size() > 0}">
                         <tr th:each="post, postStat : ${postList}" th:data-num="${post.regId}" th:data-value="${post.id}">
-                            <td style="width: 5%;" class="text-center">
+                            <td style="width: 5%;">
                                 <i th:class="${post.regId == user.id} ? 'front-medium-2' : 'front-medium-2 lock'" th:data-feather="${post.regId == user.id} ? 'unlock' : 'lock'"></i>
                             </td>
-                            <td style="width: 10%" class="text-center" th:text="${postStat.index + 1}"></td>
-                            <td style="width: 30%" th:text="${post.title}"></td>
-                            <td style="width: 10%" class="text-center" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
-                            <td style="width: 10%" class="text-center" th:text="${post.readCnt}"></td>
-                            <td style="width: 10%" class="text-center" th:text="${post.answerList.size()}"></td>
+                            <td style="width: 10%" th:text="${postStat.index + 1}"></td>
+                            <td style="width: 30%" class="text-start" th:text="${post.title}"></td>
+                            <td style="width: 10%" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
+                            <td style="width: 10%" th:text="${post.readCnt}"></td>
+                            <td style="width: 10%" th:text="${post.answerList.size()}"></td>
                         </tr>
                     </th:block>
                     <th:block th:unless="${postList.size() > 0}">
-                        <tr style="text-align: center;">
+                        <tr>
                             <td colspan="6">게시글이 비어있습니다.</td>
                         </tr>
                     </th:block>
