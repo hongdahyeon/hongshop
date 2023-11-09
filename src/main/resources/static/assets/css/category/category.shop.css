@@ -29,37 +29,40 @@
     font-weight: bold;
 }
 
+
+
 /* 상품 보기 page -> 이미지 그리드 (1줄 6개) */
 .image-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 6 columns */
-    gap: 10px; /* Spacing between items */
-    justify-content: center; /* Center horizontally within the container */
-    align-content: center; /* Center vertically within the container */
+    gap: 10px;
+    justify-content: center;
+    align-content: center;
 }
 
 /* 상품 보기 page -> 이미지 & 상품이름 & 가격 그리드 */
 .image-item {
+    position: relative;
     text-align: center;
 }
 
 /* 상품 보기 page -> 상품 이미지 */
 .image-item img {
-    width: 100%; /* Resize images to fit their container */
+    width: 100%;
 }
 
 /* 상품 보기 page -> 상품 이름 & 가격 그리드 */
 .product-info {
     display: inline-block;
-    vertical-align: top; /* Align the elements to the top of the line */
-    margin-right: 10px; /* Add some spacing between the two <p> tags */
+    vertical-align: top;
+    margin-right: 10px;
 }
 
 /* 상품 보기 page -> 상품 이름, 가격 */
 .image-name {
-    text-align: center; /* Align text to the left */
-    margin: 0; /* Remove any default margins */
-    padding: 0; /* Remove any default padding */
+    text-align: center;
+    margin: 0;
+    padding: 0;
     font-weight: bold;
 }
 
@@ -74,6 +77,30 @@
     top: 0;
     left: 0;
     z-index: 1;
-    margin: 5px; /* Adjust as needed */
-    transform: scale(2); /* Adjust the scale factor as needed to make it larger */
+    margin: 5px;
+    transform: scale(2);
+}
+
+/* 장바구니 page -> 장바구니 상품 개수 변경 모달 버튼 */
+.image-item .chng-cart {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+
+    border: 2px solid black;
+    border-radius: 20px;
+    color: black;
+}
+
+/* 장바구니 page -> 장바구니 상품 개수 변경 모달 버튼 hover */
+.image-item .chng-cart:hover{
+    background: black;
+    color: white;
+}
+
+/* 장바구니 page -> 현재 장바구니 상품 재고 개수 */
+.cart-cnt {
+    color: black;
+    font-weight: bold;
 }

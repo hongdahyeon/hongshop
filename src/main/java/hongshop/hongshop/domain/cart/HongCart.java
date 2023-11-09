@@ -57,4 +57,9 @@ public class HongCart {
     public void deleteCart(){
         this.deleteYn = "Y";
     }
+
+    public void updateCntAndPrice(Integer cartCnt, Integer cartPrice){
+        this.cartCnt = cartCnt;
+        this.cartPrice = cartPrice;
+    }
 }

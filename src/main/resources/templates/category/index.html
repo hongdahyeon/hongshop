@@ -78,6 +78,7 @@
                                                  style="width: 150px; height: 150px">
                                         </button>
                                         <div class="product-info">
+                                            <p th:if="${product.productStock == 0}" class="image-name" style="color: red; font-size: 15px">해당 상품은 현재 재고가 없어서 주문이 불가능합니다.</p>
                                             <p class="image-name">
                                                 <span th:text="${product.productName}" th:id="|name-${product.productId}|"></span>
                                                 <i th:if="${product.newProductYn == 'Y'}" data-feather="star" class="font-medium-2 ms-50"></i>
@@ -221,10 +222,10 @@
             else {
                 const price = productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 $("#hongProductId").val(productId)
-                $("#product-name").text(productName)                        // 상품 이름
-                $("#product-price").text(`가격: ${price} 원`)                // 상품 가격
-                $("#product-stock").text(`재고: ${productStock}`)            // 상품 재고
-                $("#product-img").attr("src", productImg)                   // 상품 이미지
+                $("#product-name").text(productName)                            // 상품 이름
+                $("#product-price").text(`가격: ${price} 원`)                    // 상품 가격
+                $("#product-stock").text(`재고: ${productStock} 개`)             // 상품 재고
+                $("#product-img").attr("src", productImg)                       // 상품 이미지
 
                 $("#product-order-num").attr('max', productStock)                                   // 상품 최대 주문 개수
                 $("#product-invalid-feedback").text(`최대 주문가능 개수는 ${productStock}개 입니다.`)    // 상품 주문 form -> validation text
@@ -243,34 +244,40 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("product-purchase-form").then((obj) => {
-                        console.log("obj : ", obj)
 
                         const submitButtonId = event.submitter.id;
+
+                        // 장바구니 담기
                         if(submitButtonId === 'into-cart') {
-
-                            const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
-                            $.ajax({
-                                type: 'POST',
-                                url: `/api/cart`,
-                                dataType: 'json',
-                                data: JSON.stringify(OBJ),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if(data.httpStatus === 200) {
-                                        const result = confirm('해당 물품이 장바구니에 담겼습니다.' + '\n' + "장바구니를 보러가시겠습니까?")
-                                        if(result) window.location.href = '/user/cart'
-                                        else $("#product-purchase-modal").modal('hide')
-                                    }else {
-                                        alert("해당 물품을 장바구니에 담기에 실패했습니다.")
+                            const result = confirm("해당 상품을 장바구니에 담으시겠습니까?")
+                            if(result) {
+                                const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
+                                $.ajax({
+                                    type: 'POST',
+                                    url: `/api/cart`,
+                                    dataType: 'json',
+                                    data: JSON.stringify(OBJ),
+                                    contentType: 'application/json',
+                                    success: function (data) {
+                                        if (data.httpStatus === 200) {
+                                            const result = confirm('해당 물품이 장바구니에 담겼습니다.' + '\n' + "장바구니를 보러가시겠습니까?")
+                                            if (result) window.location.href = '/user/cart'
+                                            else $("#product-purchase-modal").modal('hide')
+                                        } else {
+                                            alert("해당 물품을 장바구니에 담기에 실패했습니다.")
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error getting password:', error);
                                     }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
-                                }
-                            });
-
+                                });
+                            }
                         } else if(submitButtonId === 'into-purchase') {
-                            window.location.href = `/order/shop?productId=${obj['hongProductId']}&orderNum=${obj['product-order-num']}`
+                            // 구매하기
+                            const result = confirm("해당상품을 구입하시겠습니까?")
+                            if(result) {
+                                window.location.href = `/order/shop?productId=${obj['hongProductId']}&orderNum=${obj['product-order-num']}`
+                            }
                         }
                     })
                 }

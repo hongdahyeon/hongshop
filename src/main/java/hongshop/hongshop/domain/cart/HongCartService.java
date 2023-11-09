@@ -26,4 +26,6 @@ public interface HongCartService {
     void deleteSeveral(Long[] ids);
 
     List<HongCartVO> listOfChoose(List<Long> ids);
+
+    void updateCnt(Long id, HongCartDTO hongCartDTO);
 }

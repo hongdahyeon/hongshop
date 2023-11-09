@@ -79,7 +79,7 @@
                             <h4 style="font-weight: bold">주문 가격</h4>
                             <div class="mb-3 mt-3">
                                 <label for="totalPrice">총 주문 가격</label>
-                                <input type="text" class="form-control" id="totalPrice" name="totalPrice" th:value="${totalPrice}" readonly/>
+                                <input type="text" class="form-control" id="totalPrice" name="totalPrice" th:value="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}" readonly/>
                             </div>
 
                             <div class="text-end">
@@ -139,24 +139,27 @@
 
             const obj = {'userId': userId, 'city': city, 'street': street, 'zipcode': zipcode, 'hongProductId': product['productId'], 'orderCnt': orderNum}
 
-            $.ajax({
-                type: 'POST',
-                url: `/api/order-from-shop`,
-                dataType: 'json',
-                data: JSON.stringify(obj),
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        alert(`${data.message}번으로 주문되었습니다.`)
-                        window.location.href = '/user/order'
-                    }else {
-                        alert("주문에 실패했습니다.")
+            const result = confirm("해당 상품들을 결제하시겠습니까?")
+            if(result) {
+                $.ajax({
+                    type: 'POST',
+                    url: `/api/order-from-shop`,
+                    dataType: 'json',
+                    data: JSON.stringify(obj),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.httpStatus === 200) {
+                            alert(`${data.message}번으로 주문되었습니다.`)
+                            window.location.href = '/user/order'
+                        } else {
+                            alert("주문에 실패했습니다.")
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
-            });
+                });
+            }
         })
 
         /* 배송 주문 주소 input-text disable, 버튼 show & hide */

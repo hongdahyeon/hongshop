@@ -36,7 +36,7 @@ public class HongUserController {
         List<HongCartVO> cart = hongCartService.getUsersListOfCartById(id);
         model.addAttribute("cart", cart);
         model.addAttribute("id", id);
-        return "cart/index";
+        return "user/cart";
     }
 
     @GetMapping("/order")   // 회원 - 배송 및 주문 정보 페이지

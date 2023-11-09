@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>장바구니</h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-success" id="chk-all">✔ 전체 선택</button>
+                    <button type="button" class="btn btn-outline-info" onclick="location.href='/category/new'">상품보러가기</button>
+                    <button type="button" class="btn btn-outline-primary" id="order-btn">주문하기</button>
+                    <button type="button" class="btn btn-outline-danger" id="delete-btn">삭제</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- s: empty card -->
+        <div class="card" id="empty-div" th:if="${cart.size() == 0}" style="margin-top: 40px">
+            <div class="card-body" style="text-align: center">
+                <h4>장바구니가 비어있습니다.</h4>
+            </div>
+        </div>
+        <!-- e: empty card -->
+
+        <!-- s: cart card -->
+        <div class="card-body" th:unless="${cart.size() == 0}">
+            <div class="image-grid" style="margin-top: 40px">
+                <div class="image-item" th:each="ct, ctStat : ${cart}">
+                    <div class="top-checkbox">
+                        <input type="checkbox" class="image-checkbox" th:id="|chk-${ct.id}|" th:value="|${ct.id}|" th:data-able="${ct.productStock < ct.cartCnt ? false : true}">
+                    </div>
+                    <button class="btn img-btn" type="button" th:id="|btn-${ct.id}|" th:data-num="${ct.id}">
+                        <img th:src="${(ct.getFileGroup() != null and ct.getFileGroup().getFileList().size() >= 1) ? '/image?imageId=' + ct.getFileGroup().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
+                             th:id="|img-${ct.id}|" class="rounded" alt="Image" style="width: 150px; height: 150px">
+                    </button>
+                    <div class="product-info">
+                        <th:block th:if="${ct.productStock == 0}">
+                            <p class="image-name" style="color: red; font-size: 15px">현재 해당 상품의 재고가 없습니다.</p>
+                        </th:block>
+                        <th:block th:unless="${ct.productStock == 0}">
+                            <p th:if="${ct.productStock < ct.cartCnt}" class="image-name" style="color: red; font-size: 15px">해당상품은 선택하신 개수보다 <br> 재고가 적어 주문이 불가능합니다.</p>
+                        </th:block>
+                        <p class="image-name" th:text="${ct.productName}" th:id="|name-${ct.id}|"></p>
+                        <p class="image-name" style="color: green; font-weight: bold" th:id="|order-${ct.id}|" th:data-order="${ct.cartCnt}" th:text="|주문개수: ${ct.cartCnt} 개|"></p>
+                        <p class="image-name" style="color: blue; font-weight: bold" th:id="|price-${ct.cartPrice}|" th:data-price="${ct.cartPrice}" th:text="|총가격: ${#numbers.formatInteger(ct.cartPrice, 0, 'COMMA')} 원|"></p>
+                    </div>
+                    <div class="product-info" style="margin-top: 10px">
+                        <button type="button" class="btn chng-cart" th:id="|chng-btn-${ct.id}|" th:value="${ct.id}" th:data-product="${ct.productId}" th:data-stock="${ct.productStock}" th:data-price="${ct.productPrice}">변경</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- e: cart card -->
+
+        <!-- s: cart change Modal -->
+        <form id="cart-change-form" class="needs-validation" novalidate>
+            <div class="modal fade" id="cart-change-modal" tabindex="-1" aria-labelledby="cartChangeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">장바구니 정보 변경하기</h4>
+                            <button type="button" class="btn-close" id="close-cart-change-modal-btn"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-12" style="margin-bottom: 10px; align-content: center">
+                                        <div class="product-container">
+                                            <img src="/assets/src/shop/noImage.png" class="rounded" alt="Image" style="width: 150px; height: 150px" id="product-img">
+                                            <div class="product-name" id="product-name"></div>
+                                            <div class="product-price" id="product-price"></div>
+                                            <div class="product-stock" id="product-stock"></div>
+                                            <div class="cart-cnt" id="cart-cnt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-12">
+                                        <div class="mb-1">
+                                            <input type="hidden" name="hongCartId" id="hongCartId" />
+                                            <input type="hidden" name="hongProductId" id="hongProductId" />
+                                            <label class="form-label" for="product-order-num">주문 개수<span class="text-primary ms-50">*</span></label>
+                                            <div class="input_wrap">
+                                                <input type="number" class="form-control" id="product-order-num" name="product-order-num" min="1" required/>
+                                                <div class="invalid-feedback" id="product-invalid-feedback">주문 개수를 입력해주세요.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px" class="text-end">
+                                    <button type="button" class="btn btn-outline-secondary" id="close-cartChangeModal">닫기</button>
+                                    <button type="submit" class="btn btn-outline-primary" id="change-cart">변경하기</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: cart change Modal -->
+
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        const cart = /*[[${cart}]]*/ [];
+        const id = /*[[${id}]]*/ "";
+
+        /* 체크박스 전체 선택/해제 버튼 */
+        $("#chk-all").on("click", function(e) {
+            if(cart.length === 0) alert("아직 장바구니가 비어있습니다." + '\n' + "상품을 먼저 담아주세요.")
+            else {
+                const checkboxes = $(".image-checkbox")
+                const checkedLen = getCheckedChkBox().length
+                const chkTF = (checkedLen === cart.length) ? false : true
+                const mssg = (checkedLen === cart.length) ? '✔ 전체 선택' : '전체선택 해제'
+
+                $("#chk-all").text(mssg)
+                checkboxes.each(function () {
+                    $(this).prop('checked', chkTF);
+                });
+            }
+        })
+
+        /* 장바구니 재고 변경하기 버튼 클릭 이벤트 */
+        $(".chng-cart").on("click", function(e) {
+            const cartId = $(this).val()
+            const productId = $(this).attr('data-product')
+            const productStock = $(this).attr('data-stock')
+            const productPrice = $(this).attr('data-price')
+            const cartCnt = $(`#order-${cartId}`).attr('data-order')
+            const productName = $(`#name-${cartId}`).text()
+            const productImg = $(`#img-${cartId}`).attr('src')
+
+            if(productStock == 0) alert("현재 해당 상품의 재고가 없어서 주문 및 변경이 불가능합니다.")
+            else {
+                // 모달 열기
+                const price = productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                $("#hongCartId").val(cartId)
+                $("#hongProductId").val(productId)
+                $("#product-name").text(productName)
+                $("#product-price").text(`상품 가격: ${price}원`)
+                $("#product-stock").text(`상품 재고: ${productStock} 개`)
+                $("#product-img").attr("src", productImg)
+                $("#cart-cnt").text(`현재 담긴 개수: ${cartCnt} 개`)
+
+                $("#product-order-num").attr('max', productStock)
+                $("#product-invalid-feedback").text(`최대 주문가능 개수는 ${productStock}개 입니다.`)
+                $("#cart-change-modal").modal('show')
+            }
+        })
+
+        /* 장바구니 정보 변경 모달창 닫기 */
+        $("#close-cartChangeModal, #close-cart-change-modal-btn").on("click", function(e){
+            $("product-order-num").val('')
+            const form = document.getElementById("cart-change-form")
+            form.classList.remove("was-validated")      // validation 지우기
+            $("#cart-change-modal").modal('hide')
+        })
+
+        /* 장바구니 정보 변경 모달창 닫힐때 -> validation 초기화 및 주문개수 초기화 */
+        $("#cart-change-modal").on('hidden.bs.modal', function (e) {
+            $("#product-order-num").val('')
+            const form = document.getElementById("cart-change-form")
+            form.classList.remove("was-validated")      // validation 지우기
+        });
+
+        /* 장바구니 재고 변경하기 */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("cart-change-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("cart-change-form").then((obj) => {
+                        const result = confirm("해당 정보를 변경하시겠습니까?")
+                        if(result) {
+                            const OBJ = {'cartCnt': obj['product-order-num'], hongProductId: obj['hongProductId']}
+                            $.ajax({
+                                type: 'PUT',
+                                url: `/api/cart/${obj['hongCartId']}`,
+                                dataType: 'json',
+                                data: JSON.stringify(OBJ),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if (data.httpStatus === 200) {
+                                        alert(`${data.message}`)
+                                        window.location.href = '/user/cart'
+                                    } else {
+                                        alert("장바구니 정보 수정에 실패하였습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        })
+
+
+        /* 이미지버튼 클릭시 -> 해당 체크박스 클릭 */
+        $(".img-btn").on("click", function(e) {
+            const cartId = $(this).attr('data-num')
+            const checkbox =  $(`#chk-${cartId}`)
+            checkbox.prop('checked', !checkbox.prop('checked'))
+        })
+
+        /* 장바구니 삭제 버튼 */
+        $("#delete-btn").on("click", function(e) {
+            const ids = getCheckedChkBox()
+
+            if(ids.length === 0) alert("삭제할 상품을 선택해주세요.")
+            else {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/api/cart",
+                    data: {'ids': ids},
+                    traditional: true,
+                    success: function (data) {
+                        if (data.httpStatus === 200) {
+                            alert(`${data.message}`)
+                            window.location = `/user/cart`
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                })
+            }
+        })
+
+        /* 체크박스 리스트 가져오기 */
+        function getCheckedChkBox(){
+            const checkboxes = $(".image-checkbox:checked")
+            const checkedValues = checkboxes.map(function() {
+                return $(this).val();
+            }).get();
+            return checkedValues;
+        }
+
+        /* 재고보다 장바구니개수가 많은 상품이 있는지 체크 */
+        function canPurchase() {
+            const checkboxes = $(".image-checkbox:checked");
+            let result = true;
+
+            for (let i = 0; i < checkboxes.length; i++) {
+                const able = $(checkboxes[i]).attr("data-able");
+                if (able == 'false') {
+                    result = false
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /* 상품 주문하기 */
+        $("#order-btn").on("click", function(e) {
+            const ids = getCheckedChkBox()
+            const able = canPurchase()
+
+            if(!able) alert("주문 불가능한 상품이 있습니다." + '\n' + "확인 부탁드립니다.")
+            else {
+                if (ids.length === 0) alert("주문할 상품을 선택해주세요.")
+                else {
+                    const queryString = '?ids=' + ids.join('&ids=');
+                    const result = confirm("해당 상품들을 주문하시겠습니까?")
+                    if (result) window.location.href = `/order/cart${queryString}`
+                }
+            }
+        })
+
+    </script>
+</th:block>
+
+</html>

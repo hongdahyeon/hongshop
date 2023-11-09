@@ -69,4 +69,12 @@ public class HongCartRestController {
         return Response.ok("해당 장바구니들을 정상적으로 삭제하였습니다.");
     }
 
+    @PutMapping("/cart/{id}")
+    @Operation(summary = "update cart", description = "장바구니 정보 변경 - 개수 변경")
+    @ApiDocumentResponse
+    public Response update(@PathVariable Long id, @RequestBody HongCartDTO hongCartDTO) {
+        hongCartService.updateCnt(id, hongCartDTO);
+        return Response.ok("해당 장바구니 정보를 변경하였습니다.");
+    }
+
 }

@@ -23,10 +23,11 @@ import java.util.List;
 * @date 2023-07-18
 * @summary      (1) saveLst : 장바구니 저장 (여러개)
  *              (2) save : 장바구니 저장 (단건)
- *              (2) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
- *              (3) delete : 장바구니 삭제
- *              (4) deleteSeveral : 장바구니 여러개 삭제
- *              (5) listOfChoose : 장바구니에서 선택한 값들 조회 -> 해당 정보 및 해당상품의 file 정보
+ *              (3) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
+ *              (4) delete : 장바구니 삭제
+ *              (5) deleteSeveral : 장바구니 여러개 삭제
+ *              (6) listOfChoose : 장바구니에서 선택한 값들 조회 -> 해당 정보 및 해당상품의 file 정보
+ *              (7) updateCnt : 장바구니 담기는 개수 변경
 **/
 
 @Service
@@ -119,5 +120,15 @@ public class HongCartServiceImpl implements HongCartService {
             }
         }
         return hongCarts;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateCnt(Long id, HongCartDTO hongCartDTO) {
+        HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
+        HongProduct product = hongProductService.productInfo(hongCartDTO.getHongProductId());
+        Integer orderPrice = hongCartDTO.getCartCnt() * product.getProductPrice();
+
+        hongCart.updateCntAndPrice(hongCartDTO.getCartCnt(), orderPrice);
     }
 }
