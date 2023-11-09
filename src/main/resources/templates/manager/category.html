@@ -87,7 +87,7 @@
                                         </div>
                                         <div class="col-md-6 col-12">
                                             <div class="mb-1">
-                                                <label class="form-label" for="hongCategoryId">카테고리 순서<span class="text-primary ms-50">*</span></label>
+                                                <label class="form-label" for="orderNum">카테고리 순서<span class="text-primary ms-50">*</span></label>
                                                 <div class="input_wrap">
                                                     <input type="text" class="form-control" id="orderNum" name="orderNum" required/>
                                                     <div class="invalid-feedback">카테고리 순서를 입력해주세요.</div>
@@ -535,7 +535,7 @@
                 const productId = $("#hongProductId").val()
                 $.ajax({
                     type: 'GET',
-                    url: `/api/product/user/${productId}`,
+                    url: `/api/product-user/${productId}`,
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function (data) {

@@ -68,7 +68,7 @@ public class HongProductRestController {
         return Response.ok("삭제되었습니다.");
     }
 
-    @GetMapping("/product/user/{id}")
+    @GetMapping("/product-user/{id}")
     @Operation(summary = "get product user list", description = "물품 구매 사용자 리스트")
     @ApiDocumentResponse
     public Response productUsers(@PathVariable Long id){

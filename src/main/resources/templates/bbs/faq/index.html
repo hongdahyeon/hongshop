@@ -34,33 +34,16 @@
 
         const type = /*[[${type}]]*/ []
         const user = /*[[${user}]]*/ {};
+        const postList = /*[[${postList}]]*/ [];
         const faq = new faqAcc("faq-accordion", user['role'])
 
         $(document).ready(function(e) {
-            getList()
+            faq.setData(postList).draw()
         })
 
         $("#new-bbsctt").on("click", function(e) {
-            console.log("new-bbsctt clicked... > ", type['postTypeId'])
             window.location.href = `/bbs/save/${type['postTypeId']}`
         })
-
-        const getList = () => {
-            $.ajax({
-                type: 'GET',
-                url: `/api/postsWithFileByPostType/${type['postTypeId']}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        faq.setData(data['message']).draw()
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
-            });
-        }
 
         function downloadFile(id) {
             let filename = '';
@@ -87,7 +70,6 @@
         }
 
         function deleteBbsctt(id){
-            console.log("deleteBbsctt : ", id)
             const result = confirm("삭제 하시겠습니까?")
             if(result) {
                 $.ajax({
@@ -108,7 +90,6 @@
         }
 
         function editBbsctt(id){
-            console.log("editBbsctt : ", id)
             window.location.href = `/bbs/edit/${id}`
         }
     </script>

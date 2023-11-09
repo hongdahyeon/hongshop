@@ -32,7 +32,7 @@ import java.util.List;
  *              (5) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
  *              (6) delete : 상품 삭제 (deleteYn)
  *              (7) productUser : 상품ID를 통한 주문자 리스트 조회
- *              (8) getNewProdcuts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
+ *              (8) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
 **/
 
 @Service
@@ -131,7 +131,6 @@ public class HongProductServiceImpl implements HongProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public HongPrdouctUserVO productUser(Long id) {
         HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);
@@ -139,7 +138,7 @@ public class HongProductServiceImpl implements HongProductService {
     }
 
     @Override
-    public List<HongProductVO> getNewProdcuts() {
+    public List<HongProductVO> getNewProducts() {
         List<HongProduct> products = hongProductRepository.findAllByDeleteYnAndNewProductYn("N", "Y");// deleteYn: N , newProductYn: Y
         return products.stream().map(hongProduct -> {
             if(hongProduct.getFileGroupId() != null) {

@@ -32,5 +32,5 @@ public interface HongProductService {
 
     HongPrdouctUserVO productUser(Long id);
 
-    List<HongProductVO> getNewProdcuts();
+    List<HongProductVO> getNewProducts();
 }

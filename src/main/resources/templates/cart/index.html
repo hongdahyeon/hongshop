@@ -98,7 +98,7 @@
                     success: function (data) {
                         if (data.httpStatus === 200) {
                             alert(`${data.message}`)
-                            window.location = `/cart/${id}`
+                            window.location = `/user/cart`
                         }
                     },
                     error: function (xhr, status, error) {
@@ -123,10 +123,7 @@
 
             if(ids.length === 0) alert("주문할 상품을 선택해주세요.")
             else {
-                console.log("ids : ", ids)
                 const queryString = '?ids=' + ids.join('&ids=');
-                console.log("queryString : ", queryString)
-
                 const result = confirm("해당 상품들을 주문하시겠습니까?")
                 if(result) window.location.href = `/order${queryString}`
             }

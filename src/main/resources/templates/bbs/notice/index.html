@@ -23,16 +23,30 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-hover table-bordered" id="qna-table">
+            <table class="table table-hover table-bordered" id="notice-table">
                 <thead>
-                <tr style="text-align: center;">
-                    <th style="width: 10%;" class="text-center">번호</th>
-                    <th style="width: 30%">제목</th>
-                    <th style="width: 10%" class="text-center">첨부파일</th>
-                    <th style="width: 10%" class="text-center">조회수</th>
-                </tr>
+                    <tr style="text-align: center;">
+                        <th style="width: 10%;" class="text-center">번호</th>
+                        <th style="width: 30%">제목</th>
+                        <th style="width: 10%" class="text-center">첨부파일</th>
+                        <th style="width: 10%" class="text-center">조회수</th>
+                    </tr>
                 </thead>
-                <tbody id="qna-tbody"></tbody>
+                <tbody id="notice-tbody">
+                    <th:block th:if="${postList.size() > 0}">
+                        <tr th:each="post, postStat : ${postList}" th:data-num="${post.regId}" th:data-value="${post.id}">
+                            <td style="width: 10%;" class="text-center" th:text="${postStat.index + 1}"></td>
+                            <td style="width: 50%" th:text="${post.title}"></td>
+                            <td style="width: 10%" class="text-center" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
+                            <td style="width: 10%" class="text-center" th:text="${post.readCnt}"></td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${postList.size() > 0}">
+                        <tr style="text-align: center;">
+                            <td colspan="4">게시글이 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                </tbody>
             </table>
         </div>
     </div>
@@ -42,66 +56,17 @@
     <script th:inline="javascript">
 
         const type = /*[[${type}]]*/ []
-        const user = /*[[${user}]]*/ {};
 
-        $(document).ready(function(e) {
-            getList()
-        })
-
-        const getList = () => {
-            $.ajax({
-                type: 'GET',
-                url: `/api/postsWithFileByPostType/${type['postTypeId']}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) setList(data);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
+        document.addEventListener('DOMContentLoaded', function () {
+            const tbody = document.getElementById("notice-tbody")
+            const tableRows = tbody.querySelectorAll('tr')
+            tableRows.forEach(function (row) {
+                row.addEventListener('click', function () {
+                    const postId = this.getAttribute('data-value');
+                    window.location.href = `/bbs/view/${postId}`;
+                });
             });
-        }
-
-        const setList = (data) => {
-
-            const dom = $("#qna-tbody")
-            dom.empty();
-
-            const list = data.message;
-            if(list.length > 0) {
-                list.forEach((value, i) => {
-                    const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
-
-                    const body =
-                        `
-                    <tr data-num="${value.regId}" data-value="${value.id}">
-                        <td style="width: 10%;" class="text-center">${i + 1}</td>
-                        <td style="width: 50%">${value.title}</td>
-                        <td style="width: 10%" class="text-center">${fileCnt}</td>
-                        <td style="width: 10%" class="text-center">${value.readCnt}</td>
-                    </tr>
-                    `
-
-                    dom.append(body)
-                    feather.replace()
-                })
-                $("tr").on("click", handleRowClick);
-
-            }else {
-                const body = `<tr style="text-align: center;">
-                                <td colspan="6">게시글이 비어있습니다.</td>
-                          </tr>`
-                dom.append(body)
-            }
-        }
-
-        function handleRowClick(e) {
-            const clickedRow = $(e.target).closest('tr')
-            const postId = clickedRow.attr("data-value");
-
-            window.location.href = `/bbs/view/${postId}`
-        }
+        })
 
         $("#new-bbsctt").on("click", function(e) {
             window.location.href = `/bbs/save/${type['postTypeId']}`

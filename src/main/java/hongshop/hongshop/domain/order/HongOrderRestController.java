@@ -41,7 +41,7 @@ public class HongOrderRestController {
     }
 
     @PostMapping("/order-from-cart")
-    @Operation(summary = "insert order", description = "주문 저장")
+    @Operation(summary = "insert order", description = "주문 저장 - 결제하기")
     @ApiDocumentResponse
     public Response saveFromCart(@RequestBody HongOrderFromCartDTO hongOrderFromCartDTO){
         Long saveId = hongOrderService.saveFromCart(hongOrderFromCartDTO);
@@ -49,7 +49,7 @@ public class HongOrderRestController {
     }
 
     @GetMapping("/order")
-    @Operation(summary = "order list", description = "주문 정보 조회")
+    @Operation(summary = "order list", description = "주문 정보 전체 조회")
     @ApiDocumentResponse
     public Response list(){
         List<HongOrderVO> list = hongOrderService.list();
@@ -73,7 +73,7 @@ public class HongOrderRestController {
         return Response.ok(hongOrderVOS);
     }
 
-    @PutMapping("/orderStatus/{id}")
+    @PutMapping("/order-status/{id}")
     @Operation(summary = "update status of order", description = "주문정보에서 주문 상태값 변경")
     @ApiDocumentResponse
     public Response updateStatus(@PathVariable Long id, @RequestBody HongOrderStatusDTO hongOrderStatusDTO) {

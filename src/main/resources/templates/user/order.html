@@ -110,7 +110,7 @@
                                             <label class="form-label" for="city">city<span class="text-primary ms-50">*</span></label>
                                             <div class="input_wrap">
                                                 <input type="text" class="form-control" id="city" name="city" required/>
-                                                <div class="invalid-feedback" id="product-invalid-feedback">city를 입력해주세요.</div>
+                                                <div class="invalid-feedback">city를 입력해주세요.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                                             <label class="form-label" for="street">street<span class="text-primary ms-50">*</span></label>
                                             <div class="input_wrap">
                                                 <input type="text" class="form-control" id="street" name="street" required/>
-                                                <div class="invalid-feedback" id="product-invalid-feedback">street를 입력해주세요.</div>
+                                                <div class="invalid-feedback">street를 입력해주세요.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                             <label class="form-label" for="zipcode">zipcode<span class="text-primary ms-50">*</span></label>
                                             <div class="input_wrap">
                                                 <input type="text" class="form-control" id="zipcode" name="zipcode" required/>
-                                                <div class="invalid-feedback" id="product-invalid-feedback">zipcode를 입력해주세요.</div>
+                                                <div class="invalid-feedback">zipcode를 입력해주세요.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -212,7 +212,7 @@
                             success: function (data) {
                                 if(data.httpStatus === 200) {
                                     alert(`${data.message}`)
-                                    window.location.href=`/user/order/${id}`
+                                    window.location.href=`/user/order`
                                 }else {
                                     alert("해당 배송 주소정보 변경에 실패하였습니다.")
                                 }

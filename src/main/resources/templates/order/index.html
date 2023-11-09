@@ -16,7 +16,6 @@
                 </div>
                 <div class="text-end">
                     <button type="button" class="btn btn-outline-info" id="goto-cart">장바구니 돌아가기</button>
-                    <button type="button" class="btn btn-outline-primary" id="order-btn">주문하기</button>
                 </div>
             </div>
         </div>
@@ -29,7 +28,7 @@
                 <h4 style="font-weight: bold">주문 상품 정보</h4>
             </div>
 
-            <div class="image-grid" style="margin-top: 30px">
+            <div class="image-grid" style="margin-top: 20px">
                 <div class="image-item" th:each="ch, chStat : ${chooseLst}">
                     <button class="btn img-btn" type="button" th:id="|btn-${ch.id}|" th:data-num="${ch.id}">
                         <img th:src="${(ch.getFileGroup() != null and ch.getFileGroup().getFileList().size() >= 1) ? '/image?imageId=' + ch.getFileGroup().getFileList().get(0).getSavedFileName() : '/assets/src/shop/noImage.png'}"
@@ -147,7 +146,7 @@
                 success: function (data) {
                     if(data.httpStatus === 200) {
                         alert(`${data.message}번으로 주문되었습니다.`)
-                        window.location.href = '/'  // 후에는 배송 정보 화면 이동?
+                        window.location.href = '/user/order'
                     }else {
                         alert("주문에 실패했습니다.")
                     }
@@ -175,7 +174,7 @@
 
         /* 장바구니 화면 돌아가기 버튼 */
         $("#goto-cart").on("click", function(e) {
-            window.location.href = `/cart/${id}`
+            window.location.href = `/user/cart`
         })
 
         /* 주소 정보 수정하기 (update) */

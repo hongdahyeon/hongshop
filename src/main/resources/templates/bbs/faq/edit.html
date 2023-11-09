@@ -61,7 +61,6 @@
     <script th:inline="javascript">
 
         const post = /*[[${post}]]*/ {}
-        console.log("post : ", post)
         const uploadFile = new File("upload-container")
         if(post['file']) uploadFile.setFileGroupId(post['file'].id)
 
@@ -76,12 +75,6 @@
             })
 
             $("#save-btn").on("click", function(e){
-                console.log("clicked")
-                console.log("deleteFile : ", uploadFile.getDeleteFile())
-                console.log("content : ", ckEditor.getData())
-                console.log("title : ", $("#title").val())
-                console.log("fileGroupId : ", uploadFile.getFileGroupId())
-
                 if(ckEditor.getData().length === 0) alert("내용을 입력해주세요.")
                 else {
                     const obj = {

@@ -31,7 +31,25 @@
                         <th style="width: 10%" class="text-center">답변</th>
                     </tr>
                 </thead>
-                <tbody id="qna-tbody"></tbody>
+                <tbody id="qna-tbody">
+                    <th:block th:if="${postList.size() > 0}">
+                        <tr th:each="post, postStat : ${postList}" th:data-num="${post.regId}" th:data-value="${post.id}">
+                            <td style="width: 5%;" class="text-center">
+                                <i th:class="${post.regId == user.id} ? 'front-medium-2' : 'front-medium-2 lock'" th:data-feather="${post.regId == user.id} ? 'unlock' : 'lock'"></i>
+                            </td>
+                            <td style="width: 10%" class="text-center" th:text="${postStat.index + 1}"></td>
+                            <td style="width: 30%" th:text="${post.title}"></td>
+                            <td style="width: 10%" class="text-center" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
+                            <td style="width: 10%" class="text-center" th:text="${post.readCnt}"></td>
+                            <td style="width: 10%" class="text-center" th:text="${post.answerList.size()}"></td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${postList.size() > 0}">
+                        <tr style="text-align: center;">
+                            <td colspan="6">게시글이 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                </tbody>
             </table>
         </div>
     </div>
@@ -44,71 +62,22 @@
     const user = /*[[${user}]]*/ {};
 
     $(document).ready(function(e) {
-        getList()
+        feather.replace()
     })
 
-    const getList = () => {
-        $.ajax({
-            type: 'GET',
-            url: `/api/postsWithFileByPostType/${type['postTypeId']}`,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (data) {
-                if(data.httpStatus === 200) setList(data);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error getting password:', error);
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        const tbody = document.getElementById("qna-tbody")
+        const tableRows = tbody.querySelectorAll('tr')
+        tableRows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                const regId = this.getAttribute("data-num");
+                const postId = this.getAttribute("data-value");
+
+                if(user['role'] == 'ROLE_USER' && regId != user['id']) alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.")
+                else window.location.href = `/bbs/view/${postId}`
+            });
         });
-    }
-
-    const setList = (data) => {
-
-        const dom = $("#qna-tbody")
-        dom.empty();
-
-        const list = data.message;
-        if(list.length > 0) {
-            list.forEach((value, i) => {
-                const fileCnt = (value.file === null) ? 0 : value.file.fileList.length
-                const locked = (value.regId == user['id']) ? '<i data-feather="unlock" class="front-medium-2"></i>' : '<i data-feather="lock" class="front-medium-2"></i>'
-
-                const body =
-                    `
-                    <tr data-num="${value.regId}" data-value="${value.id}">
-                        <td style="width: 5%" class="text-center">
-                            ${locked}
-                        </td>
-                        <td style="width: 10%;" class="text-center">${i + 1}</td>
-                        <td style="width: 30%">${value.title}</td>
-                        <td style="width: 10%" class="text-center">${fileCnt}</td>
-                        <td style="width: 10%" class="text-center">${value.readCnt}</td>
-                        <td style="width: 10%" class="text-center">${value.answerList.length}</td>
-                    </tr>
-                    `
-
-                dom.append(body)
-                feather.replace()
-            })
-            $("tr").on("click", handleRowClick);
-
-        }else {
-            const body = `<tr style="text-align: center;">
-                                <td colspan="6">게시글이 비어있습니다.</td>
-                          </tr>`
-            dom.append(body)
-        }
-
-    }
-
-    function handleRowClick(e) {
-        const clickedRow = $(e.target).closest('tr')
-        const regId = clickedRow.attr("data-num");
-        const postId = clickedRow.attr("data-value");
-
-        if(user['role'] == 'ROLE_USER' && regId != user['id']) alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.")
-        else window.location.href = `/bbs/view/${postId}`
-    }
+    })
 
     $("#new-bbsctt").on("click", function(e) {
         window.location.href = `/bbs/save/${type['postTypeId']}`

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter @Setter
 public class HongOrderFromCartDetailsDTO {
 
-    private Integer orderCnt;
+    private Integer orderCnt;           // 주문개수
     private Long hongProductId;         // 상품 번호 id
-    private Long hongCartId;
+    private Long hongCartId;            // 장바구니 id
 }

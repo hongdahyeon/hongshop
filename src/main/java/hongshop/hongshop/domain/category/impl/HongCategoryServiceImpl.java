@@ -22,7 +22,13 @@ import java.util.List;
  * @author dahyeon
  * @version 1.0.0
  * @date 2023-07-17
- * @summary
+ * @summary     (1) listWithProduct : 카테고리 with 상품 전체 조회
+ *              (2) showWithProduct : 카테고리 with 상품 단건 조회
+ *              (3) join : 카테고리 저장
+ *              (4) list : 카테고리 리스트 조회
+ *              (5) show : 카테고리 단건 조회
+ *              (6) update : 카테고리 정보 수정
+ *              (7) delete : 카테고리 삭제
  **/
 
 @Service

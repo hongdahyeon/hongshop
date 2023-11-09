@@ -16,7 +16,9 @@ import java.util.List;
 @Getter @Setter
 public class HongOrderFromCartDTO {
 
-    private List<HongOrderFromCartDetailsDTO> orders;
+    private List<HongOrderFromCartDetailsDTO> orders;       // 주문 상세 리스트
+
+    // 주문자 기본 정보
     private String userId;
     private String city;
     private String street;

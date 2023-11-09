@@ -223,13 +223,11 @@
 
         /* 네이버 로그인 */
         $("#naver-login-btn").on("click", function(e){
-            console.log("naver-login-btn clicked")
             window.location.href = '/oauth2/authorization/naver'
         })
 
         /* 구글 로그인 */
         $("#google-login-btn").on("click", function(e){
-            console.log("google-login-btn clicked")
             window.location.href = '/oauth2/authorization/google'
         })
 
@@ -243,7 +241,6 @@
         /* 회원가입 -> 이메일 중복 확인 */
         $("#check-Email").click(() => {
             const newUserEmail = $("#userEmail").val()
-            console.log("check-Email clicked... : ", newUserEmail)
 
             if(!newUserEmail.length) alert("이메일은 빈값일 수 없습니다.")
             else {
@@ -261,7 +258,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                        console.error('Error:', error);
                     }
                 });
             }

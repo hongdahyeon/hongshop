@@ -23,7 +23,7 @@ public class HongCategoryController {
 
     @GetMapping("/new")
     public String newCategory(Model model){
-        List<HongProductVO> newProdcuts = hongProductService.getNewProdcuts();
+        List<HongProductVO> newProdcuts = hongProductService.getNewProducts();
         List<HongCategoryVO> list = hongCategoryService.listWithProduct();
         HongPostTypeVO qnaPost = hongPostTypeService.getQnaPost();
 

@@ -18,7 +18,13 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-19
-* @summary
+* @summary  (1) join : 배송 정보 저장
+ *          (2) view : 배송 정보 단건 조회
+ *          (3) update : 배송 정보 수정
+ *          (4) updateStatus : 배송 상태 정보 수정
+ *          (5) all : 배송 정보 전체 조회
+ *          (6) getByOrderId : 주문 Id로 배송 정보 조회
+ *          (7) updateAddres : 배송 주소 정보 수정
 **/
 
 @Service
@@ -77,6 +83,7 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     @Transactional(readOnly = false)
     public void updateAddres(Long id, HongDeliverAddressDTO hongDeliverAddressDTO) {
         HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
+        if(!hongDeliver.getDeliverStatus().equals(DeliverStatus.AWAIT)) throw new IllegalArgumentException("cannot change address");            // 배송주소의 경우 배송상태가 AWAIT일 경우에만 가능
         Address address = new Address(hongDeliverAddressDTO.getCity(), hongDeliverAddressDTO.getStreet(), hongDeliverAddressDTO.getZipcode());
         hongDeliver.updateAddress(address);
     }
