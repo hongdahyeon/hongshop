@@ -31,8 +31,8 @@ import java.util.List;
  *   (2) list : 게시글 전체 리스트 조회
  *   (3) postWithAnswer : 게시글 단건 조회 with 답변
  *   (4) postWithFile : 게시글 단건 조회 with 파일
- *   (5) postWithFileAndAnswer : 게시글 다건 조회 with 파일 and 답변
- *   (6) postsWithFileByPostType : 게시판ID에 따른 게시글 전체 리스트 조회 with 파일
+ *   (5) postWithFileAndAnswer : 게시글 단건 조회 with 파일 and 답변
+ *   (6) postsWithFileByPostType : 게시판 ID에 따른 게시글 전체 리스트 조회 with 파일
  *   (7) show : 게시글 단건 조회
  *   (8) update : 게시글 단건 update
  *   (9) delete : 게시글 삭제 -> delete_Yn 변경

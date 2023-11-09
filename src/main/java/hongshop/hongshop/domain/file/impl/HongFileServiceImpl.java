@@ -26,9 +26,16 @@ import java.util.UUID;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary  (*) saveFile : 파일 업로드 시 동작되는 메서드로, 파일을 저장하고 기본 정보를 저장한다.
+* @summary  (1) saveFile : 파일 업로드 시 동작되는 메서드로, 파일을 저장하고 기본 정보를 저장한다.
  *                         이때 파일 상태는 'PROCESS'로 저장된다.
  *                         -> 후에 게시글 및 다른 정보와 함께 최종 저장될 때 파일 상태는 'SAVED'로 변하게 된다.
+ *
+*           (2) updateDownCnt : 해당 파일 downCnt 1 증가
+ *          (3) view : 파일 단건 조회
+ *          (4) download : 파일 다운로드 -> updateDownCnt, file-log-insert
+ *          (5) updateFileState : 파일 최종 저장시, 'PROCESS -> SAVED' 변경
+ *          (6) uploadCKImageFile : CKEdtior 이미지 업로드
+ *          (7) deleteFiles : 파일 삭제
 **/
 
 @Service

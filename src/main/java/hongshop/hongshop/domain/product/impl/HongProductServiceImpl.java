@@ -27,12 +27,13 @@ import java.util.List;
 * @date 2023-07-18
 * @summary      (1) save : 상품 정보를 저장
  *              (2) list : 상품 정보 리스트 조회
- *              (3) view, productInfo : 상품 정보 조회
- *              (4) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
- *              (5) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
- *              (6) delete : 상품 삭제 (deleteYn)
- *              (7) productUser : 상품ID를 통한 주문자 리스트 조회
- *              (8) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
+ *              (3) view : 상품 정보 조회 with file
+ *              (4) productInfo : 상품 정보 조회 -> return entity
+ *              (5) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
+ *              (6) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
+ *              (7) delete : 상품 삭제 (deleteYn)
+ *              (8) productUser : 상품ID를 통한 주문자 리스트 조회
+ *              (9) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
 **/
 
 @Service
@@ -133,7 +134,7 @@ public class HongProductServiceImpl implements HongProductService {
     @Override
     public HongPrdouctUserVO productUser(Long id) {
         HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
-        List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);
+        List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);  // 상품Id를 통해 주문 사용자 정보 리스트를 가져온다.
         return new HongPrdouctUserVO(product, orderDetails);
     }
 

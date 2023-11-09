@@ -24,6 +24,8 @@ import java.util.List;
 * @summary      (1) save : 장바구니 저장
  *              (2) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
  *              (3) delete : 장바구니 삭제
+ *              (4) deleteSeveral : 장바구니 여러개 삭제
+ *              (5) listOfChoose : 장바구니에서 선택한 값들 조회 -> 해당 정보 및 해당상품의 file 정보
 **/
 
 @Service

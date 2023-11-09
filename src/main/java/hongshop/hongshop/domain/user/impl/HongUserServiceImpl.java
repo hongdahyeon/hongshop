@@ -25,16 +25,16 @@ import java.util.Optional;
  * @date 2023-07-17
  * @summary  사용자 service Impl
  *           (1) joinUser : 사용자 회원가입
- *           (2) getHongUser : PrincipalDetailsService 에서 사용
- *           (3) getHongUserByUserId : userId로 사용자 찾기
- *           (4) checkUserId : 사용자 Id 중복 확인
+ *           (2) getHongUser : userId로 사용자 조회 -> return Optional (PrincipalDetailsService 에서 사용)
+ *           (3) getHongUserByUserId : userId로 사용자 조회 -> return HongUserVO
+ *           (4) checkUserId : userId로 사용자 있는지 조회 -> return boolean
  *           (5) checkUserEmail : 사용자 이메일 중복 확인
  *           (6) updateHongUser : 사용자 정보 수정
- *           (7) getHongUserById : id로 사용자 찾기
+ *           (7) getHongUserById : id로 사용자 찾기 -> return HongUserVO
  *           (8) list : 사용자 리스트 조회
  *           (9) updateUserRole : 사용자 권한 수정
- *           (10) initialPassword : 사용자 비번 초기화
- *           (11) findUserId : 사용자 이름 & 이메일로 아이디 찾기
+ *           (10) initialPassword : 사용자 비번 초기화 -> 이메일 전송
+ *           (11) findUserId : 사용자 이름 & 이메일로 아이디 찾기 -> 이메일 전송
  *           (12) updateUserNonLocked : 사용자 계정 정지 초기화
  **/
 

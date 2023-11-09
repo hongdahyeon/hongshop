@@ -37,13 +37,13 @@ import java.util.List;
  *               만약 여러개의 order-detail 중에 'out of stock'이 있다면 -> throw와 함께 주문을 삭제 시킨다.
  *               ** 해당 물품이 재고가 있다면, 주문 저장 후, 재고값도 차감시켜준다.
  *          (2) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
- *          (2) view
+ *          (3) view
  *               order-id에 대해 order-detail-list 값을 함께 불러온다.
- *          (3) listOfUserOrder
+ *          (4) listOfUserOrder
  *               현재 로그인한 user의 주문 정보를 불러온다.
- *          (4) updateStatus : 주문 상태값 변경
- *          (5) list: 전체 주문 조회 with 주문 상세
- *          (6) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+ *          (5) updateStatus : 주문 상태값 변경
+ *          (6) list: 전체 주문 조회 with 주문 상세
+ *          (7) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
 **/
 
 @Service

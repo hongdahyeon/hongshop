@@ -19,7 +19,8 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary      (1) save ; 파일 로그 저장
+ *              (2) list : 파일Id를 통한 파일로그 리스트 조회
 **/
 
 @Service

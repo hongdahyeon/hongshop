@@ -18,7 +18,7 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-07-18
 * @summary  (1) saveOrderDetails : order table이 save됨에 따라 detail 정보가 저장된다.
- *          (2) listOfDetailOrders : order table의 상세 데이터들이 나온다.
+ *          (2) listOfDetailOrders : 주문Id를 통한 주문 상세 정보 리스트를 가져온다.
  *          (3) listByProductId : 상품Id를 통해 주문 사용자 정보 리스트를 가져온다.
 **/
 

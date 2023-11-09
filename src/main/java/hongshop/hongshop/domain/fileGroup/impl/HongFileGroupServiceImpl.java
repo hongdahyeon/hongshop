@@ -19,8 +19,11 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
-**/
+* @summary      (1) all : 파일 그룹 with 파일 리스트 전체 조회 -> 삭제여부(N), 파일 상태(SAVED)
+ *              (2) listwithDeleteYnAndFileState : 파일 그룹 with 파일 리스트 조회 by fileGroupid -> 삭제 여부, 파일 상태
+ *              (3) saveFileGroup : 파일 그룹 저장
+ *              (4) findFileGroup : 파일 그룹 단건 조회 -> return entity
+ **/
 
 @Service
 @Transactional(readOnly = true)
