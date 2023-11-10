@@ -5,6 +5,7 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/css/user/user.order.css'}">
     <style>
         th, td {
             text-align: center;
@@ -14,6 +15,10 @@
         tr {
             text-align: center;
         }
+    </style>
+    <style>
+        .ck-editor__editable { height: 400px; }
+        .ck-content { font-size: 12px; }
     </style>
 </th:block>
 
@@ -53,7 +58,7 @@
                 <tbody>
                 <th:block th:if="${orders.size() == 0}">
                     <tr>
-                        <td colspan="11">주문 및 배송 정보가 비어있습니다.</td>
+                        <td colspan="13">주문 및 배송 정보가 비어있습니다.</td>
                     </tr>
                 </th:block>
                 <th:block th:unless="${orders.size() == 0}">
@@ -74,7 +79,7 @@
                             <td th:text="${order.address.street}" style="width: 5%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td th:text="${order.address.zipcode}" style="width: 5%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td style="width: 5%" th:rowspan="${order.orderDetails.size()}">
-                                <button type="button" class="btn btn-outline-primary chg-address" th:data-deliver="${order.deliverId}" th:data-city="${order.address.city}" th:data-status="${order.deliverStatus}"
+                                <button type="button" class="btn btn-outline-primary chg-address" th:data-deliver="${order.deliverId}" th:data-order="${order.orderId}" th:data-city="${order.address.city}" th:data-status="${order.deliverStatus}"
                                         th:data-street="${order.address.street}" th:data-zipcode="${order.address.zipcode}" th:text="${(order.deliverStatus.equals('DELIVERED')) ? '리뷰작성' : '변경'}"></button>
                             </td>
                         </tr>
@@ -149,7 +154,70 @@
                 </div>
             </div>
         </form>
-        <!-- e: Product Purchase Modal -->
+        <!-- e: change Purchase Modal -->
+
+        <!-- s: review write Modal -->
+        <form id="review-write-form" class="needs-validation" novalidate>
+            <input type="hidden" id="hongOrderId" name="hongOrderId" />
+            <div class="modal modal-lg fade" id="review-write-modal" tabindex="-1" aria-labelledby="reviewWriteModalLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">리뷰작성하기</h4>
+                            <button type="button" class="btn-close" id="close-review-write-modal-btn"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="card-body">
+
+                                <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                                    <label>리뷰별점</label>
+                                    <div class="rate">
+                                        <input type="radio" id="reviewStar5" name="reviewStar" value="5" />
+                                        <label for="reviewStar5" title="text">5 stars</label>
+                                        <input type="radio" id="reviewStar4" name="reviewStar" value="4" />
+                                        <label for="reviewStar4" title="text">4 stars</label>
+                                        <input type="radio" id="reviewStar3" name="reviewStar" value="3" />
+                                        <label for="reviewStar3" title="text">3 stars</label>
+                                        <input type="radio" id="reviewStar2" name="reviewStar" value="2" />
+                                        <label for="reviewStar2" title="text">2 stars</label>
+                                        <input type="radio" id="reviewStar1" name="reviewStar" value="1" checked/>
+                                        <label for="reviewStar1" title="text">1 star</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 mt-3" style="margin-bottom: 10px;">
+                                    <label for="reviewContent">내용</label>
+                                    <div id="reviewContent" name="content" class="ckeditor" style="min-height: 300px"></div>
+                                </div>
+
+                                <hr class="hr" />
+
+                                <div class="mb-3 mt-3">
+                                    <label for="file-container">파일첨부</label>
+                                    <input type="file" id="fileUpload" name="file" style="display:none"/>
+                                    <button class="btn btn-sm btn-primary" id="btn-upload">
+                                        파일 추가
+                                        <i data-feather="upload" class="font-medium-2 ms-50"></i>
+                                    </button>
+                                    <div class="file-container" id="file-container">
+                                        <ul id="upload-container"></ul>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 10px" class="text-end">
+                                    <button type="button" class="btn btn-outline-secondary" id="close-reviewWriteModal">닫기</button>
+                                    <button type="submit" class="btn btn-outline-primary" id="save-review">저장</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- s: review write Modal -->
 
     </div>
 </th:block>
@@ -160,6 +228,7 @@
         const orderAndDeliver = /*[[${orders}]]*/ [];
         const id = /*[[${id}]]*/ null;
         const totalPrice = /*[[${totalPrice}]]*/[];
+        const uploadFile = new File("upload-container")
 
         /* 주소 수정 모달창 닫기 */
         $("#close-addressChangeModal, #close-change-address-modal-btn").on("click", function(e) {
@@ -180,16 +249,33 @@
             form.classList.remove("was-validated")      // validation 지우기
         });
 
-        /* 주소변경 버튼 클릭 이벤트 */
+        /* 주소변경 버튼 클릭 이벤트 , 리뷰작성 버튼 클릭 이벤트 */
         $(".chg-address").on("click", function(e) {
             const deliverId = $(this).attr("data-deliver")
+            const orderId = $(this).attr("data-order")
             const city = $(this).attr("data-city")
             const street = $(this).attr("data-street")
             const zipcode = $(this).attr("data-zipcode")
             const deliverStatus = $(this).attr("data-status")
 
+            // 만일 배송완료된 주문건이라면 -> 해당 주문에 대해 리뷰작성이 가능하다.
+            // 이때 이미 그 주문건에 대해 리뷰가 작성됐다면 더이상 리뷰 작성이 불가능하다.
             if(deliverStatus == 'DELIVERED') {
-                console.log("deliverStatus : ", deliverStatus)
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/user-order-review/${orderId}`,
+                    dataType: 'json',
+                    success: function (data) {
+                        if(!data.message) alert("이미 작성된 리뷰가 있습니다.")
+                        else {
+                            $("#hongOrderId").val(orderId)
+                            $("#review-write-modal").modal('show')
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
             } else if(deliverStatus != 'AWAIT') alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.")
             else {
                 $("#city").val(city)
@@ -197,6 +283,21 @@
                 $("#zipcode").val(zipcode)
                 $("#deliverId").val(deliverId)
                 $("#change-address-modal").modal('show')
+            }
+        })
+
+        /* 리뷰작성 모달창 닫기 */
+        $("#close-reviewWriteModal, #close-review-write-modal-btn").on("click", function(e) {
+            const result = confirm("작성중인 리뷰는 저장되지 않습니다." + '\n' + "리뷰작성을 취소하시겠습니까?")
+            if(result) {
+                uploadFile.domEmptyAndFileGroupIdNull();
+                $("#reviewStar").val("");
+                ckEditor.setData("");
+
+                const form = document.getElementById("review-write-form")
+                form.classList.remove("was-validated")      // validation 지우기
+
+                $("#review-write-modal").modal('hide')
             }
         })
 
@@ -234,6 +335,97 @@
                 }
             })
         })
+
+        /* 리뷰작성하기 form */
+        window.addEventListener("load", function() {
+            const form = document.getElementById("review-write-form")
+            form.addEventListener("submit", function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    form.classList.add("was-validated")
+                } else {
+                    event.preventDefault();
+
+                    FormDataToObj.getParameter("review-write-form").then((obj) => {
+                        obj['deleteFile'] = uploadFile.getDeleteFile();
+                        obj['reviewContent'] = ckEditor.getData()
+                        if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
+
+                        if(ckEditor.getData().length === 0) alert("리뷰 내용을 입력해주세요.")
+                        else {
+                            $.ajax({
+                                type: 'POST',
+                                url: `/api/review`,
+                                dataType: 'json',
+                                data: JSON.stringify(obj),
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if (data.httpStatus === 200) {
+                                        const result = confirm('리뷰작성에 성공하셨습니다.' + '\n' + '리뷰를 보러가시겠습니까?');
+                                        if (result) window.location.href = '/user/review'
+                                        else window.location.href = '/user/order'
+                                    } else {
+                                        alert("리뷰작성에 실패했습니다.")
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error getting password:', error);
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        })
+
+        $('#btn-upload').on("click", function (e) {
+            e.preventDefault();
+            $('#fileUpload').click();
+        });
+
+        $("#fileUpload").on("change", function (e) {
+            const selectedFile = e.target.files[0];
+            const fileName = selectedFile.name
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
+
+            $.ajax({
+                type: "POST",
+                url: "/api/uploadFile",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if(response.httpStatus === 200) {
+                        uploadFile.setFileGroupId(response.message.fileGroupId)
+                        uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
+                    }
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("File upload error:", error);
+                }
+            });
+        })
+
+        let ckEditor;
+        ClassicEditor
+            .create( document.querySelector( '#reviewContent' ), {
+                extraPlugins: [MyCustomUploadAdapterPlugin]
+            } )
+            .then( editor => {
+                ckEditor = editor;
+            } )
+            .catch( error => {
+            } );
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader)
+            }
+        }
     </script>
 </th:block>
 

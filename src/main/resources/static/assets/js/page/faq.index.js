@@ -38,7 +38,6 @@ class faqAcc {
                     <div id="faq${i}" class="accordion-collapse collapse" aria-labelledby="${data['id']}" data-bs-parent="#faq-accordion">
                         <div class="accordion-body">
                             <div class="mb-3 mt-3" style="margin-bottom: 10px;">
-                                <label for="content">내용</label>
                                 <div id="content" name="content" style="min-height: 200px">
                                     ${data['content']}
                                 </div>

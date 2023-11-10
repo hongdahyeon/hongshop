@@ -17,6 +17,7 @@ public class HongReviewVO {
     private Long reviewId;
     private String reviewContet;
     private Integer reviewStar;
+    private Long orderId;
     private List<HongOrderDetailVO> hongOrderDetailVO = new ArrayList<>();
     private HongFileGroupVO file;
 
@@ -24,7 +25,16 @@ public class HongReviewVO {
         this.reviewId = hongReivew.getId();
         this.reviewContet = hongReivew.getReviewContent();
         this.reviewStar = hongReivew.getReviewStar();
+        this.orderId = hongReivew.getHongOrder().getId();
         this.hongOrderDetailVO = hongOrderDetailVO;
         this.file = file;
+    }
+
+    public HongReviewVO(HongReview hongReivew, List<HongOrderDetailVO> hongOrderDetailVO) {
+        this.reviewId = hongReivew.getId();
+        this.reviewContet = hongReivew.getReviewContent();
+        this.reviewStar = hongReivew.getReviewStar();
+        this.orderId = hongReivew.getHongOrder().getId();
+        this.hongOrderDetailVO = hongOrderDetailVO;
     }
 }

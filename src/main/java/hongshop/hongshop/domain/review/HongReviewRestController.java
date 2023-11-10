@@ -40,4 +40,13 @@ public class HongReviewRestController {
         return Response.ok(hongReviewVOS);
     }
 
+    @GetMapping("/user-order-review/{id}")
+    @Operation(summary = "현재 로그인한 자기 자신의 특정 주문 리뷰 있는지 확인", description = "현재 로그인한 자기 자신의 특정 주문 리뷰 있는지 확인")
+    @ApiDocumentResponse
+    public Response userOrderReview(@AuthenticationPrincipal PrincipalDetails principalDetails, @PathVariable Long id) {
+        HongUser user = principalDetails.getUser();
+        boolean isEmpty = hongReviewService.userOrderReviewIsEmpty(user, id);
+        return Response.ok(isEmpty);
+    }
+
 }

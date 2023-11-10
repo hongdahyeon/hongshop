@@ -1,14 +1,13 @@
 package hongshop.hongshop.domain.review.impl;
 
 import hongshop.hongshop.domain.file.FileState;
+import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderService;
-import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
-import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.review.HongReview;
 import hongshop.hongshop.domain.review.HongReviewRepository;
 import hongshop.hongshop.domain.review.HongReviewService;
@@ -29,6 +28,8 @@ import java.util.List;
 * @date 2023-11-10
 * @summary      (1) join : 리뷰 작성하기
  *              (2) userReview : 현재 로그인한 사용자의 리뷰 리스트 조회
+ *              (3) userOrderReviewIsEmpty : 사용자가 어떤 주문건에 대해 리뷰를 남겼는지 확인
+ *                  -> empty is true ; 주문건에 대해 사용자가 아직 리뷰를 남기지 않음
 **/
 
 
@@ -42,19 +43,36 @@ public class HongReivewServiceImpl implements HongReviewService {
     private final HongOrderService hongOrderService;
     private final HongOrderDetailService hongOrderDetailService;
     private final HongFileGroupService hongFileGroupService;
+    private final HongFileService hongFileService;
 
     @Override
     @Transactional(readOnly = false)
     public Long join(HongReviewDTO hongReviewDTO, HongUser hongUser) {
         HongOrder hongOrder = hongOrderService.getHongOrder(hongReviewDTO.getHongOrderId());
 
-        HongReview hongReview = HongReview.hongReviewInsertBuilder()
-                .hongOrder(hongOrder)
-                .hongUser(hongUser)
-                .reviewContent(hongReviewDTO.getReviewContent())
-                .reviewStar(hongReviewDTO.getReviewStar())
-                .fileGroupId(hongReviewDTO.getFileGroupId())
-                .build();
+        // 1. delete file from list : deleteFile
+        if(hongReviewDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongReviewDTO.getDeleteFile());
+        }
+
+        HongReview hongReview = null;
+        if(hongReviewDTO.getFileGroupId() == null) {
+            hongReview = HongReview.hongReviewInsertBuilder()
+                    .hongOrder(hongOrder)
+                    .hongUser(hongUser)
+                    .reviewContent(hongReviewDTO.getReviewContent())
+                    .reviewStar(hongReviewDTO.getReviewStar())
+                    .build();
+        }else {
+            hongFileService.updateFileState(hongReviewDTO.getFileGroupId());
+            hongReview = HongReview.hongReviewInsertBuilder()
+                    .hongOrder(hongOrder)
+                    .hongUser(hongUser)
+                    .reviewContent(hongReviewDTO.getReviewContent())
+                    .reviewStar(hongReviewDTO.getReviewStar())
+                    .fileGroupId(hongReviewDTO.getFileGroupId())
+                    .build();
+        }
 
         HongReview save = hongReviewRepository.save(hongReview);
         return save.getId();
@@ -62,12 +80,20 @@ public class HongReivewServiceImpl implements HongReviewService {
 
     @Override
     public List<HongReviewVO> userReview(HongUser hongUser) {
-        List<HongReview> hongReviews = hongReviewRepository.findAllByHongUserId(hongUser.getId());
+        List<HongReview> hongReviews = hongReviewRepository.findAllByHongUserIdAndDeleteYnIs(hongUser.getId(), "N");
         return hongReviews.stream().map(hongReview -> {
             Long orderId = hongReview.getHongOrder().getId();
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(orderId);                                              // order-details
-            HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
-            return new HongReviewVO(hongReview, orderDetails, fileGroupVO);
+            if(hongReview.getFileGroupId() != null) {
+                HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
+                return new HongReviewVO(hongReview, orderDetails, fileGroupVO);
+            }else return new HongReviewVO(hongReview, orderDetails);
         }).toList();
+    }
+
+    @Override
+    public boolean userOrderReviewIsEmpty(HongUser hongUser, Long orderId) {
+        List<HongReview> findReviews = hongReviewRepository.findAllByHongUserIdAndAndHongOrderIdAndDeleteYnIs(hongUser.getId(), orderId, "N");
+        return findReviews.isEmpty();
     }
 }

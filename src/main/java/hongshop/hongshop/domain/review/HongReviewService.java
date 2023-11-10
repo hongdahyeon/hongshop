@@ -11,4 +11,6 @@ public interface HongReviewService {
     Long join(HongReviewDTO hongReviewDTO, HongUser hongUser);
 
     List<HongReviewVO> userReview(HongUser hongUser);
+
+    boolean userOrderReviewIsEmpty(HongUser hongUser, Long orderId);
 }
