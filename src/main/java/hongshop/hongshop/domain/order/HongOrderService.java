@@ -28,6 +28,8 @@ public interface HongOrderService {
 
     List<HongOrderVO> list();
 
+    List<HongOrderVO> listWithChkReview(HongUser hongUser);
+
     HongOrderVO view(Long id);
 
     HongOrder getHongOrder(Long id);

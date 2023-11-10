@@ -6,6 +6,7 @@ import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.user.HongUser;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public interface HongDeliverService {
     void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id);
 
     List<HongDeliverVO> all();
+
+    List<HongDeliverVO> allWithChkReview(HongUser hongUser);
 
     HongDeliverVO getByOrderId(Long orderId);
 

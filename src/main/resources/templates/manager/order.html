@@ -22,6 +22,7 @@
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
                     <h3>사용자 주문 관리</h3>
+                    <p style="color: red">* 리뷰가 작성된 주문건은 주문상태를 변경할 수 없습니다.</p>
                 </div>
                 <div class="text-end"></div>
             </div>
@@ -57,7 +58,7 @@
                                 <td th:text="|${orders.orderDetails.get(0).orderCnt}개|" style="width: 10%"></td>
                                 <td th:text="${#numbers.formatInteger(orders.orderDetails.get(0).orderPrice, 0, 'COMMA')}" style="width: 20%"></td>
                                 <td th:rowspan="${orders.orderDetails.size()}" style="width: 10%">
-                                    <select th:id="|orderStatus-${orders.orderId}|" class="form-select-sm orderStatus-select" style="width: 150px" th:data-num="${orders.orderId}" th:data-status="${orders.orderStatus}">
+                                    <select th:id="|orderStatus-${orders.orderId}|" class="form-select-sm orderStatus-select" style="width: 150px" th:data-num="${orders.orderId}" th:disabled="${orders.writeReviewEmpty == false}" th:data-status="${orders.orderStatus}">
                                         <option value="CHARGED" th:selected="${orders.orderStatus eq 'CHARGED'}">CHARGED</option>
                                         <option value="CANCEL" th:selected="${orders.orderStatus eq 'CANCEL'}">CANCEL</option>
                                         <option value="DELIVER_SUCCESS" th:selected="${orders.orderStatus eq 'DELIVER_SUCCESS'}">DELIVER_SUCCESS</option>

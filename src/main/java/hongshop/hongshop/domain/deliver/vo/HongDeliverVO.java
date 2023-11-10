@@ -1,7 +1,6 @@
 package hongshop.hongshop.domain.deliver.vo;
 
 import hongshop.hongshop.domain.base.Address;
-import hongshop.hongshop.domain.deliver.DeliverStatus;
 import hongshop.hongshop.domain.deliver.HongDeliver;
 import hongshop.hongshop.domain.order.OrderStatus;
 import lombok.Getter;
@@ -23,6 +22,7 @@ public class HongDeliverVO {
     private String orderDate;
     private String deliverStatus;
     private Address address;
+    private boolean writeReviewEmpty;
 
     public HongDeliverVO(HongDeliver hongDeliver) {
         this.deliverId = hongDeliver.getId();
@@ -31,5 +31,15 @@ public class HongDeliverVO {
         this.orderDate = hongDeliver.getHongOrder().getOrderDate();
         this.deliverStatus = hongDeliver.getDeliverStatus().toString();
         this.address = hongDeliver.getAddress();
+    }
+
+    public HongDeliverVO(HongDeliver hongDeliver, boolean writeReviewEmpty) {
+        this.deliverId = hongDeliver.getId();
+        this.orderUser = hongDeliver.getHongOrder().getHongUser().getUserId();
+        this.orderStatus = hongDeliver.getHongOrder().getOrderStatus();
+        this.orderDate = hongDeliver.getHongOrder().getOrderDate();
+        this.deliverStatus = hongDeliver.getDeliverStatus().toString();
+        this.address = hongDeliver.getAddress();
+        this.writeReviewEmpty = writeReviewEmpty;
     }
 }

@@ -17,6 +17,7 @@ import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
+import hongshop.hongshop.domain.review.HongReviewRepository;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserService;
 import hongshop.hongshop.global.util.TimeUtil;
@@ -43,6 +44,7 @@ import java.util.List;
  *          (7) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
  *          (8) list: 전체 주문 조회 with 주문 상세
  *          (9) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+ *          (10) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
 **/
 
 @Service
@@ -56,6 +58,7 @@ public class HongOrderServiceImpl implements HongOrderService {
     private final HongDeliverService hongDeliverService;
     private final HongCartService hongCartService;
     private final HongUserService hongUserService;
+    private final HongReviewRepository hongReviewRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -179,6 +182,16 @@ public class HongOrderServiceImpl implements HongOrderService {
         return orders.stream().map(order -> {
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
             return new HongOrderVO(order, orderDetails);
+        }).toList();
+    }
+
+    @Override
+    public List<HongOrderVO> listWithChkReview(HongUser hongUser) {
+        List<HongOrder> orders = hongOrderRepository.findAll();
+        return orders.stream().map(order -> {
+            List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
+            boolean empty = hongReviewRepository.findAllByHongUserIdAndAndHongOrderIdAndDeleteYnIs(hongUser.getId(), order.getId(), "N").isEmpty();
+            return new HongOrderVO(order, orderDetails, empty);
         }).toList();
     }
 

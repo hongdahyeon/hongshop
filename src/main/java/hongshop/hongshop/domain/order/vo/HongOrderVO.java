@@ -23,6 +23,7 @@ public class HongOrderVO {
     private String orderDate;
     private String userId;
     private List<HongOrderDetailVO> orderDetails;
+    private boolean writeReviewEmpty;
 
     public HongOrderVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails) {
         this.orderId = hongOrder.getId();
@@ -30,5 +31,14 @@ public class HongOrderVO {
         this.orderDate = hongOrder.getOrderDate();
         this.userId = hongOrder.getHongUser().getUserId();
         this.orderDetails = orderDetails;
+    }
+
+    public HongOrderVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails, boolean writeReviewEmpty) {
+        this.orderId = hongOrder.getId();
+        this.orderStatus = hongOrder.getOrderStatus().toString();
+        this.orderDate = hongOrder.getOrderDate();
+        this.userId = hongOrder.getHongUser().getUserId();
+        this.orderDetails = orderDetails;
+        this.writeReviewEmpty = writeReviewEmpty;
     }
 }

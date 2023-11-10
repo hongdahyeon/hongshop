@@ -22,6 +22,7 @@
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
                     <h3>배송 관리</h3>
+                    <p style="color: red">* 리뷰가 작성된 주문건은 배송상태를 변경할 수 없습니다.</p>
                 </div>
                 <div class="text-end"></div>
             </div>
@@ -47,7 +48,7 @@
                 <tbody>
                 <th:block th:if="${delivers.size() == 0}">
                     <tr>
-                        <td colspan="7">배송 정보가 비어있습니다.</td>
+                        <td colspan="9">배송 정보가 비어있습니다.</td>
                     </tr>
                 </th:block>
                 <th:block th:unless="${delivers.size() == 0}">
@@ -62,7 +63,7 @@
                             <td th:text="${deliver.address.street}" style="width: 10%"></td>
                             <td th:text="${deliver.address.zipcode}" style="width: 10%"></td>
                             <td style="width: 10%">
-                                <select th:id="|deliverStatus-${deliver.deliverId}|" class="form-select-sm deliverStatus-select" style="width: 150px" th:data-num="${deliver.deliverId}" th:data-status="${deliver.deliverStatus}">
+                                <select th:id="|deliverStatus-${deliver.deliverId}|" class="form-select-sm deliverStatus-select" style="width: 150px" th:disabled="${deliver.writeReviewEmpty == false}" th:data-num="${deliver.deliverId}" th:data-status="${deliver.deliverStatus}">
                                     <option value="DELIVERING" th:selected="${deliver.deliverStatus eq 'DELIVERING'}">DELIVERING</option>
                                     <option value="DELIVERED" th:selected="${deliver.deliverStatus eq 'DELIVERED'}">DELIVERED</option>
                                     <option value="AWAIT" th:selected="${deliver.deliverStatus eq 'AWAIT'}">AWAIT</option>

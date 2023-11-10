@@ -9,6 +9,8 @@ import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.OrderStatus;
+import hongshop.hongshop.domain.review.HongReviewRepository;
+import hongshop.hongshop.domain.user.HongUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ import java.util.List;
  *          (6) getByOrderId : 주문 Id로 배송 정보 조회 -> return vo
  *          (7) getHongDeliverByOrderId : 주문 Id로 배송 정보 조회 -> return entity
  *          (8) updateAddres : 배송 주소 정보 수정
+ *          (9) allWithChkReview : 배송 정보 전체 조회 with review write boolean
 **/
 
 @Service
@@ -37,6 +40,7 @@ public class HongDeliverServiceImpl implements HongDeliverService {
 
     private final HongDeliverRepository hongDeliverRepository;
     private final HongOrderRepository hongOrderRepository;
+    private final HongReviewRepository hongReviewRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -85,6 +89,16 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     public List<HongDeliverVO> all() {
         List<HongDeliver> all = hongDeliverRepository.findAll();
         return all.stream().map(HongDeliverVO::new).toList();
+    }
+
+    @Override
+    public List<HongDeliverVO> allWithChkReview(HongUser hongUser) {
+        List<HongDeliver> all = hongDeliverRepository.findAll();
+        return all.stream().map(hongDeliver -> {
+            Long orderId = hongDeliver.getHongOrder().getId();
+            boolean empty = hongReviewRepository.findAllByHongUserIdAndAndHongOrderIdAndDeleteYnIs(hongUser.getId(), orderId, "N").isEmpty();
+            return new HongDeliverVO(hongDeliver, empty);
+        }).toList();
     }
 
     @Override
