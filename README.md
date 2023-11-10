@@ -166,3 +166,4 @@
      - 상품 조회 화면에서 재고가 없으면 text 보이기
 * commit114 : 게시판 테이블 text-center 한번에 style로 처리 (23/11/09)
 * commit115 : 주문건의 주문 상태가 CHARGED, DELIVER_ING 인게 있다면 해당 상품 삭제 못하도록 처리 (23/11/10)
+* commit116 : error 화면용 css 생성 및 적용 (23/11/10)
