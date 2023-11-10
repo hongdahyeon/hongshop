@@ -8,10 +8,11 @@ package hongshop.hongshop.domain.deliver;
 * @summary  (1) DELIVERING : 배송 중
  *          (2) DELIVERED : 배송 완료
  *          (3) AWAIT : 배송 대기
+ *          (4) CANCEL : 배송 취소
 **/
 
 public enum DeliverStatus {
-    DELIVERING("배송중"), DELIVERED("배송완료"), AWAIT("대기");
+    DELIVERING("배송중"), DELIVERED("배송완료"), AWAIT("대기"), CANCEL("취소");
 
     private String text;
     DeliverStatus(String text){

@@ -2,6 +2,8 @@ package hongshop.hongshop.domain.order.impl;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
+import hongshop.hongshop.domain.deliver.DeliverStatus;
+import hongshop.hongshop.domain.deliver.HongDeliver;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
@@ -35,13 +37,12 @@ import java.util.List;
  *               ** 해당 물품이 재고가 있다면, 주문 저장 후, 재고값도 차감시켜준다.
  *          (2) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
  *          (3) saveFromShop : 상품 리스트 화면에서 선택 후 바로 주문
- *          (4) view
- *               order-id에 대해 order-detail-list 값을 함께 불러온다.
- *          (5) listOfUserOrder
- *               현재 로그인한 user의 주문 정보를 불러온다.
- *          (6) updateStatus : 주문 상태값 변경
- *          (7) list: 전체 주문 조회 with 주문 상세
- *          (8) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+ *          (4) view : order-id에 대해 order-detail-list 값을 함께 불러온다.
+ *          (5) getHongOrder : order-id를 통핸 HongOrder RETURN
+ *          (6) listOfUserOrder : 현재 로그인한 user의 주문 정보를 불러온다.
+ *          (7) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
+ *          (8) list: 전체 주문 조회 with 주문 상세
+ *          (9) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
 **/
 
 @Service
@@ -189,6 +190,11 @@ public class HongOrderServiceImpl implements HongOrderService {
     }
 
     @Override
+    public HongOrder getHongOrder(Long id) {
+        return hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
+    }
+
+    @Override
     public List<HongOrderVO> listOfUserOrder(Long id) {
         List<HongOrder> listOfOrder = hongOrderRepository.findAllByHongUserId(id);
         return listOfOrder.stream().map(order -> {
@@ -202,6 +208,16 @@ public class HongOrderServiceImpl implements HongOrderService {
     public void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO) {
         HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
         hongOrder.updateStatus(hongOrderStatusDTO.getOrderStatus());
+
+        DeliverStatus deliverStatus = null;
+        if(hongOrderStatusDTO.getOrderStatus().equals(OrderStatus.DELIVER_SUCCESS)) deliverStatus = DeliverStatus.DELIVERED;
+        else if(hongOrderStatusDTO.getOrderStatus().equals(OrderStatus.DELIVER_ING)) deliverStatus = DeliverStatus.DELIVERING;
+        else if(hongOrderStatusDTO.getOrderStatus().equals(OrderStatus.CHARGED)) deliverStatus = DeliverStatus.AWAIT;
+        else if(hongOrderStatusDTO.getOrderStatus().equals(OrderStatus.CANCEL)) deliverStatus = DeliverStatus.CANCEL;
+
+
+        HongDeliver hongDeliver = hongDeliverService.getHongDeliverByOrderId(id);
+        hongDeliver.updateStatus(deliverStatus);
     }
 
     @Override

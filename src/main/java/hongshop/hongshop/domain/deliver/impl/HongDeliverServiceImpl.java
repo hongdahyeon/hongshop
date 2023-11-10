@@ -7,6 +7,8 @@ import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.order.HongOrderRepository;
+import hongshop.hongshop.domain.order.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,11 @@ import java.util.List;
 * @summary  (1) join : 배송 정보 저장
  *          (2) view : 배송 정보 단건 조회
  *          (3) update : 배송 정보 수정
- *          (4) updateStatus : 배송 상태 정보 수정
+ *          (4) updateStatus : 배송 상태 정보 수정   ->  배송 상태에 따른 주문 상태도 변경
  *          (5) all : 배송 정보 전체 조회
- *          (6) getByOrderId : 주문 Id로 배송 정보 조회
- *          (7) updateAddres : 배송 주소 정보 수정
+ *          (6) getByOrderId : 주문 Id로 배송 정보 조회 -> return vo
+ *          (7) getHongDeliverByOrderId : 주문 Id로 배송 정보 조회 -> return entity
+ *          (8) updateAddres : 배송 주소 정보 수정
 **/
 
 @Service
@@ -33,6 +36,7 @@ import java.util.List;
 public class HongDeliverServiceImpl implements HongDeliverService {
 
     private final HongDeliverRepository hongDeliverRepository;
+    private final HongOrderRepository hongOrderRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -64,7 +68,17 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     @Transactional(readOnly = false)
     public void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO, Long id) {
         HongDeliver hongDeliver = hongDeliverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no deliver"));
-        hongDeliver.updateStatus(hongDeliverStatusDTO);
+        hongDeliver.updateStatus(hongDeliverStatusDTO.getStatus());
+
+        OrderStatus orderStatus = null;
+        if(hongDeliverStatusDTO.getStatus().equals(DeliverStatus.DELIVERED)) orderStatus = OrderStatus.DELIVER_SUCCESS;
+        else if(hongDeliverStatusDTO.getStatus().equals(DeliverStatus.DELIVERING)) orderStatus = OrderStatus.DELIVER_ING;
+        else if(hongDeliverStatusDTO.getStatus().equals(DeliverStatus.AWAIT)) orderStatus = OrderStatus.CHARGED;
+        else if(hongDeliverStatusDTO.getStatus().equals(DeliverStatus.CANCEL)) orderStatus = OrderStatus.CANCEL;
+
+        Long orderId = hongDeliver.getHongOrder().getId();
+        HongOrder hongOrder = hongOrderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("there is no order"));
+        hongOrder.updateStatus(orderStatus);
     }
 
     @Override
@@ -77,6 +91,11 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     public HongDeliverVO getByOrderId(Long orderId) {
         HongDeliver hongDeliver = hongDeliverRepository.findByHongOrder_Id(orderId);
         return new HongDeliverVO(hongDeliver);
+    }
+
+    @Override
+    public HongDeliver getHongDeliverByOrderId(Long orderId) {
+        return hongDeliverRepository.findByHongOrder_Id(orderId);
     }
 
     @Override

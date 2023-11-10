@@ -51,8 +51,8 @@ public class HongDeliver {
         this.address = new Address(hongDeliverDTO.getCity(), hongDeliverDTO.getStreet(), hongDeliverDTO.getZipcode());
     }
 
-    public void updateStatus(HongDeliverStatusDTO hongDeliverStatusDTO){
-        this.deliverStatus = hongDeliverStatusDTO.getStatus();
+    public void updateStatus(DeliverStatus deliverStatus){
+        this.deliverStatus = deliverStatus;
     }
 
     public void updateAddress(Address address) {

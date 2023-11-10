@@ -31,6 +31,8 @@ public interface HongDeliverService {
 
     HongDeliverVO getByOrderId(Long orderId);
 
+    HongDeliver getHongDeliverByOrderId(Long orderId);
+
     void updateAddres(Long id, HongDeliverAddressDTO hongDeliverAddressDTO);
 
 }

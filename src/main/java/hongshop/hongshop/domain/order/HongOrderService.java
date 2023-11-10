@@ -30,6 +30,8 @@ public interface HongOrderService {
 
     HongOrderVO view(Long id);
 
+    HongOrder getHongOrder(Long id);
+
     List<HongOrderVO> listOfUserOrder(Long id);
 
     void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO);

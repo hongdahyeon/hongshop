@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="cart-table">
+            <table class="table table-bordered" id="order-table">
                 <thead>
                     <tr>
                         <th style="width: 5%;">번호</th>
@@ -99,7 +99,7 @@
                 if(!result) $(`#orderStatus-${orderId}`).val(orderStatus)
                 else {
                     const obj = {'orderStatus': chanageOrderStatus}
-                    console.log('obj : ', obj)
+
                     $.ajax({
                         type: 'PUT',
                         url: `/api/order-status/${orderId}`,

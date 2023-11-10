@@ -75,7 +75,7 @@
                             <td th:text="${order.address.zipcode}" style="width: 5%" th:rowspan="${order.orderDetails.size()}"></td>
                             <td style="width: 5%" th:rowspan="${order.orderDetails.size()}">
                                 <button type="button" class="btn btn-outline-primary chg-address" th:data-deliver="${order.deliverId}" th:data-city="${order.address.city}" th:data-status="${order.deliverStatus}"
-                                        th:data-street="${order.address.street}" th:data-zipcode="${order.address.zipcode}">변경</button>
+                                        th:data-street="${order.address.street}" th:data-zipcode="${order.address.zipcode}" th:text="${(order.deliverStatus.equals('DELIVERED')) ? '리뷰작성' : '변경'}"></button>
                             </td>
                         </tr>
                         <th:block th:if="${order.orderDetails.size() > 1}">
@@ -160,7 +160,6 @@
         const orderAndDeliver = /*[[${orders}]]*/ [];
         const id = /*[[${id}]]*/ null;
         const totalPrice = /*[[${totalPrice}]]*/[];
-        console.log("totalPrice : ", totalPrice)
 
         /* 주소 수정 모달창 닫기 */
         $("#close-addressChangeModal, #close-change-address-modal-btn").on("click", function(e) {
@@ -189,7 +188,9 @@
             const zipcode = $(this).attr("data-zipcode")
             const deliverStatus = $(this).attr("data-status")
 
-            if(deliverStatus != 'AWAIT') alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.")
+            if(deliverStatus == 'DELIVERED') {
+                console.log("deliverStatus : ", deliverStatus)
+            } else if(deliverStatus != 'AWAIT') alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.")
             else {
                 $("#city").val(city)
                 $("#street").val(street)

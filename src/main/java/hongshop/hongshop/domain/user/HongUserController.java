@@ -5,6 +5,8 @@ import hongshop.hongshop.domain.cart.vo.HongCartVO;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
+import hongshop.hongshop.domain.review.HongReviewService;
+import hongshop.hongshop.domain.review.vo.HongReviewVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +26,7 @@ public class HongUserController {
     private final HongUserService hongUserService;
     private final HongOrderService hongOrderService;
     private final HongCartService hongCartService;
+    private final HongReviewService hongReviewService;
 
     @GetMapping("/myInfo")  // 회원정보 수정페이지
     public String myInfo(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
@@ -61,6 +64,14 @@ public class HongUserController {
         model.addAttribute("orders", orders);
         model.addAttribute("id", id);
         return "user/order";
+    }
+
+    @GetMapping("/review")
+    public String reviewUser(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        HongUser user = principalDetails.getUser();
+        List<HongReviewVO> hongReviewVOS = hongReviewService.userReview(user);
+        model.addAttribute("reviews", hongReviewVOS);
+        return "user/review";
     }
 
 }
