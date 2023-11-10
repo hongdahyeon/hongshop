@@ -398,11 +398,15 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: `/api/product/${hongProductId}`,
+                    url: `/api/product-check-user/${hongProductId}`,
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.httpStatus === 200) {
+
+                            // 물품 구매 사용자가 있다면 삭제 버튼 비활성화
+                            if(!data.message['orderUserEmpty']) $("#delete-product-btn").prop('disabled', true)
+                            else $("#delete-product-btn").prop('disabled', false)
 
                             uploadFile.domEmptyAndFileGroupIdNull()
                             if(data.message['file'] != null) uploadFile.setFileGroupId(data.message['file']['id']).setData(data.message['file']['fileList']).setFiles()

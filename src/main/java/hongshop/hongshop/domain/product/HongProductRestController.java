@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.product;
 
 import hongshop.hongshop.domain.product.dto.HongProductDTO;
 import hongshop.hongshop.domain.product.vo.HongPrdouctUserVO;
+import hongshop.hongshop.domain.product.vo.HongProductManagerVO;
 import hongshop.hongshop.domain.product.vo.HongProductVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -49,6 +50,14 @@ public class HongProductRestController {
     @ApiDocumentResponse
     public Response view(@PathVariable Long id){
         HongProductVO view = hongProductService.view(id);
+        return Response.ok(view);
+    }
+
+    @GetMapping("/product-check-user/{id}")
+    @Operation(summary = "get product view and check order user", description = "물품 단건 조회 그리고 해당 물품 사용자 있는지 유무")
+    @ApiDocumentResponse
+    public Response viewCheckUser(@PathVariable Long id){
+        HongProductManagerVO view = hongProductService.viewCheckUser(id);
         return Response.ok(view);
     }
 

@@ -4,6 +4,7 @@ import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.cart.vo.HongCartVO;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -43,6 +45,19 @@ public class HongUserController {
     public String orderUser(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         Long id = principalDetails.getUser().getId();
         List<HongOrderDeliverVO> orders = hongOrderService.getOrderAndDeliverByUserId(id);
+
+        if(orders.size() > 0) {
+            List<Integer> totalPrice = new ArrayList<>();
+            for (HongOrderDeliverVO orderDeliver : orders) {
+                Integer total = 0;
+                for (HongOrderDetailVO detail : orderDeliver.getOrderDetails()) {
+                    total += detail.getOrderPrice();
+                }
+                totalPrice.add(total);
+            }
+            model.addAttribute("totalPrice", totalPrice);
+        }
+
         model.addAttribute("orders", orders);
         model.addAttribute("id", id);
         return "user/order";

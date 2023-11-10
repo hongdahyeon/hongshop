@@ -13,6 +13,7 @@ import hongshop.hongshop.domain.product.HongProductRepository;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.product.dto.HongProductDTO;
 import hongshop.hongshop.domain.product.vo.HongPrdouctUserVO;
+import hongshop.hongshop.domain.product.vo.HongProductManagerVO;
 import hongshop.hongshop.domain.product.vo.HongProductVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,14 @@ import java.util.List;
 * @summary      (1) save : 상품 정보를 저장
  *              (2) list : 상품 정보 리스트 조회
  *              (3) view : 상품 정보 조회 with file
- *              (4) productInfo : 상품 정보 조회 -> return entity
- *              (5) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
- *              (6) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
- *              (7) delete : 상품 삭제 (deleteYn)
- *              (8) productUser : 상품ID를 통한 주문자 리스트 조회
- *              (9) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
+ *              (4) viewCheckUser : 상품 정보 조회 with file
+ *                  -> check order user : order-status is 'CHARGED, DELIVER_ING'
+ *              (5) productInfo : 상품 정보 조회 -> return entity
+ *              (6) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
+ *              (7) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
+ *              (8) delete : 상품 삭제 (deleteYn)
+ *              (9) productUser : 상품ID를 통한 주문자 리스트 조회
+ *              (10) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
 **/
 
 @Service
@@ -100,6 +103,16 @@ public class HongProductServiceImpl implements HongProductService {
             HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
             return new HongProductVO(hongProduct, list);
         }else return new HongProductVO(hongProduct);
+    }
+
+    @Override
+    public HongProductManagerVO viewCheckUser(Long id) {
+        HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
+        boolean empty = hongOrderDetailService.emptyChkByProductId(id);
+        if(hongProduct.getFileGroupId() != null) {
+            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+            return new HongProductManagerVO(hongProduct, list, empty);
+        }else return new HongProductManagerVO(hongProduct, empty);
     }
 
     @Override
