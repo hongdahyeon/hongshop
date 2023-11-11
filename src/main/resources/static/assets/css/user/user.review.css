@@ -1,0 +1,84 @@
+/* 리뷰 카드폼 리스트 -> 1col 2개씩 */
+.card-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    margin: 20px;
+}
+
+/* 리뷰 카드폼 */
+.card-list .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 리뷰 카드폼 헤더 -> 상품 정보 및 주문 정보 컨테이너 */
+.card-list .card-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+/* 리뷰 카드폼 헤더 -> 상품 이미지 */
+.card-list .card-header img {
+    border-radius: 4px;
+    margin-right: 20px;
+    width: 100px;
+    height: 100px;
+}
+
+/* 리뷰 카드폼 헤더 -> 주문 상품 이름 */
+.card-list .header-content h3 {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* 리뷰 카드폼 헤더 -> 주문 정보 */
+.card-list .header-content p {
+    font-weight: bold;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 이미지 컨테이너 */
+.card-list .image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 이미지 */
+.card-list .image-container img {
+    border-radius: 4px;
+    height: 100px;
+    width: 100px;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 정보 컨테이너 */
+.card-list .card-content {
+    padding: 13px;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 텍스트 */
+.card-list .card-content h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 내용 */
+.card-list .card-content textarea {
+    font-size: 18px;
+    color: #555;
+}
+
+/* 리뷰 카드폼 헤더 -> 리뷰 상태(별점) */
+.card-list .fa-star.checked {
+    color: orange;
+}

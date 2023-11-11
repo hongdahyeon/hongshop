@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.orderDetail;
 
 import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailFileVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
@@ -27,5 +28,5 @@ public interface HongOrderDetailService {
 
     HongOrderDetail getHongOrderDetail(Long hongOrderDetailId);
 
-    HongOrderDetailVO view(Long hongOrderDetailId);
+    HongOrderDetailFileVO view(Long hongOrderDetailId);
 }

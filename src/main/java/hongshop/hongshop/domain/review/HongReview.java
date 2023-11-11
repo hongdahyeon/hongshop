@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.review;
 
-import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetail;
+import hongshop.hongshop.domain.review.dto.HongReviewDTO;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.global.base.BaseEntity;
 import lombok.AccessLevel;
@@ -50,5 +50,15 @@ public class HongReview extends BaseEntity {
         this.reviewStar = reviewStar;
         this.fileGroupId = fileGroupId;
         this.deleteYn = "N";
+    }
+
+    public void updateReview(HongReviewDTO hongReviewDTO){
+        if(hongReviewDTO.getReviewContent() != null) this.reviewContent = hongReviewDTO.getReviewContent();
+        if(hongReviewDTO.getReviewStar() != null) this.reviewStar = hongReviewDTO.getReviewStar();
+        if(hongReviewDTO.getFileGroupId() != null) this.fileGroupId = hongReviewDTO.getFileGroupId();
+    }
+
+    public void deleteReview(){
+        this.deleteYn = "Y";
     }
 }

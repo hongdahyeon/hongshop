@@ -13,4 +13,10 @@ public interface HongReviewService {
     List<HongReviewVO> userReview(HongUser hongUser);
 
     boolean userOrderReviewIsEmpty(HongUser hongUser, Long orderId);
+
+    void delete(Long id);
+
+    HongReviewVO view(Long id);
+
+    void update(Long id, HongReviewDTO hongReviewDTO);
 }

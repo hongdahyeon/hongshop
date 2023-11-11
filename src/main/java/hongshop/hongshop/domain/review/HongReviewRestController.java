@@ -49,4 +49,28 @@ public class HongReviewRestController {
         return Response.ok(isEmpty);
     }
 
+    @DeleteMapping("/review/{id}")
+    @Operation(summary = "리뷰 삭제", description = "리뷰 삭제")
+    @ApiDocumentResponse
+    public Response delete(@PathVariable Long id) {
+        hongReviewService.delete(id);
+        return Response.ok("해당 리뷰를 삭제했습니다.");
+    }
+
+    @GetMapping("/review/{id}")
+    @Operation(summary = "단건 리뷰 조회", description = "단건 리뷰 조회")
+    @ApiDocumentResponse
+    public Response view(@PathVariable Long id) {
+        HongReviewVO view = hongReviewService.view(id);
+        return Response.ok(view);
+    }
+
+    @PutMapping("/review/{id}")
+    @Operation(summary = "단건 리뷰 수정", description = "단건 리뷰 수정")
+    @ApiDocumentResponse
+    public Response update(@PathVariable Long id, @RequestBody HongReviewDTO hongReviewDTO) {
+        hongReviewService.update(id, hongReviewDTO);
+        return Response.ok("해당 리뷰가 수정되었습니다.");
+    }
+
 }

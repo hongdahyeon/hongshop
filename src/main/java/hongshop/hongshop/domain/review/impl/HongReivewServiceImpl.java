@@ -6,6 +6,7 @@ import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetail;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailFileVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.review.HongReview;
 import hongshop.hongshop.domain.review.HongReviewRepository;
@@ -31,6 +32,10 @@ import java.util.List;
  *                  -> 1개의 주문건 상세 주문상품들에 대해 리뷰가 달린 개수를 확인한다.
  *                  -> 이때 모든 상세 주문상품들에 대해 리뷰가 달렸다면 : FALSE -> 리뷰 작성폼이 안열린다.
  *                  -> 이때 모든 상세 주문상품들에 대해 리뷰가 달리지 않았다면 : TRUE -> 리뷰 작성폼이 열린다.
+ *
+*               (4) delete : 리뷰 단건 삭제
+ *              (5) view : 리뷰 단건 조회
+ *              (6) update : 단건 리뷰 수정
 **/
 
 
@@ -83,11 +88,11 @@ public class HongReivewServiceImpl implements HongReviewService {
         List<HongReview> hongReviews = hongReviewRepository.findAllByHongUserIdAndDeleteYnIs(hongUser.getId(), "N");
         return hongReviews.stream().map(hongReview -> {
             Long orderDetailId = hongReview.getHongOrderDetail().getId();
-            HongOrderDetailVO orderDetailVO = hongOrderDetailService.view(orderDetailId);
+            HongOrderDetailFileVO hongOrderDetailFileVO = hongOrderDetailService.view(orderDetailId);
             if(hongReview.getFileGroupId() != null) {
                 HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
-                return new HongReviewVO(hongReview, orderDetailVO, fileGroupVO);
-            }else return new HongReviewVO(hongReview, orderDetailVO);
+                return new HongReviewVO(hongReview, hongOrderDetailFileVO, fileGroupVO);
+            }else return new HongReviewVO(hongReview, hongOrderDetailFileVO);
         }).toList();
     }
 
@@ -109,5 +114,35 @@ public class HongReivewServiceImpl implements HongReviewService {
         if(orderDetailsCnt == orderDetailVOS.size()) reviewEmpty = false;
 
         return reviewEmpty;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Long id) {
+        HongReview hongReview = hongReviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no review"));
+        hongReview.deleteReview();
+    }
+
+    @Override
+    public HongReviewVO view(Long id) {
+        HongReview hongReview = hongReviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no review"));
+        Long orderDetailId = hongReview.getHongOrderDetail().getId();
+        HongOrderDetailFileVO hongOrderDetailFileVO = hongOrderDetailService.view(orderDetailId);
+
+        if(hongReview.getFileGroupId() != null) {
+            HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
+            return new HongReviewVO(hongReview, hongOrderDetailFileVO, fileGroupVO);
+        }else return new HongReviewVO(hongReview, hongOrderDetailFileVO);
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void update(Long id, HongReviewDTO hongReviewDTO) {
+        HongReview hongReview = hongReviewRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no review"));
+        if(hongReviewDTO.getDeleteFile().size() != 0){
+            hongFileService.deleteFiles(hongReviewDTO.getDeleteFile());            // if has delete-files, delete it
+        }
+        if(hongReviewDTO.getFileGroupId() != null) hongFileService.updateFileState(hongReviewDTO.getFileGroupId());
+        hongReview.updateReview(hongReviewDTO);
     }
 }

@@ -5,7 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <link rel="stylesheet" type="text/css" th:href="@{'/assets/css/user/user.order.css'}">
     <style>
         th, td {
             text-align: center;
@@ -15,10 +14,6 @@
         tr {
             text-align: center;
         }
-    </style>
-    <style>
-        .ck-editor__editable { height: 400px; }
-        .ck-content { font-size: 12px; }
     </style>
 </th:block>
 
@@ -198,7 +193,8 @@
 
                                 <div class="mb-3 mt-3" style="margin-bottom: 10px;">
                                     <label for="reviewContent">내용</label>
-                                    <div id="reviewContent" name="content" class="ckeditor" style="min-height: 300px"></div>
+                                    <textarea class="form-control" id="reviewContent" name="reviewContent" style="height: 200px;" required></textarea>
+                                    <div class="invalid-feedback">리뷰 내용을 입력해주세요.</div>
                                 </div>
 
                                 <hr class="hr" />
@@ -334,7 +330,7 @@
             const result = confirm("작성중인 리뷰는 저장되지 않습니다." + '\n' + "리뷰작성을 취소하시겠습니까?")
             if(result) {
                 uploadFile.domEmptyAndFileGroupIdNull();
-                ckEditor.setData("");
+                $("#reviewContent").val('')
 
                 const form = document.getElementById("review-write-form")
                 form.classList.remove("was-validated")      // validation 지우기
@@ -390,31 +386,26 @@
 
                     FormDataToObj.getParameter("review-write-form").then((obj) => {
                         obj['deleteFile'] = uploadFile.getDeleteFile();
-                        obj['reviewContent'] = ckEditor.getData()
                         if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
-
-                        if(ckEditor.getData().length === 0) alert("리뷰 내용을 입력해주세요.")
-                        else {
-                            $.ajax({
-                                type: 'POST',
-                                url: `/api/review`,
-                                dataType: 'json',
-                                data: JSON.stringify(obj),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if (data.httpStatus === 200) {
-                                        const result = confirm('리뷰작성에 성공하셨습니다.' + '\n' + '리뷰를 보러가시겠습니까?');
-                                        if (result) window.location.href = '/user/review'
-                                        else window.location.href = '/user/order'
-                                    } else {
-                                        alert("리뷰작성에 실패했습니다.")
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
+                        $.ajax({
+                            type: 'POST',
+                            url: `/api/review`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.httpStatus === 200) {
+                                    const result = confirm('리뷰작성에 성공하셨습니다.' + '\n' + '리뷰를 보러가시겠습니까?');
+                                    if (result) window.location.href = '/user/review'
+                                    else window.location.href = '/user/order'
+                                } else {
+                                    alert("리뷰작성에 실패했습니다.")
                                 }
-                            });
-                        }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        });
                     })
                 }
             })
@@ -451,23 +442,6 @@
                 }
             });
         })
-
-        let ckEditor;
-        ClassicEditor
-            .create( document.querySelector( '#reviewContent' ), {
-                extraPlugins: [MyCustomUploadAdapterPlugin]
-            } )
-            .then( editor => {
-                ckEditor = editor;
-            } )
-            .catch( error => {
-            } );
-
-        function MyCustomUploadAdapterPlugin(editor) {
-            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                return new MyUploadAdapter(loader)
-            }
-        }
     </script>
 </th:block>
 

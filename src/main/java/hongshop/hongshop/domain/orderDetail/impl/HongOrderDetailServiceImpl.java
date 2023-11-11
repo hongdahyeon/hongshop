@@ -1,9 +1,13 @@
 package hongshop.hongshop.domain.orderDetail.impl;
 
+import hongshop.hongshop.domain.file.FileState;
+import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
+import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.OrderStatus;
 import hongshop.hongshop.domain.orderDetail.*;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailFileVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
@@ -37,6 +41,7 @@ public class HongOrderDetailServiceImpl implements HongOrderDetailService {
 
     private final HongOrderDetailRepository hongOrderDetailRepository;
     private final HongOrderRepository hongOrderRepository;
+    private final HongFileGroupService hongFileGroupService;
 
     @Override
     @Transactional(readOnly = false)
@@ -80,8 +85,12 @@ public class HongOrderDetailServiceImpl implements HongOrderDetailService {
     }
 
     @Override
-    public HongOrderDetailVO view(Long hongOrderDetailId) {
+    public HongOrderDetailFileVO view(Long hongOrderDetailId) {
         HongOrderDetail hongOrderDetail = hongOrderDetailRepository.findById(hongOrderDetailId).orElseThrow(() -> new IllegalArgumentException("there is no order detail"));
-        return new HongOrderDetailVO(hongOrderDetail);
+        Long fileGroupId = hongOrderDetail.getHongProduct().getFileGroupId();
+        if(fileGroupId != null) {
+            HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);
+            return new HongOrderDetailFileVO(hongOrderDetail, fileGroupVO);
+        }else return new HongOrderDetailFileVO(hongOrderDetail);
     }
 }
