@@ -1,7 +1,10 @@
 package hongshop.hongshop.domain.deliver.impl;
 
 import hongshop.hongshop.domain.base.Address;
-import hongshop.hongshop.domain.deliver.*;
+import hongshop.hongshop.domain.deliver.DeliverStatus;
+import hongshop.hongshop.domain.deliver.HongDeliver;
+import hongshop.hongshop.domain.deliver.HongDeliverRepository;
+import hongshop.hongshop.domain.deliver.HongDeliverService;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverAddressDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
@@ -13,7 +16,6 @@ import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.review.HongReview;
 import hongshop.hongshop.domain.review.HongReviewRepository;
-import hongshop.hongshop.domain.user.HongUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,16 +98,17 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     }
 
     @Override
-    public List<HongDeliverVO> allWithChkReview(HongUser hongUser) {
+    public List<HongDeliverVO> allWithChkReview() {
         List<HongDeliver> all = hongDeliverRepository.findAll();
         return all.stream().map(hongDeliver -> {
             Long orderId = hongDeliver.getHongOrder().getId();
+            Long userId = hongDeliver.getHongOrder().getHongUser().getId();
 
             /* 주문건 상세 주문 상품들에 대해 리뷰가 1건이라도 있으면 해당 주문건은 상태값 변경 못하도록..  */
             List<HongOrderDetailVO> orderDetailVOS = hongOrderDetailService.listOfDetailOrders(orderId);
             boolean reviewEmpty = true;
             for (HongOrderDetailVO orderDetailvo: orderDetailVOS) {
-                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDetailvo.getOrderDetailId(), "N");
+                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(userId, orderDetailvo.getOrderDetailId(), "N");
                 if(hongReview != null) {
                     reviewEmpty = false;
                     break;

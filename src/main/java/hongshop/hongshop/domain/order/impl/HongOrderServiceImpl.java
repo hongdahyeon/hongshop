@@ -188,15 +188,15 @@ public class HongOrderServiceImpl implements HongOrderService {
     }
 
     @Override
-    public List<HongOrderVO> listWithChkReview(HongUser hongUser) {
+    public List<HongOrderVO> listWithChkReview() {
         List<HongOrder> orders = hongOrderRepository.findAll();
         return orders.stream().map(order -> {
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
-
+            Long userId = order.getHongUser().getId();
             /* 주문건 상세 주문 상품들에 대해 리뷰가 1건이라도 있으면 해당 주문건은 상태값 변경 못하도록..  */
             boolean reviewEmpty = true;
             for (HongOrderDetailVO orderDetailvo: orderDetails) {
-                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDetailvo.getOrderDetailId(), "N");
+                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(userId, orderDetailvo.getOrderDetailId(), "N");
                 if(hongReview != null) {
                     reviewEmpty = false;
                     break;
