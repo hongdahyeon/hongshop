@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
+import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.user.HongUser;
 
@@ -32,11 +33,11 @@ public interface HongOrderService {
 
     HongOrderVO view(Long id);
 
-    HongOrder getHongOrder(Long id);
-
     List<HongOrderVO> listOfUserOrder(Long id);
 
     void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO);
 
     List<HongOrderDeliverVO> getOrderAndDeliverByUserId(Long id);
+
+    List<HongOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser);
 }

@@ -9,6 +9,7 @@ import hongshop.hongshop.domain.review.HongReviewService;
 import hongshop.hongshop.domain.review.vo.HongReviewVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,10 +67,13 @@ public class HongUserController {
         return "user/order";
     }
 
-    @GetMapping("/review")
+    @GetMapping("/review")  // 회원 - 리뷰 작성 리스트
     public String reviewUser(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         HongUser user = principalDetails.getUser();
         List<HongReviewVO> hongReviewVOS = hongReviewService.userReview(user);
+        hongReviewVOS.forEach(hongReview -> {
+           hongReview.setReviewContet(StringEscapeUtils.unescapeHtml4(hongReview.getReviewContet()));
+        });
         model.addAttribute("reviews", hongReviewVOS);
         return "user/review";
     }

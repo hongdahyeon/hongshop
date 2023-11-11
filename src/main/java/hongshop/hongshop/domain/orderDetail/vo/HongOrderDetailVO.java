@@ -7,12 +7,14 @@ import lombok.Setter;
 @Getter @Setter
 public class HongOrderDetailVO {
 
+    private Long orderDetailId;
     private Long productId;
     private String productName;
     private Integer orderCnt;
     private Integer orderPrice;
 
     public HongOrderDetailVO(HongOrderDetail hongOrderDetail) {
+        this.orderDetailId = hongOrderDetail.getId();
         this.productId = hongOrderDetail.getHongProduct().getId();
         this.productName = hongOrderDetail.getHongProduct().getProductName();
         this.orderCnt = hongOrderDetail.getOrderCnt();

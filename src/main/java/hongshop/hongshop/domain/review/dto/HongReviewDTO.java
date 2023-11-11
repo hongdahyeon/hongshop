@@ -9,7 +9,7 @@ import java.util.List;
 @Getter @Setter
 public class HongReviewDTO {
 
-    private Long hongOrderId;
+    private Long hongOrderDetailId;
     private String reviewContent;
     private Integer reviewStar;
     private Long fileGroupId;

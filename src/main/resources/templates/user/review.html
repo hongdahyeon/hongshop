@@ -5,6 +5,79 @@
 
 <th:block layout:fragment="head">
   <title>HONG SHOP</title>
+    <style>
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card-header img {
+            border-radius: 4px;
+            margin-right: 20px;
+            width: 100px;
+            height: 100px;
+        }
+
+        .header-content h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .header-content p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .image-container img {
+            border-radius: 4px;
+            height: 150px;
+            width: 150px;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .card-content p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .fa-star.checked {
+            color: orange;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </th:block>
 
 <th:block layout:fragment="content">
@@ -18,7 +91,107 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="card-list">
 
+                <div class="card">
+                    <div class="card-header">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <div class="header-content">
+                            <h3>Product Image</h3>
+                            <p>Image Description 1</p>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 2">
+                    </div>
+                    <div class="card-content">
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star checked"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <h3>Card Title 1</h3>
+                        <p>This is a description for card 1.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <div class="header-content">
+                            <h3>Image Name 1</h3>
+                            <p>Image Description 1</p>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 2">
+                    </div>
+                    <div class="card-content">
+                        <h3>Card Title 1</h3>
+                        <p>This is a description for card 1.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <div class="header-content">
+                            <h3>Image Name 1</h3>
+                            <p>Image Description 1</p>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 2">
+                    </div>
+                    <div class="card-content">
+                        <h3>Card Title 1</h3>
+                        <p>This is a description for card 1.</p>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <div class="header-content">
+                            <h3>Image Name 1</h3>
+                            <p>Image Description 1</p>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 2">
+                    </div>
+                    <div class="card-content">
+                        <h3>Card Title 1</h3>
+                        <p>This is a description for card 1.</p>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <div class="header-content">
+                            <h3>Image Name 1</h3>
+                            <p>Image Description 1</p>
+                        </div>
+                    </div>
+                    <div class="image-container">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 1">
+                        <img src="/assets/src/shop/noImage.png" alt="Card Image 2">
+                    </div>
+                    <div class="card-content">
+                        <h3>Card Title 1</h3>
+                        <p>This is a description for card 1.</p>
+                    </div>
+                </div>
+
+                <!-- Add more cards as needed -->
+            </div>
         </div>
     </div>
 </th:block>

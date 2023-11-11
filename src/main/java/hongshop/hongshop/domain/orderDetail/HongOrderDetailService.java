@@ -24,4 +24,8 @@ public interface HongOrderDetailService {
     List<HongOrderDetailUserVO> listByProductId(Long productId);
 
     boolean emptyChkByProductId(Long productId);
+
+    HongOrderDetail getHongOrderDetail(Long hongOrderDetailId);
+
+    HongOrderDetailVO view(Long hongOrderDetailId);
 }

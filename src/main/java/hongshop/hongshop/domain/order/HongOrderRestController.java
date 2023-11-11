@@ -4,6 +4,7 @@ import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -90,4 +91,11 @@ public class HongOrderRestController {
         return Response.ok("해당 상품의 상태값이 변경되었습니다.");
     }
 
+    @GetMapping("/order-review/{id}")
+    @Operation(summary = "orderId 하위에 있는 orderDetail들에 대해 리뷰달렸는지 찾기", description = "orderId 하위에 있는 orderDetail들에 대해 리뷰달렸는지 찾기")
+    @ApiDocumentResponse
+    public Response orderReview(@PathVariable Long id, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<HongOrderReviewVO> orderDetailReviews = hongOrderService.getOrderDetailReviews(id, principalDetails.getUser());
+        return Response.ok(orderDetailReviews);
+    }
 }

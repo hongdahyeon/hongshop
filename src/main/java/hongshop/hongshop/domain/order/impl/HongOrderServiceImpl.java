@@ -12,11 +12,13 @@ import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.OrderStatus;
 import hongshop.hongshop.domain.order.dto.*;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
+import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductService;
+import hongshop.hongshop.domain.review.HongReview;
 import hongshop.hongshop.domain.review.HongReviewRepository;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserService;
@@ -39,12 +41,12 @@ import java.util.List;
  *          (2) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
  *          (3) saveFromShop : 상품 리스트 화면에서 선택 후 바로 주문
  *          (4) view : order-id에 대해 order-detail-list 값을 함께 불러온다.
- *          (5) getHongOrder : order-id를 통핸 HongOrder RETURN
- *          (6) listOfUserOrder : 현재 로그인한 user의 주문 정보를 불러온다.
- *          (7) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
- *          (8) list: 전체 주문 조회 with 주문 상세
- *          (9) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
- *          (10) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
+ *          (5) listOfUserOrder : 현재 로그인한 user의 주문 정보를 불러온다.
+ *          (6) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
+ *          (7) list: 전체 주문 조회 with 주문 상세
+ *          (8) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+ *          (9) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
+ *          (10) getOrderDetailReviews : 주문건 상세 주문건 상품들에 대한 정보와 그 주문상품의 리뷰가 달렸는지 여부 가져오기
 **/
 
 @Service
@@ -190,8 +192,17 @@ public class HongOrderServiceImpl implements HongOrderService {
         List<HongOrder> orders = hongOrderRepository.findAll();
         return orders.stream().map(order -> {
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
-            boolean empty = hongReviewRepository.findAllByHongUserIdAndAndHongOrderIdAndDeleteYnIs(hongUser.getId(), order.getId(), "N").isEmpty();
-            return new HongOrderVO(order, orderDetails, empty);
+
+            /* 주문건 상세 주문 상품들에 대해 리뷰가 1건이라도 있으면 해당 주문건은 상태값 변경 못하도록..  */
+            boolean reviewEmpty = true;
+            for (HongOrderDetailVO orderDetailvo: orderDetails) {
+                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDetailvo.getOrderDetailId(), "N");
+                if(hongReview != null) {
+                    reviewEmpty = false;
+                    break;
+                }
+            }
+            return new HongOrderVO(order, orderDetails, reviewEmpty);
         }).toList();
     }
 
@@ -200,11 +211,6 @@ public class HongOrderServiceImpl implements HongOrderService {
         HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
         List<HongOrderDetailVO> listofDetails = hongOrderDetailService.listOfDetailOrders(hongOrder.getId());
         return new HongOrderVO(hongOrder, listofDetails);
-    }
-
-    @Override
-    public HongOrder getHongOrder(Long id) {
-        return hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
     }
 
     @Override
@@ -240,6 +246,17 @@ public class HongOrderServiceImpl implements HongOrderService {
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
             HongDeliverVO byOrderId = hongDeliverService.getByOrderId(order.getId());
             return new HongOrderDeliverVO(order, orderDetails, byOrderId);
+        }).toList();
+    }
+
+    @Override
+    public List<HongOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser) {
+        List<HongOrderDetailVO> orderDetailVOS = hongOrderDetailService.listOfDetailOrders(orderId);
+        return orderDetailVOS.stream().map(orderDevailVO -> {
+            boolean isEmpty = true;
+            HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDevailVO.getOrderDetailId(), "N");
+            if(hongReview != null) isEmpty = false;
+            return new HongOrderReviewVO(orderDevailVO.getProductName(), orderDevailVO.getOrderDetailId(), isEmpty);
         }).toList();
     }
 }

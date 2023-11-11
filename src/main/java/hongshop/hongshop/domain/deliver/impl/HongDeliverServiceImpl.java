@@ -9,6 +9,9 @@ import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.OrderStatus;
+import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
+import hongshop.hongshop.domain.review.HongReview;
 import hongshop.hongshop.domain.review.HongReviewRepository;
 import hongshop.hongshop.domain.user.HongUser;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,7 @@ public class HongDeliverServiceImpl implements HongDeliverService {
     private final HongDeliverRepository hongDeliverRepository;
     private final HongOrderRepository hongOrderRepository;
     private final HongReviewRepository hongReviewRepository;
+    private final HongOrderDetailService hongOrderDetailService;
 
     @Override
     @Transactional(readOnly = false)
@@ -96,8 +100,18 @@ public class HongDeliverServiceImpl implements HongDeliverService {
         List<HongDeliver> all = hongDeliverRepository.findAll();
         return all.stream().map(hongDeliver -> {
             Long orderId = hongDeliver.getHongOrder().getId();
-            boolean empty = hongReviewRepository.findAllByHongUserIdAndAndHongOrderIdAndDeleteYnIs(hongUser.getId(), orderId, "N").isEmpty();
-            return new HongDeliverVO(hongDeliver, empty);
+
+            /* 주문건 상세 주문 상품들에 대해 리뷰가 1건이라도 있으면 해당 주문건은 상태값 변경 못하도록..  */
+            List<HongOrderDetailVO> orderDetailVOS = hongOrderDetailService.listOfDetailOrders(orderId);
+            boolean reviewEmpty = true;
+            for (HongOrderDetailVO orderDetailvo: orderDetailVOS) {
+                HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDetailvo.getOrderDetailId(), "N");
+                if(hongReview != null) {
+                    reviewEmpty = false;
+                    break;
+                }
+            }
+            return new HongDeliverVO(hongDeliver, reviewEmpty);
         }).toList();
     }
 

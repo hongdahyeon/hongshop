@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.review;
 
 import hongshop.hongshop.domain.order.HongOrder;
+import hongshop.hongshop.domain.orderDetail.HongOrderDetail;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.global.base.BaseEntity;
 import lombok.AccessLevel;
@@ -22,8 +23,8 @@ public class HongReview extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hong_order_id")
-    private HongOrder hongOrder;
+    @JoinColumn(name = "hong_order_detail_id")
+    private HongOrderDetail hongOrderDetail;
 
     @Column(name = "review_content")
     private String reviewContent;
@@ -42,8 +43,8 @@ public class HongReview extends BaseEntity {
     private HongUser hongUser;
 
     @Builder(builderMethodName = "hongReviewInsertBuilder")
-    public HongReview(HongOrder hongOrder, HongUser hongUser, String reviewContent, Integer reviewStar, Long fileGroupId) {
-        this.hongOrder = hongOrder;
+    public HongReview(HongOrderDetail hongOrderDetail, HongUser hongUser, String reviewContent, Integer reviewStar, Long fileGroupId) {
+        this.hongOrderDetail = hongOrderDetail;
         this.hongUser = hongUser;
         this.reviewContent = reviewContent;
         this.reviewStar = reviewStar;

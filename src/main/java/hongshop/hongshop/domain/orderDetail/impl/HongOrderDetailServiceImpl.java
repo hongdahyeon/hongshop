@@ -26,6 +26,8 @@ import java.util.List;
  *              -> 주문 상태 : CHARTGED, DELIVER_ING
  *              -> 해당 주문 상태인 주문건이 있다면 상품 삭제를 못하도록 처리
  *              -> 해당 주문 상태인 주문건이 있다면 empty is false -> if(!empty) delete button is disabeld
+ *          (5) getHongOrderDetail : return HongOrderDetail entity
+ *          (6) view : return HongOrderDetailVO
 **/
 
 @Service
@@ -70,5 +72,16 @@ public class HongOrderDetailServiceImpl implements HongOrderDetailService {
         orderStatusList.add(OrderStatus.CHARGED); orderStatusList.add(OrderStatus.DELIVER_ING);
         List<HongOrderDetail> findOrderDetails = hongOrderDetailRepository.findAllByHongProduct_IdAndHongOrder_OrderStatusIn(productId, orderStatusList);
         return findOrderDetails.isEmpty();
+    }
+
+    @Override
+    public HongOrderDetail getHongOrderDetail(Long hongOrderDetailId) {
+        return hongOrderDetailRepository.findById(hongOrderDetailId).orElseThrow(() -> new IllegalArgumentException("there is no order detail"));
+    }
+
+    @Override
+    public HongOrderDetailVO view(Long hongOrderDetailId) {
+        HongOrderDetail hongOrderDetail = hongOrderDetailRepository.findById(hongOrderDetailId).orElseThrow(() -> new IllegalArgumentException("there is no order detail"));
+        return new HongOrderDetailVO(hongOrderDetail);
     }
 }
