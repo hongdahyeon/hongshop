@@ -14,6 +14,7 @@ public class HongCouponVO {
     private Integer couponRate;
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean canUse;
     private String useAt;
 
     public HongCouponVO(HongCoupon hongCoupon) {
@@ -22,6 +23,12 @@ public class HongCouponVO {
         this.couponRate = hongCoupon.getCouponRate();
         this.startDate = hongCoupon.getStartDate();
         this.endDate = hongCoupon.getEndDate();
+        this.canUse = this.isDateWithinRange();
         this.useAt = hongCoupon.getUseAt();
+    }
+
+    private boolean isDateWithinRange(){
+        LocalDate today = LocalDate.now();
+        return !(today.isBefore(startDate) || today.isAfter(endDate));
     }
 }

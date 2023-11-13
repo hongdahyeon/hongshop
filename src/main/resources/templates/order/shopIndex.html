@@ -94,7 +94,7 @@
 
                             <th:block th:unless="${hongCoupons.size() == 0}">
                                 <div class="form-check chk-coupon-btn" th:each="coupon, couponStat : ${hongCoupons}" style="margin-bottom: 10px">
-                                    <input class="form-check-input" type="radio" name="hongCouponHasId" th:id="|hongCouponHasId-${coupon.getHongCouponHasId()}|" th:value="${coupon.getHongCouponHasId()}" th:disabled="${coupon.getHongCouponVO().getCouponRate() > totalPrice}" th:data-num="${coupon.getHongCouponVO().getCouponRate()}">
+                                    <input class="form-check-input" type="radio" name="hongCouponHasId" th:id="|hongCouponHasId-${coupon.getHongCouponHasId()}|" th:value="${coupon.getHongCouponHasId()}" th:disabled="${coupon.getHongCouponVO().getCouponRate() > totalPrice or (!coupon.getHongCouponVO().isCanUse())}" th:data-num="${coupon.getHongCouponVO().getCouponRate()}">
                                     <label class="form-check-label" th:for="|hongCouponHasId-${coupon.getHongCouponHasId()}|" th:text="|${coupon.getHongCouponVO().getCouponName()} (할인율: ${#numbers.formatInteger(coupon.getHongCouponVO().getCouponRate(), 0, 'COMMA')} 원)|"></label>
                                 </div>
                             </th:block>
