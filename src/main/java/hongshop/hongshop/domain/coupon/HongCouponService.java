@@ -11,6 +11,8 @@ public interface HongCouponService {
 
     List<HongCouponVO> list();
 
+    List<HongCouponVO> listWithChkUser();
+
     HongCouponVO view(Long id);
 
     void update(Long id, HongCouponDTO hongCouponDTO);

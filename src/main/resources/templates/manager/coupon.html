@@ -1,10 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
 
-</body>
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        tr{
+            text-align: center;
+        }
+        .margin-10 {
+            margin-top: 10px
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>쿠폰 관리</h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" id="new-coupon">쿠폰 추가하기</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="coupon-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">번호</th>
+                        <th style="width: 10%">쿠폰이름</th>
+                        <th style="width: 10%">할인가격(원)</th>
+                        <th style="width: 5%">사용여부</th>
+                        <th style="width: 10%">시작일</th>
+                        <th style="width: 10%">종료일</th>
+                        <th style="width: 10%">수정/삭제</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:if="${coupons.size() == 0}">
+                    <tr>
+                        <td colspan="8">쿠폰 정보가 비어있습니다.</td>
+                    </tr>
+                </th:block>
+                <th:block th:unless="${coupons.size() == 0}">
+                    <th:block  th:each="coupon, couponStat : ${coupons}">
+                        <tr>
+                            <td th:text="${couponStat.index + 1}" style="width: 5%"></td>
+                            <td th:text="${coupon.getCouponName()}" style="width: 10%"></td>
+                            <td th:text="${#numbers.formatInteger(coupon.getCouponRate(), 0, 'COMMA')}" style="width: 10%"></td>
+                            <td th:text="${(coupon.getUseAt() == 'Y') ? '사용' : '미사용'}" style="width: 5%"></td>
+                            <td th:text="${coupon.getStartDate()}" style="width: 10%"></td>
+                            <td th:text="${coupon.getEndDate()}" style="width: 10%"></td>
+                            <td style="width: 10%">
+                                <button type="button" class="btn btn-sm btn-outline-secondary coupon-update-btn" th:value="${coupon.getCouponId()}">수정</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger coupon-delete-btn" th:disabled="${!coupon.isUserIsEmpty()}" th:value="${coupon.getCouponId()}">삭제</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- s: newCouponForm -->
+        <form id="new-coupon-form" class="needs-validation" novalidate>
+            <div class="modal" id="new-coupon-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">쿠폰 등록하기</h4>
+                            <button type="button" class="btn-close" id="close-new-coupon-modal-btn"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-couponName">쿠폰 이름<span class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="new-couponName" class="form-control" name="couponName" required/>
+                                        <div class="invalid-feedback">쿠폰 이름을 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <label class="form-label" for="new-couponRate">할인 가격<span class="text-primary ms-50">*</span></label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="number" class="form-control numeral-mask" id="new-couponRate" name="couponRate" required>
+                                        <span class="input-group-text select-none">원</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label>사용여부</label>
+                                        <div class="input-group">
+                                            <div class="form-check" style="margin-right: 20px;">
+                                                <input type="radio" class="form-check-input" id="new-useAt-Y" name="useAt" value="Y" checked>
+                                                <label class="form-check-label" for="new-useAt-Y">Y</label>
+                                            </div>
+                                            <div class="form-check" style="margin-right: 20px;">
+                                                <input type="radio" class="form-check-input" id="new-useAt-N" name="useAt" value="N">
+                                                <label class="form-check-label" for="new-useAt-N">N</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-startDate">시작일<span class="text-primary ms-50">*</span></label>
+                                        <input type="date" id="new-startDate" class="form-control" name="startDate" required/>
+                                        <div class="invalid-feedback">쿠폰 사용 시작일을 입력해주세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="new-endDate">종료일<span class="text-primary ms-50">*</span></label>
+                                        <input type="date" id="new-endDate" class="form-control" name="endDate" required/>
+                                        <div class="invalid-feedback">쿠폰 사용 종료일을 입력해주세요.</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-new-coupon-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="save-new-coupon-btn">저장</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: newPostTypeForm -->
+
+        <!-- s: updateCouponForm -->
+        <form id="update-coupon-form" class="needs-validation" novalidate>
+            <div class="modal" id="update-coupon-modal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">쿠폰 수정하기</h4>
+                            <button type="button" class="btn-close" id="close-update-coupon-modal-btn"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="update-couponName">쿠폰 이름<span class="text-primary ms-50">*</span></label>
+                                        <input type="text" id="update-couponName" class="form-control" name="couponName" required/>
+                                        <div class="invalid-feedback">쿠폰 이름을 입력하세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <label class="form-label" for="update-couponRate">할인 가격<span class="text-primary ms-50">*</span></label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="number" class="form-control numeral-mask" id="update-couponRate" name="couponRate" required>
+                                        <span class="input-group-text select-none">원</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label>사용여부</label>
+                                        <div class="input-group">
+                                            <div class="form-check" style="margin-right: 20px;">
+                                                <input type="radio" class="form-check-input" id="update-useAt-Y" name="useAt" value="Y">
+                                                <label class="form-check-label" for="new-useAt-Y">Y</label>
+                                            </div>
+                                            <div class="form-check" style="margin-right: 20px;">
+                                                <input type="radio" class="form-check-input" id="update-useAt-N" name="useAt" value="N">
+                                                <label class="form-check-label" for="new-useAt-N">N</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="update-startDate">시작일<span class="text-primary ms-50">*</span></label>
+                                        <input type="date" id="update-startDate" class="form-control" name="startDate" required/>
+                                        <div class="invalid-feedback">쿠폰 사용 시작일을 입력해주세요.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="update-endDate">종료일<span class="text-primary ms-50">*</span></label>
+                                        <input type="date" id="update-endDate" class="form-control" name="endDate" required/>
+                                        <div class="invalid-feedback">쿠폰 사용 종료일을 입력해주세요.</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" id="cancel-update-coupon-btn">취소</button>
+                            <button type="submit" class="btn btn-outline-primary" id="update-coupon-btn">저장</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- e: newPostTypeForm -->
+
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+       const coupons = /*[[${coupons}]]*/ [];
+       let hongCouponId = null
+
+       /* 새로운 쿠폰 등록하기 */
+       $("#new-coupon").on('click', function(e){
+         $("#new-coupon-modal").modal('show')
+       })
+
+       /* 쿠폰 삭제하기 */
+       $(".coupon-delete-btn").on('click', function(e) {
+           const couponId = $(this).val()
+
+           const result = confirm('해당 쿠폰을 삭제하시겠습니까?')
+           if(result) {
+               $.ajax({
+                   type: "DELETE",
+                   url: `/api/coupon/${couponId}`,
+                   success: function (data) {
+                       if(data.httpStatus === 200) {
+                           alert(`${data.message}`)
+                           window.location.href = `/manager/coupon`
+                       }else {
+                           alert("삭제에 실패했습니다.")
+                       }
+                   },
+                   error: function (error) {
+                       // Handle the error response
+                       console.error("upload error:", error);
+                   }
+               });
+           }
+       })
+
+       /* 쿠폰 수정하기 버튼 클릭 이벤트 */
+       $(".coupon-update-btn").on('click', function(e){
+           const couponId = $(this).val()
+           console.log("update couponId : ", couponId)
+
+           $.ajax({
+               type: 'GET',
+               url: `/api/coupon/${couponId}`,
+               dataType: 'json',
+               contentType: 'application/json',
+               success: function (data) {
+                   if(data.httpStatus === 200) {
+                       hongCouponId= data.message['couponId']
+                       $("#update-couponName").val(data.message['couponName'])
+                       $("#update-couponRate").val(data.message['couponRate'])
+                       $(`#update-useAt-${data.message['useAt']}`).prop('checked', true)
+                       $("#update-startDate").val(data.message['startDate'])
+                       $("#update-endDate").val(data.message['endDate'])
+                       $("#update-coupon-modal").modal('show')              // 쿠폰 수정 모달 띄우기
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error('Error getting password:', error);
+               }
+           });
+       })
+
+       /* 쿠폰 등록하기 모달 닫기 이벤트 */
+       $("#cancel-new-coupon-btn, #close-new-coupon-modal-btn").on("click", function(e) {
+           const result = confirm("작성중인 쿠폰은 저장되지 않습니다." + '\n' + "쿠폰작성을 취소하시겠습니까?")
+           if(result) {
+               $("#new-couponName").val('')
+               $("#new-couponRate").val('')
+               $("#new-startDate").val('')
+               $("#new-endDate").val('')
+
+               const form = document.getElementById("new-coupon-form")
+               form.classList.remove("was-validated")      // validation 지우기
+               $("#new-coupon-modal").modal('hide')
+           }
+       })
+
+        /* 쿠폰 수정하기 모달 닫기 이벤트 */
+       $("#cancel-update-coupon-btn, #close-update-coupon-modal-btn").on("click", function(e){
+           const result = confirm("수정중이던 쿠폰은 저장되지 않습니다." + '\n' + "쿠폰수정을 취소하시겠습니까?")
+           if(result) {
+               $("#update-couponName").val('')
+               $("#update-couponRate").val('')
+               $("#update-startDate").val('')
+               $("#update-endDate").val('')
+
+               const form = document.getElementById("update-coupon-form")
+               form.classList.remove("was-validated")      // validation 지우기
+               $("#update-coupon-modal").modal('hide')
+           }
+       })
+
+       /* 쿠폰 등록하기 */
+       window.addEventListener("load", function(event) {
+           event.preventDefault();
+           const form = document.getElementById("new-coupon-form");
+
+           form.addEventListener("submit", function(event) {
+               if(form.checkValidity() === false) {
+                   event.preventDefault();
+                   form.classList.add("was-validated")
+               }else{
+                   event.preventDefault();
+                   FormDataToObj.getParameter("new-coupon-form").then(obj => {
+                       const start = new Date(obj['startDate'])
+                       const end = new Date(obj['endDate'])
+
+                       if(start > end) alert("쿠폰 사용 종료일이 시작일보다 먼저 올수는 없습니다.")       // 쿠폰 사용 시작일보다 종료일이 앞서는 경우, 막기
+                       else {
+                           $.ajax({
+                               type: 'POST',
+                               url: `/api/coupon`,
+                               dataType: 'json',
+                               data: JSON.stringify(obj),
+                               contentType: 'application/json',
+                               success: function (data) {
+                                   if (data.httpStatus === 200) {
+                                       alert(`쿠폰이 추가되었습니다.`)
+                                       window.location.href = '/manager/coupon'
+                                   } else {
+                                       alert(`쿠폰 등록에 실패했습니다.`)
+                                   }
+                               },
+                               error: function (xhr, status, error) {
+                                   console.error('Error getting password:', error);
+                               }
+                           });
+                       }
+                   })
+               }
+           });
+       });
+
+       /* 쿠폰 수정하기 */
+       window.addEventListener("load", function(event) {
+           event.preventDefault();
+           const form = document.getElementById("update-coupon-form");
+
+           form.addEventListener("submit", function(event) {
+               if(form.checkValidity() === false) {
+                   event.preventDefault();
+                   form.classList.add("was-validated")
+               }else{
+                   event.preventDefault();
+                   FormDataToObj.getParameter("update-coupon-form").then(obj => {
+                       const start = new Date(obj['startDate'])
+                       const end = new Date(obj['endDate'])
+
+                       if(start > end) alert("쿠폰 사용 종료일이 시작일보다 먼저 올수는 없습니다.")   // 쿠폰 사용 시작일보다 종료일이 앞서는 경우, 막기
+                       else {
+                           $.ajax({
+                               type: 'PUT',
+                               url: `/api/coupon/${hongCouponId}`,
+                               dataType: 'json',
+                               data: JSON.stringify(obj),
+                               contentType: 'application/json',
+                               success: function (data) {
+                                   if (data.httpStatus === 200) {
+                                       alert("쿠폰 정보를 변경하였습니다.")
+                                       window.location.href = `/manager/coupon`
+                                   } else {
+                                       alert("쿠폰 변경에 실패했습니다.")
+                                   }
+                               },
+                               error: function (xhr, status, error) {
+                                   console.error('Error getting password:', error);
+                               }
+                           });
+                       }
+                   })
+               }
+           });
+       });
+
+    </script>
+</th:block>
+
 </html>

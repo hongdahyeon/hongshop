@@ -16,6 +16,7 @@ public class HongCouponVO {
     private LocalDate endDate;
     private boolean canUse;
     private String useAt;
+    private boolean userIsEmpty;
 
     public HongCouponVO(HongCoupon hongCoupon) {
         this.couponId = hongCoupon.getId();
@@ -25,6 +26,17 @@ public class HongCouponVO {
         this.endDate = hongCoupon.getEndDate();
         this.canUse = this.isDateWithinRange();
         this.useAt = hongCoupon.getUseAt();
+    }
+
+    public HongCouponVO(HongCoupon hongCoupon, boolean userIsEmpty) {
+        this.couponId = hongCoupon.getId();
+        this.couponName = hongCoupon.getCouponName();
+        this.couponRate = hongCoupon.getCouponRate();
+        this.startDate = hongCoupon.getStartDate();
+        this.endDate = hongCoupon.getEndDate();
+        this.canUse = this.isDateWithinRange();
+        this.useAt = hongCoupon.getUseAt();
+        this.userIsEmpty = userIsEmpty;
     }
 
     private boolean isDateWithinRange(){

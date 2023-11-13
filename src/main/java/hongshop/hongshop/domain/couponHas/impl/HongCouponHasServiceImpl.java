@@ -26,6 +26,7 @@ import java.util.List;
  *              (2) list : 전체 사용자의 쿠폰 조회 -> 삭제 여부 N
  *              (3) view : 사용자의 쿠폰 등록 단건 조회
  *              (4) listByHongUser : 현재 로그인한 사용자의 쿠폰 등록 리스트 조회 -> 삭제 여부 N
+ *                  - 이때 쿠폰에 대해 쿠폰의 삭제값이 N, 사용값이 Y
  *              (5) delete : 쿠폰 등록 단건 삭제
  *              (6) useCoupon : 쿠폰 사용하기
  *              (7) getHongCouponHas : 사용자 쿠폰 등록 단건 조회 -> return entity
@@ -69,8 +70,12 @@ public class HongCouponHasServiceImpl implements HongCouponHasService {
 
     @Override
     public List<HongCouponHasVO> listByHongUser(HongUser hongUser) {
-        List<HongCouponHas> allByHongUserId = hongCouponHasRepository.findAllByHongUserIdAndDeleteYnIsAndUseAtIs(hongUser.getId(), "N", "N");
-        return allByHongUserId.stream().map(HongCouponHasVO::new).toList();
+        List<HongCouponHas> allByHongUserId = hongCouponHasRepository.findAllByHongUserIdAndDeleteYnAndUseAt(hongUser.getId(), "N", "N");
+        return allByHongUserId.stream().filter(hongCouponHas ->
+            !"Y".equals(hongCouponHas.getHongCoupon().getDeleteYn()) &&
+            !"N".equals(hongCouponHas.getHongCoupon().getUseAt())
+        ).map(HongCouponHasVO::new)
+                .toList();
     }
 
     @Override

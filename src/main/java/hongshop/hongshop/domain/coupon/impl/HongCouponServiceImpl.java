@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.coupon.HongCouponRepository;
 import hongshop.hongshop.domain.coupon.HongCouponService;
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
+import hongshop.hongshop.domain.couponHas.HongCouponHasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,8 @@ import java.util.List;
  *          (4) update : 쿠폰 수정
  *          (5) delete : 쿠폰 삭제
  *          (6) getHongCoupon : 쿠폰 단건 조회 -> return entity
+ *          (7) listWithChkUser : 쿠폰 전체 리스트 조회 -> 삭제여부 N
+ *              - 해당 쿠폰을 아직 사용하지 않고 갖고 있는 사람이 있는지 체크 (없다면 해당 쿠폰은 삭제 가능)
 **/
 
 @Service
@@ -30,6 +33,7 @@ import java.util.List;
 public class HongCouponServiceImpl implements HongCouponService {
 
     private final HongCouponRepository hongCouponRepository;
+    private final HongCouponHasRepository hongCouponHasRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -51,6 +55,16 @@ public class HongCouponServiceImpl implements HongCouponService {
     public List<HongCouponVO> list() {
         List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
         return all.stream().map(HongCouponVO::new).toList();
+    }
+
+    @Override
+    public List<HongCouponVO> listWithChkUser() {
+        List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
+        return all.stream().map(hongCoupon -> {
+            boolean userIsEmpty = true;
+            if("Y".equals(hongCoupon.getUseAt())) userIsEmpty = hongCouponHasRepository.findAllByUseAtAndDeleteYnAndHongCoupon_Id("N", "N", hongCoupon.getId()).isEmpty();
+            return new HongCouponVO(hongCoupon, userIsEmpty);
+        }).toList();
     }
 
     @Override
