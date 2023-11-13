@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+  <title>HONG SHOP</title>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="text-center">
+            <h3><b>Hong Shop</b></h3>
+            <span>Hong Shop 톡톡입니다 🎙</span>
+        </div>
+      <div class="text-center" style="margin-top: 10px">
+          <button type="button" class="btn btn-outline-info" onclick="location.href='/'">홈화면 돌아가기</button>
+      </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        console.log("talk...")
+    </script>
+</th:block>
+
+</html>

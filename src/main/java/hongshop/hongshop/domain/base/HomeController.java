@@ -21,4 +21,9 @@ public class HomeController {
     public String initialPassword(){
         return "initialPassword";
     }
+
+    @GetMapping("/talk")
+    public String talk(){
+        return "talk/talk";
+    }
 }

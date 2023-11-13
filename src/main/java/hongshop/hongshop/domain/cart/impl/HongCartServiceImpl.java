@@ -28,6 +28,7 @@ import java.util.List;
  *              (5) deleteSeveral : 장바구니 여러개 삭제
  *              (6) listOfChoose : 장바구니에서 선택한 값들 조회 -> 해당 정보 및 해당상품의 file 정보
  *              (7) updateCnt : 장바구니 담기는 개수 변경
+ *              (8) findIfEmpty : user-id와 product-id로 해당 사용자가 해당 상품을 장바구니에 담았는지 확인하기
 **/
 
 @Service
@@ -130,5 +131,11 @@ public class HongCartServiceImpl implements HongCartService {
         Integer orderPrice = hongCartDTO.getCartCnt() * product.getProductPrice();
 
         hongCart.updateCntAndPrice(hongCartDTO.getCartCnt(), orderPrice);
+    }
+
+    @Override
+    public boolean findIfEmpty(Long userId, Long productId) {
+        List<HongCart> hongcarts = hongCartRepository.findAllByHongUserIdAndHongProductIdAndDeleteYn(userId, productId, "N");
+        return hongcarts.isEmpty();
     }
 }

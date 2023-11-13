@@ -28,4 +28,6 @@ public interface HongCartService {
     List<HongCartVO> listOfChoose(List<Long> ids);
 
     void updateCnt(Long id, HongCartDTO hongCartDTO);
+
+    boolean findIfEmpty(Long userId, Long productId);
 }

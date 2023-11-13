@@ -77,4 +77,13 @@ public class HongCartRestController {
         return Response.ok("해당 장바구니 정보를 변경하였습니다.");
     }
 
+    @GetMapping("/find-cart/{id}")
+    @Operation(summary = "find if has it", description = "이미 사용자 장바구니에 있는 상품인지 확인")
+    @ApiDocumentResponse
+    public Response findCart(@PathVariable Long id, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getUser().getId();
+        boolean ifEmpty = hongCartService.findIfEmpty(userId, id);
+        return Response.ok(ifEmpty);
+    }
+
 }
