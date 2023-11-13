@@ -34,17 +34,17 @@
         <div class="card-body">
             <table class="table table-bordered" id="cart-table">
                 <thead>
-                <tr>
-                    <th style="width: 5%;">번호</th>
-                    <th style="width: 10%">게시판 유형</th>
-                    <th style="width: 10%">게시판 이름</th>
-                    <th style="width: 5%">정렬순서</th>
-                    <th style="width: 5%">사용여부</th>
-                    <th style="width: 5%">게시글 개수</th>
-                    <th style="width: 10%">url</th>
-                    <th style="width: 10%">게시판 보러가기</th>
-                    <th style="width: 10%">수정/삭제</th>
-                </tr>
+                    <tr>
+                        <th style="width: 5%;">번호</th>
+                        <th style="width: 10%">게시판 유형</th>
+                        <th style="width: 10%">게시판 이름</th>
+                        <th style="width: 5%">정렬순서</th>
+                        <th style="width: 5%">사용여부</th>
+                        <th style="width: 5%">게시글 개수</th>
+                        <th style="width: 10%">url</th>
+                        <th style="width: 10%">게시판 보러가기</th>
+                        <th style="width: 10%">수정/삭제</th>
+                    </tr>
                 </thead>
                 <tbody>
                 <th:block th:if="${postTypeList.size() == 0}">
@@ -103,9 +103,13 @@
                                             <input type="radio" class="form-check-input" id="new-NOTICE" name="postType" value="NOTICE">
                                             <label class="form-check-label" for="new-NOTICE">NOTICE</label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check" style="margin-right: 20px;">
                                             <input type="radio" class="form-check-input" id="new-FAQ" name="postType" value="FAQ">
                                             <label class="form-check-label" for="new-FAQ">FAQ</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="new-FREE" name="postType" value="FREE">
+                                            <label class="form-check-label" for="new-FREE">FREE</label>
                                         </div>
                                     </div>
                                 </div>
@@ -183,9 +187,13 @@
                                             <input type="radio" class="form-check-input" id="update-NOTICE" name="postType" value="NOTICE">
                                             <label class="form-check-label" for="update-NOTICE">NOTICE</label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check" style="margin-right: 20px;">
                                             <input type="radio" class="form-check-input" id="update-FAQ" name="postType" value="FAQ">
                                             <label class="form-check-label" for="update-FAQ">FAQ</label>
+                                        </div>
+                                        <div class="form-check" style="margin-right: 20px;">
+                                            <input type="radio" class="form-check-input" id="update-FREE" name="postType" value="FREE">
+                                            <label class="form-check-label" for="update-FREE">FREE</label>
                                         </div>
                                     </div>
                                 </div>

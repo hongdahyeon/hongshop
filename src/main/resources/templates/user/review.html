@@ -36,7 +36,7 @@
                         <div class="header-content">
                             <h3 th:text="${review.getHongOrderDetailVO().getProductName()}"></h3>
                             <p th:text="|주문가격: ${#numbers.formatInteger(review.getHongOrderDetailVO().getOrderPrice(), 0, 'COMMA')} 원|"></p>
-                            <p th:text="|주문개수: ${review.getHongOrderDetailVO().getOrderCnt()} 개|"></p>
+                            <p th:text="|주문Id: ${review.getHongOrderDetailVO().getOrderId()}|" style="color: red"></p>
                         </div>
                     </div>
 

@@ -9,5 +9,5 @@ package hongshop.hongshop.domain.postType;
 **/
 
 public enum PostType {
-    FAQ, QNA, NOTICE
+    FAQ, QNA, NOTICE, FREE
 }

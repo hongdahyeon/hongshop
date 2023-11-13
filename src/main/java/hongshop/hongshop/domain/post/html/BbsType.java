@@ -4,7 +4,8 @@ public enum BbsType {
 
     NOTICE("notice"),
     FAQ("faq"),
-    QNA("qna");
+    QNA("qna"),
+    FREE("free");
 
     private final String htmlPath;
 

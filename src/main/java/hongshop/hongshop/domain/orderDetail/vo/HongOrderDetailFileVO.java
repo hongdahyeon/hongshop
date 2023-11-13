@@ -19,12 +19,14 @@ public class HongOrderDetailFileVO {
 
     private Long orderDetailId;
     private Long productId;
+    private Long orderId;
     private String productName;
     private Integer orderCnt;
     private Integer orderPrice;
     private HongFileGroupVO file;
 
     public HongOrderDetailFileVO(HongOrderDetail hongOrderDetail, HongFileGroupVO file) {
+        this.orderId = hongOrderDetail.getHongOrder().getId();
         this.orderDetailId = hongOrderDetail.getId();
         this.productId = hongOrderDetail.getHongProduct().getId();
         this.productName = hongOrderDetail.getHongProduct().getProductName();
@@ -34,6 +36,7 @@ public class HongOrderDetailFileVO {
     }
 
     public HongOrderDetailFileVO(HongOrderDetail hongOrderDetail) {
+        this.orderId = hongOrderDetail.getHongOrder().getId();
         this.orderDetailId = hongOrderDetail.getId();
         this.productId = hongOrderDetail.getHongProduct().getId();
         this.productName = hongOrderDetail.getHongProduct().getProductName();

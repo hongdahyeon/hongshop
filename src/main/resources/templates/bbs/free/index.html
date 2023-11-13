@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, tr, td {
+            text-align: center;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3 th:text="|${type.postName}|"></h3>
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" id="new-bbsctt">글작성하기</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-bordered" id="free-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">번호</th>
+                        <th style="width: 30%">제목</th>
+                        <th style="width: 10%">첨부파일</th>
+                        <th style="width: 10%">조회수</th>
+                    </tr>
+                </thead>
+                <tbody id="notice-tbody">
+                    <th:block th:if="${postList.size() > 0}">
+                        <tr th:each="post, postStat : ${postList}" th:data-num="${post.regId}" th:data-value="${post.id}">
+                            <td style="width: 10%;" th:text="${postStat.index + 1}"></td>
+                            <td style="width: 50%" class="text-start" th:text="${post.title}"></td>
+                            <td style="width: 10%" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
+                            <td style="width: 10%" th:text="${post.readCnt}"></td>
+                        </tr>
+                    </th:block>
+                    <th:block th:unless="${postList.size() > 0}">
+                        <tr>
+                            <td colspan="4">게시글이 비어있습니다.</td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        const type = /*[[${type}]]*/ []
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const tbody = document.getElementById("notice-tbody")
+            const tableRows = tbody.querySelectorAll('tr')
+            tableRows.forEach(function (row) {
+                row.addEventListener('click', function () {
+                    const postId = this.getAttribute('data-value');
+                    window.location.href = `/bbs/view/${postId}`;
+                });
+            });
+        })
+
+        $("#new-bbsctt").on("click", function(e) {
+            window.location.href = `/bbs/save/${type['postTypeId']}`
+        })
+
+    </script>
+</th:block>
+
+</html>
