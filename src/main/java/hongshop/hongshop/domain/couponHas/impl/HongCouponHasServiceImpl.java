@@ -28,6 +28,7 @@ import java.util.List;
  *              (4) listByHongUser : 현재 로그인한 사용자의 쿠폰 등록 리스트 조회 -> 삭제 여부 N
  *              (5) delete : 쿠폰 등록 단건 삭제
  *              (6) useCoupon : 쿠폰 사용하기
+ *              (7) getHongCouponHas : 사용자 쿠폰 등록 단건 조회 -> return entity
 **/
 
 
@@ -68,7 +69,7 @@ public class HongCouponHasServiceImpl implements HongCouponHasService {
 
     @Override
     public List<HongCouponHasVO> listByHongUser(HongUser hongUser) {
-        List<HongCouponHas> allByHongUserId = hongCouponHasRepository.findAllByHongUserIdAndDeleteYnIs(hongUser.getId(), "N");
+        List<HongCouponHas> allByHongUserId = hongCouponHasRepository.findAllByHongUserIdAndDeleteYnIsAndUseAtIs(hongUser.getId(), "N", "N");
         return allByHongUserId.stream().map(HongCouponHasVO::new).toList();
     }
 
@@ -89,5 +90,10 @@ public class HongCouponHasServiceImpl implements HongCouponHasService {
         hongCouponHistService.join(new HongCouponHistDTO(id));
 
         return hongCouponHas.getHongCoupon().getCouponRate();
+    }
+
+    @Override
+    public HongCouponHas getHongCouponHas(Long id) {
+        return hongCouponHasRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no coupon has"));
     }
 }

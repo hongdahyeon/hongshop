@@ -8,5 +8,5 @@ public interface HongCouponHasRepository extends JpaRepository<HongCouponHas, Lo
 
     List<HongCouponHas> findAllByDeleteYnIs(String deleteYn);
 
-    List<HongCouponHas> findAllByHongUserIdAndDeleteYnIs(Long userId, String deleteYn);
+    List<HongCouponHas> findAllByHongUserIdAndDeleteYnIsAndUseAtIs(Long userId, String deleteYn, String useAt);
 }

@@ -19,4 +19,6 @@ public interface HongCouponHasService {
     void delete(Long id);
 
     Integer useCoupon(Long id);
+
+    HongCouponHas getHongCouponHas(Long id);
 }

@@ -74,12 +74,48 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="col">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <div class="text-start">
+                                    <h4 style="font-weight: bold">쿠폰 사용하기</h4>
+                                </div>
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-outline-primary" id="coupon-chk-reset">초기화</button>
+                                </div>
+                            </div>
+
+                            <div class="card" id="empty-div" th:if="${hongCoupons.size() == 0}" style="margin-top: 10px">
+                                <div class="card-body" style="text-align: center">
+                                    <h4>쿠폰 리스트가 비어있습니다.</h4>
+                                </div>
+                            </div>
+
+                            <th:block th:unless="${hongCoupons.size() == 0}">
+                                <div class="form-check chk-coupon-btn" th:each="coupon, couponStat : ${hongCoupons}" style="margin-bottom: 10px">
+                                    <input class="form-check-input" type="radio" name="hongCouponHasId" th:id="|hongCouponHasId-${coupon.getHongCouponHasId()}|" th:value="${coupon.getHongCouponHasId()}" th:disabled="${coupon.getHongCouponVO().getCouponRate() > totalPrice}" th:data-num="${coupon.getHongCouponVO().getCouponRate()}">
+                                    <label class="form-check-label" th:for="|hongCouponHasId-${coupon.getHongCouponHasId()}|" th:text="|${coupon.getHongCouponVO().getCouponName()} (할인율: ${#numbers.formatInteger(coupon.getHongCouponVO().getCouponRate(), 0, 'COMMA')} 원)|"></label>
+                                </div>
+                            </th:block>
+
+                        </div>
+                    </div>
+
                     <div class="col">
                         <div class="card-header">
                             <h4 style="font-weight: bold">주문 가격</h4>
                             <div class="mb-3 mt-3">
+                                <label for="totalPrice-before">총가격</label>
+                                <h3 th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}" id="totalPrice-before"></h3>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label for="coupon-price">총 할인 가격</label>
+                                <h3 id="coupon-price">0</h3>
+                            </div>
+                            <div class="mb-3 mt-3">
                                 <label for="totalPrice">총 주문 가격</label>
-                                <input type="text" class="form-control" id="totalPrice" name="totalPrice" th:value="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}" readonly/>
+                                <h3 id="totalPrice" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')}"></h3>
                             </div>
 
                             <div class="text-end">
@@ -130,6 +166,25 @@
             window.location.href = `/category/new`
         })
 
+        /* 쿠폰 라디오 버튼 클릭 이벤트 -> 클릭에 따른 총 가격값 변동 */
+        $(".chk-coupon-btn").on("change", function(e) {
+            const rate = $('input[name=hongCouponHasId]:checked').data('num');
+            setPurchasePrice(rate)
+        })
+
+        /* 쿠폰 사용 초기화 */
+        $("#coupon-chk-reset").on("click", function(e){
+            $('.form-check-input').prop('checked', false);
+            setPurchasePrice()
+        })
+
+        /* 총 가격 및 할인 가격 text setting */
+        function setPurchasePrice(price = 0){
+            $("#totalPrice-before").text(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
+            $("#coupon-price").text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
+            $("#totalPrice").text((totalPrice - price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
+        }
+
         /* 결제하기 버튼 이벤트 */
         $("#purchase-btn").on("click", function(e) {
             const orders = []
@@ -138,7 +193,8 @@
             const zipcode = $("#zipcode").val()
 
             const obj = {'userId': userId, 'city': city, 'street': street, 'zipcode': zipcode, 'hongProductId': product['productId'], 'orderCnt': orderNum}
-            // obj['hongCouponHasId'] = 7
+            if($('.form-check-input').is(':checked')) obj['hongCouponHasId'] =  $('input[name=hongCouponHasId]:checked').val()
+
             const result = confirm("해당 상품들을 결제하시겠습니까?")
             if(result) {
                 $.ajax({

@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.order.impl;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
+import hongshop.hongshop.domain.couponHas.HongCouponHas;
 import hongshop.hongshop.domain.couponHas.HongCouponHasService;
 import hongshop.hongshop.domain.deliver.DeliverStatus;
 import hongshop.hongshop.domain.deliver.HongDeliver;
@@ -106,12 +107,25 @@ public class HongOrderServiceImpl implements HongOrderService {
 
         HongUser hongUser = hongUserService.getHongUser(hongOrderFromCartDTO.getUserId()).get();
 
+        // ** if user use coupon..
+        HongOrder saveOrder = null;
+        if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
+            HongCouponHas hongCouponHas = hongCouponHasService.getHongCouponHas(hongOrderFromCartDTO.getHongCouponHasId());
+            saveOrder = HongOrder.hongOrderInsertBuilder()
+                    .hongUser(hongUser)
+                    .orderStatus(OrderStatus.CHARGED)
+                    .orderDate(TimeUtil.nowDate())
+                    .hongCouponHas(hongCouponHas)
+                    .build();
+        }else {
+            saveOrder = HongOrder.hongOrderInsertBuilder()
+                    .hongUser(hongUser)
+                    .orderStatus(OrderStatus.CHARGED)
+                    .orderDate(TimeUtil.nowDate())
+                    .build();
+        }
+
         // 1. first you need to make order
-        HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
-                .hongUser(hongUser)
-                .orderStatus(OrderStatus.CHARGED)
-                .orderDate(TimeUtil.nowDate())
-                .build();
         saveOrder = hongOrderRepository.save(saveOrder);
 
         for(HongOrderFromCartDetailsDTO detailsDTO : hongOrderFromCartDTO.getOrders()){
@@ -124,9 +138,11 @@ public class HongOrderServiceImpl implements HongOrderService {
                 throw new IllegalArgumentException("stock is smaller than order count");
             }
 
-            // ** if user use coupon..
+            // ** if use coupon use it
             Integer couponRate = 0;
-            if(hongOrderFromCartDTO.getHongCouponHasId() != null) couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
+            if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
+                couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
+            }
 
             // 3. then save order details
             Integer orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice() - couponRate;
@@ -152,12 +168,25 @@ public class HongOrderServiceImpl implements HongOrderService {
     public Long saveFromShop(HongOrderFromShopDTO hongOrderFromShopDTO) {
         HongUser hongUser = hongUserService.getHongUser(hongOrderFromShopDTO.getUserId()).get();
 
+        // ** if user use coupon..
+        HongOrder saveOrder = null;
+        if(hongOrderFromShopDTO.getHongCouponHasId() != null) {
+            HongCouponHas hongCouponHas = hongCouponHasService.getHongCouponHas(hongOrderFromShopDTO.getHongCouponHasId());
+            saveOrder = HongOrder.hongOrderInsertBuilder()
+                    .hongUser(hongUser)
+                    .orderStatus(OrderStatus.CHARGED)
+                    .orderDate(TimeUtil.nowDate())
+                    .hongCouponHas(hongCouponHas)
+                    .build();
+        }else {
+            saveOrder = HongOrder.hongOrderInsertBuilder()
+                    .hongUser(hongUser)
+                    .orderStatus(OrderStatus.CHARGED)
+                    .orderDate(TimeUtil.nowDate())
+                    .build();
+        }
+
         // 1. first you need to make order
-        HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
-                .hongUser(hongUser)
-                .orderStatus(OrderStatus.CHARGED)
-                .orderDate(TimeUtil.nowDate())
-                .build();
         saveOrder = hongOrderRepository.save(saveOrder);
 
 
@@ -170,9 +199,11 @@ public class HongOrderServiceImpl implements HongOrderService {
             throw new IllegalArgumentException("stock is smaller than order count");
         }
 
-        // ** if user use coupon..
+        // ** if use coupon use it
         Integer couponRate = 0;
-        if(hongOrderFromShopDTO.getHongCouponHasId() != null) couponRate = hongCouponHasService.useCoupon(hongOrderFromShopDTO.getHongCouponHasId());
+        if(hongOrderFromShopDTO.getHongCouponHasId() != null) {
+            couponRate = hongCouponHasService.useCoupon(hongOrderFromShopDTO.getHongCouponHasId());
+        }
 
         // 3. then save order details
         Integer orderPrice = hongOrderFromShopDTO.getOrderCnt() * product.getProductPrice() - couponRate;
