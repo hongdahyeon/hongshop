@@ -10,16 +10,16 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-08-08
 * @summary
- *              (1) findAllByDeleteAtOrderByOrderNum : 전체 조회 - 삭제여부 / 순서정렬
- *              (2) findAllByDeleteAtAndUseAtOrderByOrderNum : 전체 조회 - 삭제 여부, 사용여부 / 순서정렬
- *              (3) findAllByDeleteAtAndUseAtAndPostType : 전체 조회 - 삭제 여부, 사용여부 , 게시판 유형
+ *              (1) findAllByDeleteYnOrderByOrderNum : 전체 조회 - 삭제여부 / 순서정렬
+ *              (2) findAllByDeleteYnAndUseAtOrderByOrderNum : 전체 조회 - 삭제 여부, 사용여부 / 순서정렬
+ *              (3) findAllByDeleteYnAndUseAtAndPostType : 전체 조회 - 삭제 여부, 사용여부 , 게시판 유형
 **/
 
 public interface HongPostTypeRepository extends JpaRepository<HongPostType, Long> {
 
-    List<HongPostType> findAllByDeleteAtOrderByOrderNum(String deleteAt);
+    List<HongPostType> findAllByDeleteYnOrderByOrderNum(String deleteAt);
 
-    List<HongPostType> findAllByDeleteAtAndUseAtOrderByOrderNum(String deleteAt, String useAt);
+    List<HongPostType> findAllByDeleteYnAndUseAtOrderByOrderNum(String deleteAt, String useAt);
     
-    List<HongPostType> findAllByDeleteAtAndUseAtAndPostType(String deleteAt, String useAt, PostType postType);
+    List<HongPostType> findAllByDeleteYnAndUseAtAndPostType(String deleteAt, String useAt, PostType postType);
 }

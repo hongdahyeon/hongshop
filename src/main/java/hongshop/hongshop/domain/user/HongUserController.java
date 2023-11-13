@@ -78,4 +78,10 @@ public class HongUserController {
         return "user/review";
     }
 
+
+    @GetMapping("/coupon")
+    public String couponUser(){
+        return "user/coupon";
+    }
+
 }

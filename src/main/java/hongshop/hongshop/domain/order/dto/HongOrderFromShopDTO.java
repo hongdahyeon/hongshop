@@ -23,4 +23,7 @@ public class HongOrderFromShopDTO {
     private String city;
     private String street;
     private String zipcode;
+
+    // 사용자 등록 쿠폰 id
+    private Long hongCouponHasId;
 }

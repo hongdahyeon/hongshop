@@ -37,19 +37,19 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
 
     @Override
     public List<HongPostTypeVO> list() {
-        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtOrderByOrderNum("N");
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnOrderByOrderNum("N");
         return all.stream().map(HongPostTypeVO::new).toList();
     }
 
     @Override
     public List<HongPostTypeVO> listForHeader() {
-        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtAndUseAtOrderByOrderNum("N", "Y");
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnAndUseAtOrderByOrderNum("N", "Y");
         return all.stream().map(HongPostTypeVO::new).toList();
     }
 
     @Override
     public List<HongPostTypeVO> listWithPost() {
-        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtOrderByOrderNum("N");
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnOrderByOrderNum("N");
         return all.stream().map(type -> {
             List<HongPostVO> hongPostVOS = hongPostService.listByHongPostTypeId(type.getId());
             return new HongPostTypeVO(type, hongPostVOS);
@@ -99,7 +99,7 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
 
     @Override
     public HongPostTypeVO getQnaPost() {
-        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteAtAndUseAtAndPostType("N", "Y", PostType.QNA);
+        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnAndUseAtAndPostType("N", "Y", PostType.QNA);
         if(all.size()>= 1) {
             HongPostType hongPostType = all.get(0);
             return new HongPostTypeVO(hongPostType);

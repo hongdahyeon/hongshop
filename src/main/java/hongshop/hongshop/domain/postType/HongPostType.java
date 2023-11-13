@@ -37,8 +37,8 @@ public class HongPostType {
     @Column(name = "use_at")
     private String useAt;
 
-    @Column(name = "delete_at")
-    private String deleteAt;
+    @Column(name = "delete_yn")
+    private String deleteYn;
 
     @Column(name = "post_url")
     private String postUrl;
@@ -51,7 +51,7 @@ public class HongPostType {
         this.postType = postType;
         this.postName = postName;
         this.useAt = useAt;
-        this.deleteAt = "N";
+        this.deleteYn = "N";
         this.orderNum = orderNum;
     }
 
@@ -72,6 +72,6 @@ public class HongPostType {
     }
 
     public void deletePostType(){
-        this.deleteAt = "Y";
+        this.deleteYn = "Y";
     }
 }

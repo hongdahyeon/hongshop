@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.order;
 
+import hongshop.hongshop.domain.couponHas.HongCouponHas;
 import hongshop.hongshop.domain.user.HongUser;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,11 +38,16 @@ public class HongOrder {
     @Column(name = "order_date")
     private String orderDate;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hong_coupon_has_id")
+    private HongCouponHas hongCouponHas;
+
     @Builder(builderMethodName = "hongOrderInsertBuilder")
-    public HongOrder(HongUser hongUser, OrderStatus orderStatus, String orderDate) {
+    public HongOrder(HongUser hongUser, OrderStatus orderStatus, String orderDate, HongCouponHas hongCouponHas) {
         this.hongUser = hongUser;
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
+        this.hongCouponHas = hongCouponHas;
     }
 
     public void updateStatus(OrderStatus orderStatus){

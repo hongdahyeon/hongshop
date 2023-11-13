@@ -138,7 +138,7 @@
             const zipcode = $("#zipcode").val()
 
             const obj = {'userId': userId, 'city': city, 'street': street, 'zipcode': zipcode, 'hongProductId': product['productId'], 'orderCnt': orderNum}
-
+            // obj['hongCouponHasId'] = 7
             const result = confirm("해당 상품들을 결제하시겠습니까?")
             if(result) {
                 $.ajax({

@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.order.impl;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
+import hongshop.hongshop.domain.couponHas.HongCouponHasService;
 import hongshop.hongshop.domain.deliver.DeliverStatus;
 import hongshop.hongshop.domain.deliver.HongDeliver;
 import hongshop.hongshop.domain.deliver.HongDeliverService;
@@ -61,6 +62,7 @@ public class HongOrderServiceImpl implements HongOrderService {
     private final HongCartService hongCartService;
     private final HongUserService hongUserService;
     private final HongReviewRepository hongReviewRepository;
+    private final HongCouponHasService hongCouponHasService;
 
     @Override
     @Transactional(readOnly = false)
@@ -122,8 +124,12 @@ public class HongOrderServiceImpl implements HongOrderService {
                 throw new IllegalArgumentException("stock is smaller than order count");
             }
 
+            // ** if user use coupon..
+            Integer couponRate = 0;
+            if(hongOrderFromCartDTO.getHongCouponHasId() != null) couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
+
             // 3. then save order details
-            Integer orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice();
+            Integer orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice() - couponRate;
             hongOrderDetailService.saveOrderDetails(saveOrder, product, detailsDTO.getOrderCnt(), orderPrice);
 
             // 4. update product removing stock
@@ -164,8 +170,12 @@ public class HongOrderServiceImpl implements HongOrderService {
             throw new IllegalArgumentException("stock is smaller than order count");
         }
 
+        // ** if user use coupon..
+        Integer couponRate = 0;
+        if(hongOrderFromShopDTO.getHongCouponHasId() != null) couponRate = hongCouponHasService.useCoupon(hongOrderFromShopDTO.getHongCouponHasId());
+
         // 3. then save order details
-        Integer orderPrice = hongOrderFromShopDTO.getOrderCnt() * product.getProductPrice();
+        Integer orderPrice = hongOrderFromShopDTO.getOrderCnt() * product.getProductPrice() - couponRate;
         hongOrderDetailService.saveOrderDetails(saveOrder, product, hongOrderFromShopDTO.getOrderCnt(), orderPrice);
 
         // 4. update product removing stock
