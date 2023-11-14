@@ -6,6 +6,8 @@ import hongshop.hongshop.domain.coupon.HongCouponService;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.domain.couponHas.HongCouponHasService;
 import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
+import hongshop.hongshop.domain.couponRequest.HongCouponRequestService;
+import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
@@ -34,6 +36,7 @@ public class HongUserController {
     private final HongReviewService hongReviewService;
     private final HongCouponHasService hongCouponHasService;
     private final HongCouponService hongCouponService;
+    private final HongCouponRequestService hongCouponRequestService;
 
     @GetMapping("/myInfo")  // 회원정보 수정페이지
     public String myInfo(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
@@ -87,11 +90,12 @@ public class HongUserController {
 
     @GetMapping("/coupon")
     public String couponUser(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<HongCouponHasVO> hongCouponHasVOS = hongCouponHasService.listByHongUserWithDeleteYn(principalDetails.getUser());
-        List<HongCouponVO> couponForRequest = hongCouponService.listForUserRequest();
+        List<HongCouponHasVO> hongCouponHasVOS = hongCouponHasService.listByHongUserWithDeleteYn(principalDetails.getUser());       // 사용자가 갖고 있는 쿠폰 리스트 (삭제 제외) -> 사용한 쿠폰, 혹은 사용 가능한(승인된) 쿠폰
+        List<HongCouponVO> couponForRequest = hongCouponService.listForUserRequest();                                               // 사용자가 요청 가능한 쿠폰 리스트 (삭제 제외, 사용가능한 쿠폰)
+        List<HongCouponRequestVO> userRequestNotApproved = hongCouponRequestService.listOfUser(principalDetails.getUser());         // 사용자가 요청한 쿠폰 리스트 (삭제 제외, 사용자Id, 승인안된 요청 쿠폰)  -> 승인안된 쿠폰들
         model.addAttribute("couponLst", hongCouponHasVOS);
         model.addAttribute("couponForRequest", couponForRequest);
+        model.addAttribute("userRequestNotApproved", userRequestNotApproved);
         return "user/coupon";
     }
-
 }

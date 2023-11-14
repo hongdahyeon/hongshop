@@ -79,4 +79,12 @@ public class HongCouponRequestRestController {
         Integer successRequest = hongCouponRequestService.approveRequest(hongCouponRequestApproveLstDTO);
         return Response.ok(successRequest);
     }
+
+    @DeleteMapping("/coupon-delete-several")
+    @Operation(summary = "coupon-request delete several", description = "쿠폰 요청 여러개 삭제")
+    @ApiDocumentResponse
+    public Response deleteSeveral(@RequestParam(name = "ids", required = false) List<Long> ids) {
+        Integer deleteCnt = hongCouponRequestService.deleteSeveral(ids);
+        return Response.ok(deleteCnt);
+    }
 }

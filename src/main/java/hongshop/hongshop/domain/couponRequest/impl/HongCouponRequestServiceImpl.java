@@ -29,9 +29,10 @@ import java.util.List;
  *          (3) list : 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N
  *          (4) listOfUser : '로그인한' 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
  *          (5) delete : 쿠폰 요청 삭제
- *          (6) listByCoupon : 쿠폰-ID로 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
- *          (7) approveRequest : 사용자의 쿠폰 요청 승인
- *          (8) insertCouponHas : 'hong-coupon-has' 테이블 저장 (체인 문제로 해당 부분만 빼둠)
+ *          (6) deleteSeveral : 쿠폰 요청 여러개 삭제
+ *          (7) listByCoupon : 쿠폰-ID로 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
+ *          (8) approveRequest : 사용자의 쿠폰 요청 승인
+ *          (9) insertCouponHas : 'hong-coupon-has' 테이블 저장 (체인 문제로 해당 부분만 빼둠)
 **/
 
 @Service
@@ -95,6 +96,18 @@ public class HongCouponRequestServiceImpl implements HongCouponRequestService {
     public void delete(Long id) {
         HongCouponRequest hongCouponRequest = hongCouponRequestRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no request"));
         hongCouponRequest.deleteRequest();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Integer deleteSeveral(List<Long> ids) {
+        Integer deleteCnt = 0;
+        for(Long id : ids) {
+            HongCouponRequest hongCouponRequest = hongCouponRequestRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no request"));
+            hongCouponRequest.deleteRequest();
+            deleteCnt += 1;
+        }
+        return deleteCnt;
     }
 
     @Override

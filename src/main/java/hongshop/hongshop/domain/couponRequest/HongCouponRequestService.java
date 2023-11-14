@@ -20,6 +20,8 @@ public interface HongCouponRequestService {
 
     void delete(Long id);
 
+    Integer deleteSeveral(List<Long> ids);
+
     List<HongCouponRequestVO> listByCoupon(Long couponId);
 
     Integer approveRequest(HongCouponRequestApproveLstDTO hongCouponRequestApproveLstDTO);

@@ -126,6 +126,67 @@
             </div>
         </div>
         <!-- e: chooseCouponModal -->
+
+        <!-- s: getRequestCouponModal -->
+        <div class="modal modal-lg" id="get-request-coupon-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">내가 요청한 쿠폰들</h4>
+                        <button type="button" class="btn-close" id="close-get-request-coupon-modal-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-hover table-bordered" id="get-request-coupon-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;"></th>
+                                    <th style="width: 10%;">쿠폰이름</th>
+                                    <th style="width: 10%;">할인가격</th>
+                                    <th style="width: 10%">시작일</th>
+                                    <th style="width: 10%">종료일</th>
+                                </tr>
+                            </thead>
+                            <tbody id="get-request-coupon-tbody">
+                            <th:block th:if="${userRequestNotApproved.size() == 0}">
+                                <tr>
+                                    <td colspan="5">요청한 쿠폰이 없습니다.</td>
+                                </tr>
+                            </th:block>
+                            <th:block th:unless="${userRequestNotApproved.size() == 0}">
+                                <th:block th:each="userRequest, userRequestStat : ${userRequestNotApproved}">
+                                    <tr class="clickable-del-row">
+                                        <td style="width: 5%">
+                                            <div class="form-check" style="text-align: center; display: inline-block;">
+                                                <input class="form-check-input request-del-chk" type="checkbox" th:value="${userRequest.hongCouponRequestId}" th:id="|checkbox-${userRequest.hongCouponRequestId}|">
+                                                <label class="form-check-label" th:for="|checkbox-${userRequest.hongCouponRequestId}|"></label>
+                                            </div>
+                                        </td>
+                                        <td style="width: 10%" th:text="${userRequest.couponName}"></td>
+                                        <td style="width: 10%" th:text="${#numbers.formatInteger(userRequest.couponRate, 0, 'COMMA')}"></td>
+                                        <td style="width: 10%" th:text="${#strings.substring(userRequest.startDate, 0, 10)}"></td>
+                                        <td style="width: 10%" th:text="${#strings.substring(userRequest.endDate, 0, 10)}"></td>
+                                    </tr>
+                                </th:block>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-get-request-coupon-btn" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-outline-secondary" id="delete-request-coupon-btn">삭제하기</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: getRequestCouponModal -->
+
     </div>
 </th:block>
 
@@ -141,11 +202,19 @@
                     checkbox.prop('checked', !checkbox.prop('checked'));
                 }
             });
+
+            /* 내가 요청한 쿠폰 리스트 보는 테이블 -> row 클릭시, 해당 체크박스 클릭 */
+            $('.clickable-del-row').click(function(event) {
+                if (event.target.type !== 'checkbox') {
+                    const checkbox = $(this).find('.request-del-chk');
+                    checkbox.prop('checked', !checkbox.prop('checked'));
+                }
+            });
         })
 
         /* 자신이 요청한 쿠폰 리스트 조회 */
         $("#request-coupon-lst").on('click', function(e){
-            console.log("request-coupon-lst clicked")
+            $("#get-request-coupon-modal").modal('show')
         })
 
         /* 쿠폰 요청하기 버튼 클릭 이벤트 */
@@ -171,7 +240,7 @@
                 success: function (data) {
                     if(data.httpStatus === 200) {
                         alert(`총 ${data.message}개의 쿠폰이 요청되었습니다.`)
-                        window.location.href='/manager/coupon'
+                        window.location.href='/user/coupon'
                     }else {
                         alert("쿠폰 요청에 실패했습니다.")
                     }
@@ -182,7 +251,34 @@
             });
         })
 
-        /* 쿠폰 삭제 */
+        /* 내가 요청한 쿠폰 리스트 모달 테이블 -> 클릭된 row들 삭제 : 내가 요청한 쿠폰들이 승인되기 전에 삭제하는 부분 */
+        $("#delete-request-coupon-btn").on('click', function(e) {
+            const checked = $('.request-del-chk:checked')
+            const lst = checked.map(function(){              // 요청 id
+                return $(this).val()
+            }).get();
+            const queryString = '?ids=' + lst.join('&ids=');
+
+            $.ajax({
+                type: 'DELETE',
+                url: `/api/coupon-delete-several${queryString}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if(data.httpStatus === 200) {
+                        alert(`총 ${data.message}개를 삭제했습니다.`)
+                        window.location.href = `/user/coupon`
+                    }else {
+                        alert("쿠폰 요청 삭제에 실패했습니다.")
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error getting password:', error);
+                }
+            });
+        })
+
+        /* 쿠폰 삭제 : 내가 요청한 쿠폰들이 승인이 된 뒤에 삭제하는 부분 */
         $(".coupon-delete-btn").on("click", function(){
             const couponHasId = $(this).val()
             const useAt = $(this).attr('data-delete')
