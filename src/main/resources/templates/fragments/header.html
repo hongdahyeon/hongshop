@@ -9,7 +9,7 @@
         <div class="container-fluid">
             <div class="dropdown">
                 <button class="btn" type="button" id="mainPageBtn" onclick="location.href='/'">
-                    <img src="/assets/src/header/home.png" alt="Button Image" style="width:40px;" class="rounded-pill">
+                    <img src="/assets/src/header/home.png" alt="Button Image" style="width:50px;" class="rounded-pill">
                 </button>
             </div>
             <ul class="navbar-nav">
@@ -55,16 +55,10 @@
                 </th:block>
             </ul>
             <div class="dropdown">
-                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="/assets/src/header/profile.png" alt="Button Image" style="width:40px;" class="rounded-pill">
+                <button class="btn" type="button" id="dropdownMenuButton-shop" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/assets/src/header/shop.png" alt="Button Image" style="width:50px; background-color: white" class="rounded-pill">
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#" onclick="logout()">
-                        <i data-feather="log-out" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 로그아웃</a>
-                    </li>
-                    <li><a class="dropdown-item" href="/user/myInfo">
-                        <i data-feather="info" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 나의 정보</a>
-                    </li>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-shop">
                     <li><a class="dropdown-item" href="/user/cart">
                         <i data-feather="shopping-cart" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 장바구니</a>
                     </li>
@@ -78,8 +72,19 @@
                         <i data-feather="percent" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 나의 쿠폰</a>
                     </li>
                 </ul>
+                <button class="btn" type="button" id="dropdownMenuButton-info" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/assets/src/header/profile.png" alt="Button Image" style="width:50px;" class="rounded-pill">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-info">
+                    <li><a class="dropdown-item" href="#" onclick="logout()">
+                        <i data-feather="log-out" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 로그아웃</a>
+                    </li>
+                    <li><a class="dropdown-item" href="/user/myInfo">
+                        <i data-feather="info" class="font-medium-2 ms-50"></i>&nbsp;&nbsp;&nbsp; 나의 정보</a>
+                    </li>
+                </ul>
                 <button class="btn" type="button" id="talkButton" onclick="talkButton()" data-toggle="tooltip" data-placement="top" title="질문 톡톡">
-                    <img src="/assets/src/header/talk.png" alt="Button Image" style="width:40px;" class="rounded-pill">
+                    <img src="/assets/src/header/talk.png" alt="Button Image" style="width:50px;" class="rounded-pill">
                 </button>
             </div>
         </div>
