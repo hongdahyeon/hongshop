@@ -42,6 +42,7 @@
                         <th style="width: 10%">시작일</th>
                         <th style="width: 10%">종료일</th>
                         <th style="width: 5%">사용자지급</th>
+                        <th style="width: 5%">요청승인</th>
                         <th style="width: 10%">수정/삭제</th>
                     </tr>
                 </thead>
@@ -62,6 +63,9 @@
                             <td th:text="${coupon.getEndDate()}" style="width: 10%"></td>
                             <td style="width: 5%;">
                                 <button type="button" class="btn btn-sm btn-outline-info give-coupon-user" th:value="${coupon.getCouponId()}">지급하기</button>
+                            </td>
+                            <td style="width: 5%;">
+                                <button type="button" class="btn btn-sm btn-outline-success approve-request-user" th:value="${coupon.getCouponId()}">승인하기</button>
                             </td>
                             <td style="width: 10%">
                                 <button type="button" class="btn btn-sm btn-outline-secondary coupon-update-btn" th:value="${coupon.getCouponId()}">수정</button>
@@ -234,7 +238,6 @@
         </form>
         <!-- e: newPostTypeForm -->
 
-
         <!-- s: chooseUserModal -->
         <div class="modal modal-lg" id="choose-user-modal">
             <div class="modal-dialog modal-dialog-centered">
@@ -291,6 +294,41 @@
         </div>
         <!-- e: chooseUserModal -->
 
+        <!-- s: requestUserModal -->
+        <div class="modal modal-lg" id="request-user-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">쿠폰 요청 사용자 승인하기</h4>
+                        <button type="button" class="btn-close" id="close-request-user-modal-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-hover table-bordered" id="request-user-table">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;"></th>
+                                <th style="width: 10%;">사용자Id</th>
+                                <th style="width: 10%">사용자이름</th>
+                            </tr>
+                            </thead>
+                            <tbody id="request-user-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-request-user-btn" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-outline-info" id="request-coupon-btn">승인</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: chooseUserModal -->
 
 
     </div>
@@ -301,8 +339,9 @@
     <script th:inline="javascript">
 
        const coupons = /*[[${coupons}]]*/ [];
-       let hongCouponId = null
-       let chooseCouponId = null
+       let hongCouponId = null                  // 쿠폰 정보 수정을 위한 쿠폰 id
+       let chooseCouponId = null                // 쿠폰 사용자 지급을 위한 쿠폰 id
+       let requestCouponId = null               // 쿠폰 요청 승인을 위한 쿠폰 id
 
        $(document).ready(function() {
            /* 사용자 쿠폰 발급 유저 테이블 -> row 클릭시, 해당 체크박스 클릭 */
@@ -323,6 +362,97 @@
        $(".give-coupon-user").on('click', function(e){
            chooseCouponId = $(this).val()
            $("#choose-user-modal").modal('show')
+       })
+
+       /* 쿠폰 요청 승인하기 버튼 클릭 이벤트 */
+       $(".approve-request-user").on('click', function(e) {
+           const couponId = $(this).val()
+           requestCouponId = couponId
+           $.ajax({
+               type: 'GET',
+               url: `/api/coupon-request-by/${couponId}`,
+               dataType: 'json',
+               contentType: 'application/json',
+               success: function (data) {
+                   if(data.httpStatus === 200) {
+                       drawRequestTable(data.message)           // 쿠폰 요청 승인 테이블 만들기
+                       $("#request-user-modal").modal('show')
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error('Error getting password:', error);
+               }
+           });
+       })
+
+       /* 요청 승인 모달 테이블 만들기 */
+       function drawRequestTable(value){
+           const dom = $("#request-user-tbody")
+           dom.empty()
+
+           if(value.length !== 0) {
+               value.forEach((data, i) => {
+                   const body = `<tr class="clickable-row-request">
+                                <td style="width: 5%">
+                                    <div class="form-check" style="text-align: center; display: inline-block;">
+                                        <input class="form-check-input user-request-chk" type="checkbox" value="${data['hongCouponRequestId']}" data-user="${data['userLongId']}" id="chbox-${data['hongCouponRequestId']}">
+                                        <label class="form-check-label" for="chbox-${data['hongCouponRequestId']}"></label>
+                                    </div>
+                                </td>
+                                <td style="width: 10%">${data['userId']}</td>
+                                <td style="width: 10%">${data['userName']}</td>
+                            </tr>`
+
+                   const row = $(body)
+
+                   row.click(function (event) {                                     // row 클릭 시, 해당 체크박스 클릭 이벤트
+                       if (event.target.type !== 'checkbox') {
+                           const checkbox = row.find('.user-request-chk');
+                           checkbox.prop('checked', !checkbox.prop('checked'));
+                       }
+                   });
+
+                   dom.append(row)
+               })
+           }else {
+               const body = `<tr>
+                                <td colspan="3">사용자의 요청정보가 없습니다.</td>
+                            </tr>`
+               dom.append(body)
+           }
+       }
+
+       /* 요청승인 모달 테이블 -> 승인 버튼 클릭 이벤트  */
+       $("#request-coupon-btn").on('click', function(e){
+           const checked = $('.user-request-chk:checked')
+           const lst = checked.map(function(){              // 요청 id
+               return $(this).val()
+           }).get();
+
+           const user = checked.map(function(){             // 요청한 사용자 id
+               return $(this).data('user')
+           }).get();
+
+           const obj = {'couponId': requestCouponId, 'requestId': lst, 'userId': user}
+
+           $.ajax({
+               type: 'PUT',
+               url: `/api/coupon-request-approve`,
+               dataType: 'json',
+               data: JSON.stringify(obj),
+               contentType: 'application/json',
+               success: function (data) {
+                   if (data.httpStatus === 200) {
+                       alert(`${data.message}명의 요청을 승인했습니다.`)
+                       window.location.href = '/manager/coupon'
+                   } else {
+                       alert(`죄송합니다. 요청 승인에 실패했습니다.`)
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error('Error getting password:', error);
+               }
+           });
        })
 
        /* 사용자 쿠폰 발급 모달 창 -> 쿠폰발급 버튼 클릭 이벤트 */

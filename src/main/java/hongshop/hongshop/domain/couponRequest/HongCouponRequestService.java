@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.couponRequest;
 
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestDTO;
+import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestLstDTO;
 import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import hongshop.hongshop.domain.user.HongUser;
 
@@ -18,5 +19,7 @@ public interface HongCouponRequestService {
 
     List<HongCouponRequestVO> listByCoupon(Long couponId);
 
-    void approveRequest(Long id);
+    Integer approveRequest(HongCouponRequestLstDTO hongCouponRequestLstDTO);
+
+    void insertCouponHas(Long couponId, HongUser hongUser);
 }

@@ -17,16 +17,18 @@ import lombok.Setter;
 @Getter @Setter
 public class HongCouponRequestVO {
 
-    private Long hongCouponRequestId;
-    private String userId;
-    private String userName;
-    private Long couponId;
-    private String couponName;
-    private String requestDate;
-    private String requestApproveYn;
+    private Long hongCouponRequestId;           // request id
+    private Long userLongId;                    // 사용자 id
+    private String userId;                      // 사용자 Id
+    private String userName;                    // 사용자 이름
+    private Long couponId;                      // 쿠폰 id
+    private String couponName;                  // 쿠폰 이름
+    private String requestDate;                 // 요청 일자
+    private String requestApproveYn;            // 승인여부
 
     public HongCouponRequestVO(HongCouponRequest hongCouponRequest) {
         this.hongCouponRequestId = hongCouponRequest.getId();
+        this.userLongId = hongCouponRequest.getHongUser().getId();
         this.userId = hongCouponRequest.getHongUser().getUserId();
         this.userName = hongCouponRequest.getHongUser().getUserName();
         this.couponId = hongCouponRequest.getHongCoupon().getId();

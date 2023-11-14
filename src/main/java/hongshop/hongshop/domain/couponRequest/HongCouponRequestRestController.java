@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.couponRequest;
 
 
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestDTO;
+import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestLstDTO;
 import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -62,11 +63,11 @@ public class HongCouponRequestRestController {
         return Response.ok(list);
     }
 
-    @GetMapping("/coupon-request-approve/{id}")
+    @PutMapping("/coupon-request-approve")
     @Operation(summary = "coupon-request approve", description = "쿠폰 요청 승인")
     @ApiDocumentResponse
-    public Response requestApprove(@PathVariable Long id){
-        hongCouponRequestService.approveRequest(id);
-        return Response.ok("해당 쿠폰의 요청을 승인했습니다.");
+    public Response requestApprove(@RequestBody HongCouponRequestLstDTO hongCouponRequestLstDTO){
+        Integer successRequest = hongCouponRequestService.approveRequest(hongCouponRequestLstDTO);
+        return Response.ok(successRequest);
     }
 }
