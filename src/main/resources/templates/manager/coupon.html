@@ -41,13 +41,14 @@
                         <th style="width: 5%">사용여부</th>
                         <th style="width: 10%">시작일</th>
                         <th style="width: 10%">종료일</th>
+                        <th style="width: 5%">사용자지급</th>
                         <th style="width: 10%">수정/삭제</th>
                     </tr>
                 </thead>
                 <tbody>
                 <th:block th:if="${coupons.size() == 0}">
                     <tr>
-                        <td colspan="8">쿠폰 정보가 비어있습니다.</td>
+                        <td colspan="9">쿠폰 정보가 비어있습니다.</td>
                     </tr>
                 </th:block>
                 <th:block th:unless="${coupons.size() == 0}">
@@ -59,6 +60,9 @@
                             <td th:text="${(coupon.getUseAt() == 'Y') ? '사용' : '미사용'}" style="width: 5%"></td>
                             <td th:text="${coupon.getStartDate()}" style="width: 10%"></td>
                             <td th:text="${coupon.getEndDate()}" style="width: 10%"></td>
+                            <td style="width: 5%;">
+                                <button type="button" class="btn btn-sm btn-outline-info give-coupon-user" th:value="${coupon.getCouponId()}">지급하기</button>
+                            </td>
                             <td style="width: 10%">
                                 <button type="button" class="btn btn-sm btn-outline-secondary coupon-update-btn" th:value="${coupon.getCouponId()}">수정</button>
                                 <button type="button" class="btn btn-sm btn-outline-danger coupon-delete-btn" th:disabled="${!coupon.isUserIsEmpty()}" th:value="${coupon.getCouponId()}">삭제</button>
@@ -230,6 +234,65 @@
         </form>
         <!-- e: newPostTypeForm -->
 
+
+        <!-- s: chooseUserModal -->
+        <div class="modal modal-lg" id="choose-user-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">쿠폰등록할 사용자 찾기</h4>
+                        <button type="button" class="btn-close" id="close-choose-user-modal-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-hover table-bordered" id="choose-user-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;"></th>
+                                    <th style="width: 10%;">사용자Id</th>
+                                    <th style="width: 10%">사용자이름</th>
+                                </tr>
+                            </thead>
+                            <tbody id="choose-user-tbody">
+                                <th:block th:if="${userList.size() == 0}">
+                                    <tr>
+                                        <td colspan="3">사용정보가 없습니다.</td>
+                                    </tr>
+                                </th:block>
+                                <th:block th:unless="${userList.size() == 0}">
+                                    <th:block th:each="user, userStat : ${userList}">
+                                        <tr class="clickable-row">
+                                            <td style="width: 5%">
+                                                <div class="form-check" style="text-align: center; display: inline-block;">
+                                                    <input class="form-check-input user-chk" type="checkbox" th:value="${user.id}" th:id="|checkbox-${user.id}|">
+                                                    <label class="form-check-label" th:for="|checkbox-${user.id}|"></label>
+                                                </div>
+                                            </td>
+                                            <td th:text="${user.userId}" style="width: 10%"></td>
+                                            <td th:text="${user.userName}" style="width: 10%"></td>
+                                        </tr>
+                                    </th:block>
+                                </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-choose-user-btn" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-outline-info" id="give-coupon-btn">쿠폰발급</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: chooseUserModal -->
+
+
+
     </div>
 </th:block>
 
@@ -239,10 +302,55 @@
 
        const coupons = /*[[${coupons}]]*/ [];
        let hongCouponId = null
+       let chooseCouponId = null
+
+       $(document).ready(function() {
+           /* 사용자 쿠폰 발급 유저 테이블 -> row 클릭시, 해당 체크박스 클릭 */
+           $('.clickable-row').click(function(event) {
+               if (event.target.type !== 'checkbox') {
+                   const checkbox = $(this).find('.user-chk');
+                   checkbox.prop('checked', !checkbox.prop('checked'));
+               }
+           });
+       })
 
        /* 새로운 쿠폰 등록하기 */
        $("#new-coupon").on('click', function(e){
          $("#new-coupon-modal").modal('show')
+       })
+
+       /* 지급하기 버튼 클릭 이벤트 */
+       $(".give-coupon-user").on('click', function(e){
+           chooseCouponId = $(this).val()
+           $("#choose-user-modal").modal('show')
+       })
+
+       /* 사용자 쿠폰 발급 모달 창 -> 쿠폰발급 버튼 클릭 이벤트 */
+       $("#give-coupon-btn").on('click', function(e) {
+           const checked = $('.user-chk:checked')
+           let lst = checked.map(function(){
+               return $(this).val()
+           }).get();
+
+           const obj = {'couponId': chooseCouponId, 'userId': lst}      // 체크된 사용자들에게 쿠폰 발급
+           $.ajax({
+               type: 'POST',
+               url: `/api/coupon-has-user`,
+               dataType: 'json',
+               data: JSON.stringify(obj),
+               contentType: 'application/json',
+               success: function (data) {
+                   if (data.httpStatus === 200) {
+                       alert(`총 ${data.message}명에게 ${chooseCouponId}번 쿠폰이 지급되었습니다.`)
+                       window.location.href = '/manager/coupon'
+                   } else {
+                       alert(`죄송합니다. 쿠폰 발급에 실패했습니다.`)
+                   }
+               },
+               error: function (xhr, status, error) {
+                   console.error('Error getting password:', error);
+               }
+           });
        })
 
        /* 쿠폰 삭제하기 */

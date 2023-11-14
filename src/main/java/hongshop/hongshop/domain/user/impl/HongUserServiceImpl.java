@@ -6,6 +6,7 @@ import hongshop.hongshop.domain.user.HongUserRepository;
 import hongshop.hongshop.domain.user.HongUserService;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.mail.EmailService;
 import hongshop.hongshop.global.util.StringUtil;
@@ -36,6 +37,7 @@ import java.util.Optional;
  *           (10) initialPassword : 사용자 비번 초기화 -> 이메일 전송
  *           (11) findUserId : 사용자 이름 & 이메일로 아이디 찾기 -> 이메일 전송
  *           (12) updateUserNonLocked : 사용자 계정 정지 초기화
+ *           (13) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
  **/
 
 @Service
@@ -155,5 +157,11 @@ public class HongUserServiceImpl implements HongUserService {
     public Address getAddress(Long id) {
         HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         return hongUser.getAddress();
+    }
+
+    @Override
+    public List<HongUserCouponVO> getUserListForCoupon() {
+        List<HongUser> hongUsers = hongUserRepository.findAll();
+        return hongUsers.stream().map(HongUserCouponVO::new).toList();
     }
 }

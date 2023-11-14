@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.user;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
 
 import java.util.List;
@@ -43,4 +44,6 @@ public interface HongUserService {
     void updateUserNonLocked(String userId);
 
     Address getAddress(Long id);
+
+    List<HongUserCouponVO> getUserListForCoupon();
 }

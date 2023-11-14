@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
+import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -82,4 +82,11 @@ public class HongUserRestController {
         return Response.ok("해당 사용자의 계정 정지가 풀렸습니다.");
     }
 
+    @GetMapping("/user-coupon")
+    @Operation(summary = "get list of user for coupon", description = "쿠폰 지급을 위한 유저 리스트 조회")
+    @ApiDocumentResponse
+    public Response userForCoupon(){
+        List<HongUserCouponVO> userListForCoupon = hongUserService.getUserListForCoupon();
+        return Response.ok(userListForCoupon);
+    }
 }

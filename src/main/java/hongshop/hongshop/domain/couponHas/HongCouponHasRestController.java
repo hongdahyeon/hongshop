@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.couponHas;
 
 import hongshop.hongshop.domain.couponHas.dto.HongCouponHasDTO;
+import hongshop.hongshop.domain.couponHas.dto.HongCouponHasLstDTO;
 import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -27,6 +28,14 @@ public class HongCouponHasRestController {
     public Response save(@RequestBody HongCouponHasDTO hongCouponHasDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long joinId = hongCouponHasService.join(principalDetails.getUser(), hongCouponHasDTO);
         return Response.ok(joinId);
+    }
+
+    @PostMapping("/coupon-has-user")
+    @Operation(summary = "insert coupon-has by userLst", description = "사용자가 갖는 쿠폰 저장하기 - 사용자 리스트로 해당 사용자들 전부 발급")
+    @ApiDocumentResponse
+    public Response saveByUser(@RequestBody HongCouponHasLstDTO hongCouponHasLstDTO) {
+        Integer saveUser = hongCouponHasService.joinAll(hongCouponHasLstDTO);
+        return Response.ok(saveUser);
     }
 
     @GetMapping("/coupon-has")

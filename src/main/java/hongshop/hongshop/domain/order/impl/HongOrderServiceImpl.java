@@ -128,6 +128,12 @@ public class HongOrderServiceImpl implements HongOrderService {
         // 1. first you need to make order
         saveOrder = hongOrderRepository.save(saveOrder);
 
+        // ** if use coupon use it
+        Integer couponRate = 0;
+        if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
+            couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
+        }
+
         for(HongOrderFromCartDetailsDTO detailsDTO : hongOrderFromCartDTO.getOrders()){
             // 2. find product by productId first
             HongProduct product = hongProductService.productInfo(detailsDTO.getHongProductId());
@@ -138,14 +144,21 @@ public class HongOrderServiceImpl implements HongOrderService {
                 throw new IllegalArgumentException("stock is smaller than order count");
             }
 
-            // ** if use coupon use it
-            Integer couponRate = 0;
-            if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
-                couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
+            // 3. then save order details
+            // - order from cart, user can order several product at once
+            Integer orderPrice = 0;
+            if(couponRate != 0) {
+                if (detailsDTO.getOrderCnt() * product.getProductPrice() > couponRate) {
+                    orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice() - couponRate;
+                    couponRate = 0;
+                } else if (detailsDTO.getOrderCnt() * product.getProductPrice() <= couponRate) {
+                    orderPrice = 0;
+                    couponRate = couponRate - (detailsDTO.getOrderCnt() * product.getProductPrice());
+                }
+            } else {
+                orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice();
             }
 
-            // 3. then save order details
-            Integer orderPrice = detailsDTO.getOrderCnt() * product.getProductPrice() - couponRate;
             hongOrderDetailService.saveOrderDetails(saveOrder, product, detailsDTO.getOrderCnt(), orderPrice);
 
             // 4. update product removing stock
@@ -206,6 +219,7 @@ public class HongOrderServiceImpl implements HongOrderService {
         }
 
         // 3. then save order details
+        // -> order from shop, user can only order 1 product at once
         Integer orderPrice = hongOrderFromShopDTO.getOrderCnt() * product.getProductPrice() - couponRate;
         hongOrderDetailService.saveOrderDetails(saveOrder, product, hongOrderFromShopDTO.getOrderCnt(), orderPrice);
 

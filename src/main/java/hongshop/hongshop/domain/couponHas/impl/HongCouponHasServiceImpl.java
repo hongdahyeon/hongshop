@@ -6,10 +6,13 @@ import hongshop.hongshop.domain.couponHas.HongCouponHas;
 import hongshop.hongshop.domain.couponHas.HongCouponHasRepository;
 import hongshop.hongshop.domain.couponHas.HongCouponHasService;
 import hongshop.hongshop.domain.couponHas.dto.HongCouponHasDTO;
+import hongshop.hongshop.domain.couponHas.dto.HongCouponHasLstDTO;
 import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
 import hongshop.hongshop.domain.couponHist.HongCouponHistService;
 import hongshop.hongshop.domain.couponHist.dto.HongCouponHistDTO;
 import hongshop.hongshop.domain.user.HongUser;
+import hongshop.hongshop.domain.user.HongUserRepository;
+import hongshop.hongshop.domain.user.HongUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +26,14 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-11-13
 * @summary      (1) join : 해당 로그인 사용자에 대해 쿠폰 등록
- *              (2) list : 전체 사용자의 쿠폰 조회 -> 삭제 여부 N
- *              (3) view : 사용자의 쿠폰 등록 단건 조회
- *              (4) listByHongUser : 현재 로그인한 사용자의 쿠폰 등록 리스트 조회 -> 삭제 여부 N
+ *              (2) joinAll : 여러 사용자들에 대해 -> 한번에 쿠폰 등록하기
+ *              (3) list : 전체 사용자의 쿠폰 조회 -> 삭제 여부 N
+ *              (4) view : 사용자의 쿠폰 등록 단건 조회
+ *              (5) listByHongUser : 현재 로그인한 사용자의 쿠폰 등록 리스트 조회 -> 삭제 여부 N
  *                  - 이때 쿠폰에 대해 쿠폰의 삭제값이 N, 사용값이 Y
- *              (5) delete : 쿠폰 등록 단건 삭제
- *              (6) useCoupon : 쿠폰 사용하기
- *              (7) getHongCouponHas : 사용자 쿠폰 등록 단건 조회 -> return entity
+ *              (6) delete : 쿠폰 등록 단건 삭제
+ *              (7) useCoupon : 쿠폰 사용하기
+ *              (8) getHongCouponHas : 사용자 쿠폰 등록 단건 조회 -> return entity
 **/
 
 
@@ -41,6 +45,7 @@ public class HongCouponHasServiceImpl implements HongCouponHasService {
     private final HongCouponHasRepository hongCouponHasRepository;
     private final HongCouponService hongCouponService;
     private final HongCouponHistService hongCouponHistService;
+    private final HongUserRepository hongUserRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -54,6 +59,25 @@ public class HongCouponHasServiceImpl implements HongCouponHasService {
 
         HongCouponHas save = hongCouponHasRepository.save(hongCouponHas);
         return save.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Integer joinAll(HongCouponHasLstDTO hongCouponHasLstDTO) {
+        HongCoupon hongCoupon = hongCouponService.getHongCoupon(hongCouponHasLstDTO.getCouponId());
+
+        Integer saveUser = 0;
+        for (Long userId: hongCouponHasLstDTO.getUserId()) {
+            HongUser hongUser = hongUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+            HongCouponHas hongCouponHas = HongCouponHas.hongCouponHasInsert()
+                    .hongCoupon(hongCoupon)
+                    .hongUser(hongUser)
+                    .build();
+
+            hongCouponHasRepository.save(hongCouponHas);
+            saveUser += 1;
+        }
+        return saveUser;
     }
 
     @Override
