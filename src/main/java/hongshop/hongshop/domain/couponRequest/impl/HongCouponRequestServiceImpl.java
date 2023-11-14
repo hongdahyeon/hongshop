@@ -8,6 +8,7 @@ import hongshop.hongshop.domain.couponRequest.HongCouponRequest;
 import hongshop.hongshop.domain.couponRequest.HongCouponRequestRepository;
 import hongshop.hongshop.domain.couponRequest.HongCouponRequestService;
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestDTO;
+import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestApproveLstDTO;
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestLstDTO;
 import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import hongshop.hongshop.domain.user.HongUser;
@@ -24,12 +25,13 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-11-14
 * @summary  (1) join : 사용자의 쿠폰 요청 저장
- *          (2) list : 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N
- *          (3) listOfUser : '로그인한' 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
- *          (4) delete : 쿠폰 요청 삭제
- *          (5) listByCoupon : 쿠폰-ID로 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
- *          (6) approveRequest : 사용자의 쿠폰 요청 승인
- *          (7) insertCouponHas : 'hong-coupon-has' 테이블 저장 (체인 문제로 해당 부분만 빼둠)
+ *          (2) joinAll : 쿠폰리스트에 대해 각각 요청 저장
+ *          (3) list : 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N
+ *          (4) listOfUser : '로그인한' 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
+ *          (5) delete : 쿠폰 요청 삭제
+ *          (6) listByCoupon : 쿠폰-ID로 사용자의 쿠폰 요청 전체 조회 -> 삭제여부 N, 요청승인여부 N
+ *          (7) approveRequest : 사용자의 쿠폰 요청 승인
+ *          (8) insertCouponHas : 'hong-coupon-has' 테이블 저장 (체인 문제로 해당 부분만 빼둠)
 **/
 
 @Service
@@ -55,6 +57,25 @@ public class HongCouponRequestServiceImpl implements HongCouponRequestService {
 
         HongCouponRequest save = hongCouponRequestRepository.save(hongCouponRequest);
         return save.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public Integer joinAll(HongCouponRequestLstDTO hongCouponRequestLstDTO, HongUser hongUser) {
+        Integer joinCnt = 0;
+
+        for (Long couponId : hongCouponRequestLstDTO.getCouponId()) {
+            HongCoupon hongCoupon = hongCouponRepository.findById(couponId).orElseThrow(() -> new IllegalArgumentException("there is no coupon"));
+            HongCouponRequest hongCouponRequest = HongCouponRequest.hongCouponRequestInsert()
+                    .hongCoupon(hongCoupon)
+                    .hongUser(hongUser)
+                    .build();
+
+            HongCouponRequest save = hongCouponRequestRepository.save(hongCouponRequest);
+            joinCnt += 1;
+        }
+
+        return joinCnt;
     }
 
     @Override
@@ -84,19 +105,19 @@ public class HongCouponRequestServiceImpl implements HongCouponRequestService {
 
     @Override
     @Transactional(readOnly = false)
-    public Integer approveRequest(HongCouponRequestLstDTO hongCouponRequestLstDTO) {
+    public Integer approveRequest(HongCouponRequestApproveLstDTO hongCouponRequestApproveLstDTO) {
 
         Integer successRequest = 0;
 
-        for (int i = 0; i < hongCouponRequestLstDTO.getRequestId().size(); i++) {
-            Long requestId = hongCouponRequestLstDTO.getRequestId().get(i);
-            Long userId = hongCouponRequestLstDTO.getUserId().get(i);
+        for (int i = 0; i < hongCouponRequestApproveLstDTO.getRequestId().size(); i++) {
+            Long requestId = hongCouponRequestApproveLstDTO.getRequestId().get(i);
+            Long userId = hongCouponRequestApproveLstDTO.getUserId().get(i);
 
             HongCouponRequest hongCouponRequest = hongCouponRequestRepository.findById(requestId).orElseThrow(() -> new IllegalArgumentException("there is no request"));
             HongUser hongUser = hongUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
 
             hongCouponRequest.approveRequest();
-            this.insertCouponHas(hongCouponRequestLstDTO.getCouponId(), hongUser);
+            this.insertCouponHas(hongCouponRequestApproveLstDTO.getCouponId(), hongUser);
             successRequest += 1;
         }
 

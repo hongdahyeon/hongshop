@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.couponRequest;
 
 
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestDTO;
+import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestApproveLstDTO;
 import hongshop.hongshop.domain.couponRequest.dto.HongCouponRequestLstDTO;
 import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -29,6 +30,14 @@ public class HongCouponRequestRestController {
     public Response save(@RequestBody HongCouponRequestDTO hongCouponRequestDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long joinId = hongCouponRequestService.join(hongCouponRequestDTO, principalDetails.getUser());
         return Response.ok(joinId);
+    }
+
+    @PostMapping("/coupon-request-all")
+    @Operation(summary = "insert coupon-request in lst", description = "사용자의 쿠폰 요청 저장하기 쿠폰 여러개를 한번에 저장")
+    @ApiDocumentResponse
+    public Response saveAll(@RequestBody HongCouponRequestLstDTO hongCouponRequestLstDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Integer joinCnt = hongCouponRequestService.joinAll(hongCouponRequestLstDTO, principalDetails.getUser());
+        return Response.ok(joinCnt);
     }
 
     @GetMapping("/coupon-request")
@@ -66,8 +75,8 @@ public class HongCouponRequestRestController {
     @PutMapping("/coupon-request-approve")
     @Operation(summary = "coupon-request approve", description = "쿠폰 요청 승인")
     @ApiDocumentResponse
-    public Response requestApprove(@RequestBody HongCouponRequestLstDTO hongCouponRequestLstDTO){
-        Integer successRequest = hongCouponRequestService.approveRequest(hongCouponRequestLstDTO);
+    public Response requestApprove(@RequestBody HongCouponRequestApproveLstDTO hongCouponRequestApproveLstDTO){
+        Integer successRequest = hongCouponRequestService.approveRequest(hongCouponRequestApproveLstDTO);
         return Response.ok(successRequest);
     }
 }

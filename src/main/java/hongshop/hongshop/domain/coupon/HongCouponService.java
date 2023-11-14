@@ -13,6 +13,8 @@ public interface HongCouponService {
 
     List<HongCouponVO> list();
 
+    List<HongCouponVO> listForUserRequest();
+
     List<HongCouponVO> listWithChkUser();
 
     HongCouponVO view(Long id);

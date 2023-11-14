@@ -7,4 +7,6 @@ import java.util.List;
 public interface HongCouponRepository extends JpaRepository<HongCoupon, Long> {
 
     List<HongCoupon> findAllByDeleteYnIs(String deleteYn);
+
+    List<HongCoupon> findAllByDeleteYnAndUseAt(String deleteYn, String useAt);
 }

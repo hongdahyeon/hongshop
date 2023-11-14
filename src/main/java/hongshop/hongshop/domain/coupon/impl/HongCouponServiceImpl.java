@@ -25,15 +25,17 @@ import java.util.List;
 * @date 2023-11-13
 * @summary  (1) join : 쿠폰 저장
  *          (2) list : 쿠폰 전체 리스트 조회 ->  삭제 여부 N
- *          (3) view : 쿠폰 단건 조회
- *          (4) update : 쿠폰 수정
- *          (5) delete : 쿠폰 삭제
- *          (6) getHongCoupon : 쿠폰 단건 조회 -> return entity
- *          (7) listWithChkUser : 쿠폰 전체 리스트 조회 -> 삭제여부 N
+ *          (3) listForUserRequest : 쿠폰 전체 리스트 조회 -> 삭제여부 N, 사용여부 Y
+ *              -> 사용자 화면에서 쿠폰 요청하기 모달에 띄울 쿠폰 리스트 조회용
+ *          (4) view : 쿠폰 단건 조회
+ *          (5) update : 쿠폰 수정
+ *          (6) delete : 쿠폰 삭제
+ *          (7) getHongCoupon : 쿠폰 단건 조회 -> return entity
+ *          (8) listWithChkUser : 쿠폰 전체 리스트 조회 -> 삭제여부 N
  *              - 해당 쿠폰을 아직 사용하지 않고 갖고 있는 사람이 있는지 체크 (없다면 해당 쿠폰은 삭제 가능)
- *          (8) couponAndUserHist : 쿠폰 전체 조회 -> 삭제여부 N
+ *          (9) couponAndUserHist : 쿠폰 전체 조회 -> 삭제여부 N
  *              - 이떄, 해당 쿠폰을 사용한 사용자 이력 리스트도 함께 조회
- *          (9) couponAndRequest : 쿠폰 요청 전체 조회 -> 삭제여부 N
+ *          (10) couponAndRequest : 쿠폰 요청 전체 조회 -> 삭제여부 N
  *              - 이때, 해당 쿠폰을 요청한 사용자들 리스트도 함께 조회
 **/
 
@@ -66,6 +68,12 @@ public class HongCouponServiceImpl implements HongCouponService {
     @Override
     public List<HongCouponVO> list() {
         List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
+        return all.stream().map(HongCouponVO::new).toList();
+    }
+
+    @Override
+    public List<HongCouponVO> listForUserRequest() {
+        List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnAndUseAt("N", "Y");
         return all.stream().map(HongCouponVO::new).toList();
     }
 
