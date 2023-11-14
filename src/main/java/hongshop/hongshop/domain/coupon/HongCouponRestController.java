@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.coupon;
 
 
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponGroupRequestVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -58,6 +59,14 @@ public class HongCouponRestController {
     public Response delete(@PathVariable Long id) {
         hongCouponService.delete(id);
         return Response.ok("해당 쿠폰을 삭제하였습니다.");
+    }
+
+    @GetMapping("/coupon-and-request")
+    @Operation(summary = "쿠폰 하위, 쿠폰 요청 리스트 조회", description = "쿠폰 하위, 쿠폰 요청 리스트 조회")
+    @ApiDocumentResponse
+    public Response couponAndRequest(){
+        List<HongCouponGroupRequestVO> list = hongCouponService.couponAndRequest();
+        return Response.ok(list);
     }
 
 }
