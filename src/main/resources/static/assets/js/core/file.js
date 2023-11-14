@@ -55,6 +55,7 @@ class File{
         const dom = $(`#${this._drawId}`)
         dom.empty()
         this._fileGroupId = null
+        this._deleteFile = []
         return this
     }
     trashFile(id, element) {
