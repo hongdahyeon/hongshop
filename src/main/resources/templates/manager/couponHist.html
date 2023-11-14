@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<th:block layout:fragment="head">
+    <title>HONG SHOP</title>
+    <style>
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        tr {
+            text-align: center;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="mt-3">
+        <div class="card-header" style="margin-bottom: 10px">
+            <div class="card-text d-flex justify-content-between">
+                <div class="text-start">
+                    <h3>쿠폰 사용 기록</h3>
+                </div>
+                <div class="text-end"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered" id="couponHist-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;" rowspan="2">쿠폰ID</th>
+                        <th style="width: 10%;" rowspan="2">쿠폰이름</th>
+                        <th style="width: 5%;" rowspan="2">할인가격</th>
+                        <th style="width: 30%" colspan="2">쿠폰 사용자 이력</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 5%;">사용Id</th>
+                        <th style="width: 10%;">사용날짜</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <th:block th:if="${couponHist.size() == 0}">
+                    <tr>
+                        <td colspan="5">쿠폰 사용 이력이 비어있습니다.</td>
+                    </tr>
+                </th:block>
+                <th:block th:unless="${couponHist.size() == 0}">
+                    <th:block th:each="coupon, couponStat : ${couponHist}">
+                        <tr>
+                            <th:block th:if="${coupon.histUserVOList.size() >= 1}">
+                                <td th:text="${coupon.couponId}" style="width: 5%" th:rowspan="${coupon.histUserVOList.size()}"></td>
+                                <td th:text="${coupon.couponName}" style="width: 10%;" th:rowspan="${coupon.histUserVOList.size()}"></td>
+                                <td th:text="${#numbers.formatInteger(coupon.couponRate, 0, 'COMMA')}" style="width: 5%;" th:rowspan="${coupon.histUserVOList.size()}"></td>
+                                <td th:text="${coupon.histUserVOList.get(0).userId}" style="width: 5%;"></td>
+                                <td th:text="${#strings.substring(coupon.histUserVOList.get(0).useDate, 0, 10)}" style="width: 10%;"></td>
+                            </th:block>
+                            <th:block th:unless="${coupon.histUserVOList.size() >= 1}">
+                                <td th:text="${coupon.couponId}" style="width: 5%" ></td>
+                                <td th:text="${coupon.couponName}" style="width: 10%;"></td>
+                                <td th:text="${coupon.couponRate}" style="width: 5%;"></td>
+                                <td colspan="2">사용이력이 없습니다.</td>
+                            </th:block>
+                        </tr>
+                        <th:block th:if="${coupon.histUserVOList.size() > 1}">
+                            <th:block th:each="userHist , userHistStat : ${coupon.histUserVOList}">
+                                <th:block th:unless="${userHistStat.first}">
+                                    <tr>
+                                        <td th:text="${userHist.userId}" style="width: 5%;"></td>
+                                        <td th:text="${#strings.substring(userHist.useDate, 0, 10)}" style="width: 10%;"></td>
+                                    </tr>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript"></script>
+</th:block>
+
+</html>

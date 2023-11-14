@@ -4,8 +4,11 @@ import hongshop.hongshop.domain.coupon.HongCoupon;
 import hongshop.hongshop.domain.coupon.HongCouponRepository;
 import hongshop.hongshop.domain.coupon.HongCouponService;
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.domain.couponHas.HongCouponHasRepository;
+import hongshop.hongshop.domain.couponHist.HongCouponHistService;
+import hongshop.hongshop.domain.couponHist.vo.HongCouponHistUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,8 @@ import java.util.List;
  *          (6) getHongCoupon : 쿠폰 단건 조회 -> return entity
  *          (7) listWithChkUser : 쿠폰 전체 리스트 조회 -> 삭제여부 N
  *              - 해당 쿠폰을 아직 사용하지 않고 갖고 있는 사람이 있는지 체크 (없다면 해당 쿠폰은 삭제 가능)
+ *           (8) couponAndUserHist : 쿠폰 전체 조회 -> 삭제여주 N
+ *              - 이떄, 해당 쿠폰을 사용한 사용자 이력 리스트도 함께 조회
 **/
 
 @Service
@@ -34,6 +39,7 @@ public class HongCouponServiceImpl implements HongCouponService {
 
     private final HongCouponRepository hongCouponRepository;
     private final HongCouponHasRepository hongCouponHasRepository;
+    private final HongCouponHistService hongCouponHistService;
 
     @Override
     @Transactional(readOnly = false)
@@ -90,5 +96,14 @@ public class HongCouponServiceImpl implements HongCouponService {
     @Override
     public HongCoupon getHongCoupon(Long id) {
         return hongCouponRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no coupon"));
+    }
+
+    @Override
+    public List<HongCouponGroupHistVO> couponAndUserHist() {
+        List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
+        return all.stream().map(hongCoupon -> {
+            List<HongCouponHistUserVO> hongCouponHistUserVOS = hongCouponHistService.listByCouponId(hongCoupon.getId());
+            return new HongCouponGroupHistVO(hongCoupon, hongCouponHistUserVOS);
+        }).toList();
     }
 }

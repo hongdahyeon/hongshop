@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.coupon;
 
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface HongCouponService {
     void delete(Long id);
 
     HongCoupon getHongCoupon(Long id);
+
+    List<HongCouponGroupHistVO> couponAndUserHist();
 }
