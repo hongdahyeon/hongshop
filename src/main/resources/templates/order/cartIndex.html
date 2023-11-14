@@ -147,10 +147,11 @@
 
         $(document).ready(function(e) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            if(ids !== null) alert("선택하신 상품들에 대한 정보 및 주소정보를 확인해주세요.")       // 만일 장바구니 선택 없이 넘어오게되면 내보내기
+            if(ids !== null) Util.alert("선택하신 상품들에 대한 정보 및 주소정보를 확인해주세요.", 'w')       // 만일 장바구니 선택 없이 넘어오게되면 내보내기
             else {
-                alert("잘못된 접근입니다.")
-                window.location.href = "/"
+                Util.alert("잘못된 접근입니다.", 'w').then(() => {
+                    window.location.href = "/"
+                })
             }
         })
 
@@ -175,9 +176,9 @@
 
         /* 총 가격 및 할인 가격 text setting */
         function setPurchasePrice(price = 0){
-            $("#totalPrice-before").text(totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
-            $("#coupon-price").text(price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
-            $("#totalPrice").text((totalPrice - price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','))
+            $("#totalPrice-before").text(Util.priceString(totalPrice))
+            $("#coupon-price").text(Util.priceString(price))
+            $("#totalPrice").text(Util.priceString(totalPrice - price))
         }
 
         /* 결제하기 버튼 이벤트 */
@@ -194,27 +195,29 @@
             const obj = {'userId': userId, 'city': city, 'street': street, 'zipcode': zipcode, 'orders': orders}
             if($('.form-check-input').is(':checked')) obj['hongCouponHasId'] =  $('input[name=hongCouponHasId]:checked').val()
 
-            const result = confirm("해당 상품들을 결제하시겠습니까?")
-            if(result) {
-                $.ajax({
-                    type: 'POST',
-                    url: `/api/order-from-cart`,
-                    dataType: 'json',
-                    data: JSON.stringify(obj),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.httpStatus === 200) {
-                            alert(`${data.message}번으로 주문되었습니다.`)
-                            window.location.href = '/user/order'
-                        } else {
-                            alert(`죄송합니다. 해당 상품들중 현재 재고가 없는 상품이 있어 주문에 실패하였습니다.`)
+            Util.confirm("해당 상품들을 결제하시겠습니까?").then((isOk) => {
+                if(isOk) {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/api/order-from-cart`,
+                        dataType: 'json',
+                        data: JSON.stringify(obj),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if (data.httpStatus === 200) {
+                                Util.alert(`${data.message}번으로 주문되었습니다.`).then(() => {
+                                    window.location.href = '/user/order'
+                                })
+                            } else {
+                                Util.alert(`죄송합니다. 해당 상품들중 현재 재고가 없는 상품이 있어 주문에 실패하였습니다.`, 'w')
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
-                    }
-                });
-            }
+                    });
+                }
+            })
         })
 
         /* 배송 주문 주소 input-text disable, 버튼 show & hide */
@@ -249,31 +252,33 @@
                 }else{
                     event.preventDefault();
 
-                    const result = confirm("현재 주소를 사용자 주소 정보로 수정하시겠습니까?")
-                    if(result) {
-                        FormDataToObj.getParameter("update-address-form").then(obj => {
-                            $.ajax({
-                                type: 'PUT',
-                                url: `/api/user`,
-                                dataType: 'json',
-                                data: JSON.stringify(obj),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if (data.httpStatus === 200) {
-                                        alert("주소 정보를 변경하였습니다.")
-                                        addressChanging(true)
-                                    } else {
-                                        alert("주소 변경에 실패하였습니다.")
+                    Util.confirm("현재 주소를 사용자 주소 정보로 수정하시겠습니까?").then((isOk) => {
+                        if(isOk) {
+                            FormDataToObj.getParameter("update-address-form").then(obj => {
+                                $.ajax({
+                                    type: 'PUT',
+                                    url: `/api/user`,
+                                    dataType: 'json',
+                                    data: JSON.stringify(obj),
+                                    contentType: 'application/json',
+                                    success: function (data) {
+                                        if (data.httpStatus === 200) {
+                                            Util.alert("주소 정보를 변경하였습니다.").then(() => {
+                                                addressChanging(true)
+                                            })
+                                        } else {
+                                            Util.alert("주소 변경에 실패하였습니다.", 'w')
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error getting password:', error);
                                     }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
-                                }
-                            });
-                        })
-                    } else {
-                        addressChanging(true)
-                    }
+                                });
+                            })
+                        } else {
+                            addressChanging(true)
+                        }
+                    })
                 }
             });
         });

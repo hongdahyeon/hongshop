@@ -229,26 +229,29 @@
                 return $(this).val()
             }).get();
 
-            const obj = {'couponId': lst}
-
-            $.ajax({
-                type: 'POST',
-                url: `/api/coupon-request-all`,             // 리스트로된 쿠폰에 대해 모두 요청한다.
-                dataType: 'json',
-                data: JSON.stringify(obj),
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        alert(`총 ${data.message}개의 쿠폰이 요청되었습니다.`)
-                        window.location.href='/user/coupon'
-                    }else {
-                        alert("쿠폰 요청에 실패했습니다.")
+            if(lst.length === 0) Util.alert('요청할 쿠폰을 선택해주세요.', 'w')
+            else {
+                const obj = {'couponId': lst}
+                $.ajax({
+                    type: 'POST',
+                    url: `/api/coupon-request-all`,             // 리스트로된 쿠폰에 대해 모두 요청한다.
+                    dataType: 'json',
+                    data: JSON.stringify(obj),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.httpStatus === 200) {
+                            Util.alert(`총 ${data.message}개의 쿠폰이 요청되었습니다.`).then(() => {
+                                window.location.href = '/user/coupon'
+                            })
+                        } else {
+                            Util.alert("쿠폰 요청에 실패했습니다.", 'w')
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
-            });
+                });
+            }
         })
 
         /* 내가 요청한 쿠폰 리스트 모달 테이블 -> 클릭된 row들 삭제 : 내가 요청한 쿠폰들이 승인되기 전에 삭제하는 부분 */
@@ -257,46 +260,22 @@
             const lst = checked.map(function(){              // 요청 id
                 return $(this).val()
             }).get();
-            const queryString = '?ids=' + lst.join('&ids=');
 
-            $.ajax({
-                type: 'DELETE',
-                url: `/api/coupon-delete-several${queryString}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        alert(`총 ${data.message}개를 삭제했습니다.`)
-                        window.location.href = `/user/coupon`
-                    }else {
-                        alert("쿠폰 요청 삭제에 실패했습니다.")
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
-            });
-        })
-
-        /* 쿠폰 삭제 : 내가 요청한 쿠폰들이 승인이 된 뒤에 삭제하는 부분 */
-        $(".coupon-delete-btn").on("click", function(){
-            const couponHasId = $(this).val()
-            const useAt = $(this).attr('data-delete')
-
-            const msg = (useAt === 'N') ? '해당 쿠폰은 아직 사용 전입니다.' + '\n' + '해당 쿠폰을 삭제하시겠습니까?' : '해당 쿠폰을 삭제하시겠습니까?'
-            const result = confirm(`${msg}`)
-            if(result) {
+            if(lst.length === 0) Util.alert('삭제할 요청을 선택해주세요.', 'w')
+            else {
+                const queryString = '?ids=' + lst.join('&ids=');
                 $.ajax({
                     type: 'DELETE',
-                    url: `/api/coupon-has/${couponHasId}`,
+                    url: `/api/coupon-delete-several${queryString}`,
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function (data) {
-                        if(data.httpStatus === 200) {
-                            alert(`${data.message}`)
-                            window.location.href = `/user/coupon`
-                        }else {
-                            alert("해당 쿠폰 삭제에 실패했습니다.")
+                        if (data.httpStatus === 200) {
+                            Util.alert(`총 ${data.message}개를 삭제했습니다.`).then(() => {
+                                window.location.href = `/user/coupon`
+                            })
+                        } else {
+                            Util.alert("쿠폰 요청 삭제에 실패했습니다.", 'w')
                         }
                     },
                     error: function (xhr, status, error) {
@@ -304,6 +283,36 @@
                     }
                 });
             }
+        })
+
+        /* 쿠폰 삭제 : 내가 요청한 쿠폰들이 승인이 된 뒤에 삭제하는 부분 */
+        $(".coupon-delete-btn").on("click", function(){
+            const couponHasId = $(this).val()
+            const useAt = $(this).attr('data-delete')
+
+            const msg = (useAt === 'N') ? '해당 쿠폰은 아직 사용 전입니다. <br/> 해당 쿠폰을 삭제하시겠습니까?' : '해당 쿠폰을 삭제하시겠습니까?'
+            Util.confirm(`${msg}`).then((isOk) => {
+                if(isOk) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/api/coupon-has/${couponHasId}`,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                Util.alert(`${data.message}`).then(() => {
+                                    window.location.href = `/user/coupon`
+                                })
+                            }else {
+                                Util.alert("해당 쿠폰 삭제에 실패했습니다.", 'w')
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
+                        }
+                    });
+                }
+            })
         })
     </script>
 </th:block>

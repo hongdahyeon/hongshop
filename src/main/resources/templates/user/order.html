@@ -281,7 +281,7 @@
                     url: `/api/user-order-review/${orderId}`,
                     dataType: 'json',
                     success: function (data) {
-                        if(!data.message) alert("이미 작성된 리뷰가 있습니다.")
+                        if(!data.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w')
                         else {
                             setRadioDiv(orderId)                    // 주문 -> 상품건들에 대한 라디오 버튼 div 만들기
                             $("#review-write-modal").modal('show')
@@ -291,7 +291,7 @@
                         console.error('Error getting password:', error);
                     }
                 });
-            } else if(deliverStatus != 'AWAIT') alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.")
+            } else if(deliverStatus != 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w')
             else {
                 $("#city").val(city)
                 $("#street").val(street)
@@ -338,16 +338,17 @@
 
         /* 리뷰작성 모달창 닫기 */
         $("#close-reviewWriteModal, #close-review-write-modal-btn").on("click", function(e) {
-            const result = confirm("작성중인 리뷰는 저장되지 않습니다." + '\n' + "리뷰작성을 취소하시겠습니까?")
-            if(result) {
-                uploadFile.domEmptyAndFileGroupIdNull();
-                $("#reviewContent").val('')
+            Util.confirm("작성중인 리뷰는 저장되지 않습니다. <br/> 리뷰작성을 취소하시겠습니까?").then((isOk) => {
+                if(isOk) {
+                    uploadFile.domEmptyAndFileGroupIdNull();
+                    $("#reviewContent").val('')
 
-                const form = document.getElementById("review-write-form")
-                form.classList.remove("was-validated")      // validation 지우기
+                    const form = document.getElementById("review-write-form")
+                    form.classList.remove("was-validated")      // validation 지우기
 
-                $("#review-write-modal").modal('hide')
-            }
+                    $("#review-write-modal").modal('hide')
+                }
+            })
         })
 
         /* 주소 변경하기 form */
@@ -370,10 +371,11 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if(data.httpStatus === 200) {
-                                    alert(`${data.message}`)
-                                    window.location.href=`/user/order`
+                                    Util.alert(`${data.message}`).then(() => {
+                                        window.location.href=`/user/order`
+                                    })
                                 }else {
-                                    alert("해당 배송 주소정보 변경에 실패하였습니다.")
+                                    Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -406,11 +408,12 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if (data.httpStatus === 200) {
-                                    const result = confirm('리뷰작성에 성공하셨습니다.' + '\n' + '리뷰를 보러가시겠습니까?');
-                                    if (result) window.location.href = '/user/review'
-                                    else window.location.href = '/user/order'
+                                    Util.confirm('리뷰작성에 성공하셨습니다. <br/> 리뷰를 보러가시겠습니까?').then((isOk) => {
+                                        if (isOk) window.location.href = '/user/review'
+                                        else window.location.href = '/user/order'
+                                    })
                                 } else {
-                                    alert("리뷰작성에 실패했습니다.")
+                                    Util.alert("리뷰작성에 실패했습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {

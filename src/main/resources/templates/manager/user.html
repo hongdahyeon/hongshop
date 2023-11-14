@@ -127,10 +127,11 @@
                     contentType: 'application/json',
                     success: function (data) {
                         if(data.httpStatus === 200) {
-                            alert(`${data.message}`)
-                            window.location.href='/manager/user'
+                            Util.alert(`${data.message}`).then(() => {
+                                window.location.href='/manager/user'
+                            })
                         }else {
-                            alert("해당 사용자의 계정 정지 해제에 실패했습니다.")
+                            Util.alert("해당 사용자의 계정 정지 해제에 실패했습니다.", 'w')
                         }
                     },
                     error: function (xhr, status, error) {
@@ -151,33 +152,33 @@
                 const userRole = $(this).attr("data-role")
                 const chanageUserRole = $(this).val()
 
-                console.log("id : ", id, " userRole : ", userRole, " chanageUserRole : ", chanageUserRole)
-
-                const result = confirm(`${userId} 사용자의 권한 정보를 바꾸시겠습니까?`)
-                if(!result) $(`#userRole-${id}`).val(userRole)
-                else {
-                    const obj = {'role': chanageUserRole}
-                    console.log('obj : ', obj)
-                    $.ajax({
-                        type: 'PUT',
-                        url: `/api/user/${id}/role`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if(data.httpStatus === 200) {
-                                alert(data.message)
-                                window.location.href='/manager/user'
-                            }else {
-                                alert("해당 사용자의 권한 정보 변경에 실패하였습니다.")
-                                $(`#userRole-${id}`).val(userRole)
+                Util.confirm(`${userId} 사용자의 권한 정보를 바꾸시겠습니까?`).then((isOk) => {
+                    if(!isOk) $(`#userRole-${id}`).val(userRole)
+                    else {
+                        const obj = {'role': chanageUserRole}
+                        $.ajax({
+                            type: 'PUT',
+                            url: `/api/user/${id}/role`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    Util.alert(data.message).then(() => {
+                                        window.location.href='/manager/user'
+                                    })
+                                }else {
+                                    Util.alert("해당 사용자의 권한 정보 변경에 실패하였습니다.").then(() => {
+                                        $(`#userRole-${id}`).val(userRole)
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-                }
+                        });
+                    }
+                })
             })
         })
 

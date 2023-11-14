@@ -96,31 +96,33 @@
                 const orderStatus = $(this).attr("data-status")
                 const chanageOrderStatus = $(this).val()
 
-                const result = confirm("해당 상품의 주문상태값을 변경하시겠습니까?")
-                if(!result) $(`#orderStatus-${orderId}`).val(orderStatus)
-                else {
-                    const obj = {'orderStatus': chanageOrderStatus}
-
-                    $.ajax({
-                        type: 'PUT',
-                        url: `/api/order-status/${orderId}`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if(data.httpStatus === 200) {
-                                alert(data.message)
-                                window.location.href='/manager/order'
-                            }else {
-                                alert("해당 상품의 주문 상태값 변경에 실패하였습니다.")
-                                $(`#orderStatus-${orderId}`).val(orderStatus)
+                Util.confirm("해당 상품의 주문상태값을 변경하시겠습니까?").then((isOk) => {
+                    if(!isOk) $(`#orderStatus-${orderId}`).val(orderStatus)
+                    else {
+                        const obj = {'orderStatus': chanageOrderStatus}
+                        $.ajax({
+                            type: 'PUT',
+                            url: `/api/order-status/${orderId}`,
+                            dataType: 'json',
+                            data: JSON.stringify(obj),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    Util.alert(data.message).then(() => {
+                                        window.location.href='/manager/order'
+                                    })
+                                }else {
+                                    Util.alert("해당 상품의 주문 상태값 변경에 실패하였습니다.").then(() => {
+                                        $(`#orderStatus-${orderId}`).val(orderStatus)
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-                }
+                        });
+                    }
+                })
             })
         })
     </script>

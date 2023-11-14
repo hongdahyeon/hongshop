@@ -90,31 +90,34 @@
             const deliverStatus = $(this).attr("data-status")
             const chanageDeliverStatus = $(this).val()
 
-            const result = confirm(`해당 배송 정보를 바꾸시겠습니까?`)
-            if(!result) $(`#deliverStatus-${deliverId}`).val(deliverStatus)
-            else {
-                const obj = {'status': chanageDeliverStatus}
+            Util.confirm(`해당 배송 정보를 바꾸시겠습니까?`).then((isOk) => {
+                if(!isOk) $(`#deliverStatus-${deliverId}`).val(deliverStatus)
+                else {
+                    const obj = {'status': chanageDeliverStatus}
 
-                $.ajax({
-                    type: 'PUT',
-                    url: `/api/deliver-status/${deliverId}`,
-                    dataType: 'json',
-                    data: JSON.stringify(obj),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            alert(data.message)
-                            window.location.href='/manager/deliver'
-                        }else {
-                            alert("해당 배송 정보 변경에 실패하였습니다.")
-                            $(`#deliverStatus-${deliverId}`).val(deliverStatus)
+                    $.ajax({
+                        type: 'PUT',
+                        url: `/api/deliver-status/${deliverId}`,
+                        dataType: 'json',
+                        data: JSON.stringify(obj),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data.httpStatus === 200) {
+                                Util.alert(data.message).then(() => {
+                                    window.location.href='/manager/deliver'
+                                })
+                            }else {
+                                Util.alert("해당 배송 정보 변경에 실패하였습니다.").then(() => {
+                                    $(`#deliverStatus-${deliverId}`).val(deliverStatus)
+                                })
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error getting password:', error);
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
-                    }
-                });
-            }
+                    });
+                }
+            })
         })
 
     </script>

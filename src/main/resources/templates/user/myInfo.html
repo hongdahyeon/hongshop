@@ -148,13 +148,14 @@
                 const originUserEmail = $("#originUserEmail").val()
 
                 if(userEmail === originUserEmail) {
-                    const result = confirm('기존 이메일과 동일합니다. 그대로 사용하시겠습니까?')
-                    if (result)  {
-                        $("#EmailChkMessage").html('')
-                        $("#userEmail").prop('disabled', true)
-                        $("#check-Email").prop('disabled', true)
-                        emailChk = true
-                    }
+                    Util.confirm('기존 이메일과 동일합니다. 그대로 사용하시겠습니까?').then((isOk) => {
+                        if (isOk)  {
+                            $("#EmailChkMessage").html('')
+                            $("#userEmail").prop('disabled', true)
+                            $("#check-Email").prop('disabled', true)
+                            emailChk = true
+                        }
+                    })
                 }else {
                     // check duplicate email
                     $.ajax({
@@ -198,8 +199,8 @@
                     const pwd = newPassword.val()
                     const pwdChk = newPasswordChk.val()
 
-                    if(changePwd &&(pwd.length === 0 || pwd !== pwdChk)) alert("입력하신 비밀번호가 다릅니다.")
-                    else if(changeEmail && !emailChk) alert("이메일 중복을 확인해주세요.")
+                    if(changePwd &&(pwd.length === 0 || pwd !== pwdChk)) Util.alert("입력하신 비밀번호가 다릅니다.", 'w')
+                    else if(changeEmail && !emailChk) Util.alert("이메일 중복을 확인해주세요.", 'w')
                     else {
                         FormDataToObj.getParameter("update-form").then(obj => {
                             if(changeEmail) obj['userEmail'] = $("#userEmail").val()
@@ -211,10 +212,11 @@
                               contentType: 'application/json',
                               success: function (data) {
                                   if(data.httpStatus === 200) {
-                                      alert("회원정보를 수정하였습니다.")
-                                      window.location.href='/'
+                                      Util.alert("회원정보를 수정하였습니다.").then(() => {
+                                          window.location.href='/'
+                                      })
                                   }else {
-                                      alert("회원정보 수정을 실패했습니다.")
+                                      Util.alert("회원정보 수정을 실패했습니다.", 'w')
                                   }
                               },
                               error: function (xhr, status, error) {

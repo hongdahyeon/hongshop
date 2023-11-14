@@ -257,7 +257,7 @@
         $(".post-page-btn").on("click", function(e){
             const postTypeId = $(this).val()
             const postUseAt = $(this).attr("data-useAt")
-            if(postUseAt === 'N') alert("해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다." + '\n' + "사용여부를 Y로 변경해주세요.")
+            if(postUseAt === 'N') Util.alert(`해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다. <br/> 사용여부를 Y로 변경해주세요.`, 'w')
             else {
                 window.location.href = `/bbs/${postTypeId}`
             }
@@ -268,26 +268,28 @@
             const postTypeId = $(this).val()
             const postLen = $(this).attr("data-num")
 
-            if(postLen > 0) alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.")
+            if(postLen > 0) Util.alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.", 'w')
             else {
-                const result = confirm("해당 게시판을 삭제하시겠습니까?")
-                if (result) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: `/api/type/${postTypeId}`,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if (data.httpStatus === 200) {
-                                alert(`${data.message}`)
-                                window.location.href = '/manager/postType'
+                Util.confirm("해당 게시판을 삭제하시겠습니까?").then((isOk) => {
+                    if (isOk) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: `/api/type/${postTypeId}`,
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if (data.httpStatus === 200) {
+                                    Util.alert(`${data.message}`).then(() => {
+                                        window.location.href = '/manager/postType'
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-                }
+                        });
+                    }
+                })
             }
         })
 
@@ -329,14 +331,16 @@
 
         /* 게시판 생성 모달 -> 취소, x 버튼 클릭 이벤트 */
         $("#cancel-new-postType-btn, #close-new-postType-modal-btn").on("click", function(e){
-            const result = confirm('작성중인 내용은 저장되지 않습니다.' + '\n' + '작성을 취소하시겠습니까?')
-            if(result) $("#new-postType-modal").modal('hide')
+            Util.confirm('작성중인 내용은 저장되지 않습니다. <br/> 작성을 취소하시겠습니까?').then((isOk) => {
+                if(isOk) $("#new-postType-modal").modal('hide')
+            })
         })
 
         /* 게시판 수정 모달 -> 취소, x 버튼 클릭 이벤트 */
         $("#cancel-update-postType-btn, #close-update-postType-modal-btn").on("click", function(e){
-            const result = confirm('작성중인 내용은 저장되지 않습니다.' + '\n' + '작성을 취소하시겠습니까?')
-            if(result) $("#update-postType-modal").modal('hide')
+            Util.confirm('작성중인 내용은 저장되지 않습니다. <br/> 작성을 취소하시겠습니까?').then((isOk) => {
+                if(isOk) $("#update-postType-modal").modal('hide')
+            })
         })
 
         /* 게시판 유형 추가 */
@@ -350,7 +354,6 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("new-postType-form").then((obj) => {
-                        console.log("obj : ", obj)
 
                         $.ajax({
                             type: 'POST',
@@ -360,10 +363,11 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if(data.httpStatus === 200) {
-                                    alert("게시판 유형이 추가되었습니다.")
-                                    window.location.href='/manager/postType'
+                                    Util.alert("게시판 유형이 추가되었습니다.").then(() => {
+                                        window.location.href='/manager/postType'
+                                    })
                                 }else {
-                                    alert("해당 게시판 유형 추가에 실패하였습니다.")
+                                    Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -386,12 +390,32 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("update-postType-form").then((obj) => {
-                        console.log("obj : ", obj)
 
-                        let result = true
-
-                        if(postType === 'QNA' && (postType !== obj['postType'])) result = confirm("만약 QNA 게시판에서 " + obj['postType'] + " 게시판 유형으로 변경하시면," + '\n' + "해당 게시글에 달린 댓글을 볼수 없습니다." + '\n' + '그래도 변경하시겠습니까?')
-                        if(result) {
+                        if(postType === 'QNA' && (postType !== obj['postType'])){
+                            Util.confirm(`만약 QNA 게시판에서 ${obj['postType']} 게시판 유형으로 변경하시면 <br/> 해당 게시글에 달린 댓글을 볼수 없습니다. <br/> 그래도 변경하시겠습니까?`).then((isOk) => {
+                                if(isOk) {
+                                    $.ajax({
+                                        type: 'PUT',
+                                        url: `/api/type/${postTypeId}`,
+                                        dataType: 'json',
+                                        data: JSON.stringify(obj),
+                                        contentType: 'application/json',
+                                        success: function (data) {
+                                            if (data.httpStatus === 200) {
+                                                Util.alert(data.message).then(() => {
+                                                    window.location.href = '/manager/postType'
+                                                })
+                                            } else {
+                                                Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w')
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error('Error getting password:', error);
+                                        }
+                                    });
+                                }
+                            })
+                        }else {
                             $.ajax({
                                 type: 'PUT',
                                 url: `/api/type/${postTypeId}`,
@@ -400,10 +424,11 @@
                                 contentType: 'application/json',
                                 success: function (data) {
                                     if (data.httpStatus === 200) {
-                                        alert(data.message)
-                                        window.location.href = '/manager/postType'
+                                        Util.alert(data.message).then(() => {
+                                            window.location.href = '/manager/postType'
+                                        })
                                     } else {
-                                        alert("해당 게시판 유형 수정에 실패하였습니다.")
+                                        Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {

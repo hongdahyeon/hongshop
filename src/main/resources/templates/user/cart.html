@@ -120,7 +120,7 @@
 
         /* 체크박스 전체 선택/해제 버튼 */
         $("#chk-all").on("click", function(e) {
-            if(cart.length === 0) alert("아직 장바구니가 비어있습니다." + '\n' + "상품을 먼저 담아주세요.")
+            if(cart.length === 0) Util.alert(`아직 장바구니가 비어있습니다. <br/> 상품을 먼저 담아주세요.`, 'w')
             else {
                 const checkboxes = $(".image-checkbox")
                 const checkedLen = getCheckedChkBox().length
@@ -144,10 +144,10 @@
             const productName = $(`#name-${cartId}`).text()
             const productImg = $(`#img-${cartId}`).attr('src')
 
-            if(productStock == 0) alert("현재 해당 상품의 재고가 없어서 주문 및 변경이 불가능합니다.")
+            if(productStock == 0) Util.alert("현재 해당 상품의 재고가 없어서 주문 및 변경이 불가능합니다.", 'w')
             else {
                 // 모달 열기
-                const price = productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                const price = Util.priceString(productPrice)
                 $("#hongCartId").val(cartId)
                 $("#hongProductId").val(productId)
                 $("#product-name").text(productName)
@@ -188,28 +188,30 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("cart-change-form").then((obj) => {
-                        const result = confirm("해당 정보를 변경하시겠습니까?")
-                        if(result) {
-                            const OBJ = {'cartCnt': obj['product-order-num'], hongProductId: obj['hongProductId']}
-                            $.ajax({
-                                type: 'PUT',
-                                url: `/api/cart/${obj['hongCartId']}`,
-                                dataType: 'json',
-                                data: JSON.stringify(OBJ),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if (data.httpStatus === 200) {
-                                        alert(`${data.message}`)
-                                        window.location.href = '/user/cart'
-                                    } else {
-                                        alert("장바구니 정보 수정에 실패하였습니다.")
+                        Util.confirm("해당 정보를 변경하시겠습니까?").then((isOk) => {
+                            if(isOk) {
+                                const OBJ = {'cartCnt': obj['product-order-num'], hongProductId: obj['hongProductId']}
+                                $.ajax({
+                                    type: 'PUT',
+                                    url: `/api/cart/${obj['hongCartId']}`,
+                                    dataType: 'json',
+                                    data: JSON.stringify(OBJ),
+                                    contentType: 'application/json',
+                                    success: function (data) {
+                                        if (data.httpStatus === 200) {
+                                            Util.alert(`${data.message}`).then(() => {
+                                                window.location.href = '/user/cart'
+                                            })
+                                        } else {
+                                            Util.alert("장바구니 정보 수정에 실패하였습니다.", 'w')
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error getting password:', error);
                                     }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
-                                }
-                            });
-                        }
+                                });
+                            }
+                        })
                     })
                 }
             })
@@ -227,21 +229,26 @@
         $("#delete-btn").on("click", function(e) {
             const ids = getCheckedChkBox()
 
-            if(ids.length === 0) alert("삭제할 상품을 선택해주세요.")
+            if(ids.length === 0) Util.alert("삭제할 상품을 선택해주세요.", 'w')
             else {
-                $.ajax({
-                    type: 'DELETE',
-                    url: "/api/cart",
-                    data: {'ids': ids},
-                    traditional: true,
-                    success: function (data) {
-                        if (data.httpStatus === 200) {
-                            alert(`${data.message}`)
-                            window.location = `/user/cart`
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Util.confirm("해당 상품들을 삭제하시겠습니까?").then((isOk) => {
+                    if(isOk) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: "/api/cart",
+                            data: {'ids': ids},
+                            traditional: true,
+                            success: function (data) {
+                                if (data.httpStatus === 200) {
+                                    Util.alert(`${data.message}`).then(() => {
+                                        window.location = `/user/cart`
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
+                            }
+                        })
                     }
                 })
             }
@@ -276,13 +283,14 @@
             const ids = getCheckedChkBox()
             const able = canPurchase()
 
-            if(!able) alert("주문 불가능한 상품이 있습니다." + '\n' + "확인 부탁드립니다.")
+            if(!able) Util.alert("주문 불가능한 상품이 있습니다. <br/> 확인 부탁드립니다.", 'w')
             else {
-                if (ids.length === 0) alert("주문할 상품을 선택해주세요.")
+                if (ids.length === 0) Util.alert("주문할 상품을 선택해주세요.", 'w')
                 else {
                     const queryString = '?ids=' + ids.join('&ids=');
-                    const result = confirm("해당 상품들을 주문하시겠습니까?")
-                    if (result) window.location.href = `/order/cart${queryString}`
+                    Util.confirm("해당 상품들을 주문하시겠습니까?").then((isOk) => {
+                        if(isOk) window.location.href = `/order/cart${queryString}`
+                    })
                 }
             }
         })

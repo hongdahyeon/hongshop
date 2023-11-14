@@ -42,6 +42,7 @@ public class HongPostController {
             });
         }
 
+        model.addAttribute("id", id);
         model.addAttribute("type", view);
         model.addAttribute("user", principalDetails.getUser());
         model.addAttribute("postList", postList);

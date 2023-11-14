@@ -470,68 +470,74 @@
 
             /* [왼쪽] "+카테고리" 클릭 -> 나온 모달 "취소" 버튼 */
             $("#cancel-new-category-btn, #close-category-modal-btn").on("click", function(e) {
-                const result = confirm("카테고리 작성 정보를 취소하시겠습니까?")
-                if(result) {
-                    categoryModalEmpty()
-                    $("#new-category-modal").modal('hide')
-                }
+                Util.confirm("카테고리 작성 정보를 취소하시겠습니까?").then((isOk) => {
+                    if(isOk) {
+                        categoryModalEmpty()
+                        $("#new-category-modal").modal('hide')
+                    }
+                })
             })
 
             /* [왼쪽] "+상품" 클릭 -> 나온 모달 "취소" 버튼 */
             $("#cancel-new-product-btn, #close-product-modal-btn").on("click", function(e) {
-                const result = confirm("상품 작성 정보를 취소하시겠습니까?")
-                if(result) {
-                    productModalEmpty()
-                    $("#new-product-modal").modal('hide')
-                }
+                Util.confirm("상품 작성 정보를 취소하시겠습니까?").then((isOk) => {
+                    if(isOk) {
+                        productModalEmpty()
+                        $("#new-product-modal").modal('hide')
+                    }
+                })
             })
 
             /* [오른쪽] "삭제" 클릭 (상품) */
             $("#delete-product-btn").on("click", function(e) {
                 const productId = $("#hongProductId").val()
 
-                const result = confirm("해당 상품을 삭제하시겠습니까?")
-                if(result) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: `/api/product/${productId}`,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if(data.httpStatus === 200) {
-                                alert(`${data.message}`)
-                                defaultPage()
+                Util.confirm("해당 상품을 삭제하시겠습니까?").then((isOk) => {
+                    if(isOk) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: `/api/product/${productId}`,
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    Util.alert(`${data.message}`).then(() => {
+                                        defaultPage()
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-                }
+                        });
+                    }
+                })
             })
 
             /* [오른쪽] "삭제" 클릭 (카테고리) */
             $("#delete-category-btn").on("click", function(e) {
                 const categoryId = $("#hongCategoryId").val()
 
-                const result = confirm("해당 카테고리를 삭제하시겠습니까?")
-                if(result) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: `/api/category/${categoryId}`,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if(data.httpStatus === 200) {
-                                alert(`${data.message}`)
-                                defaultPage()
+                Util.confirm("해당 카테고리를 삭제하시겠습니까?").then((isOk) => {
+                    if(isOk) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: `/api/category/${categoryId}`,
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.httpStatus === 200) {
+                                    Util.alert(`${data.message}`).then(() => {
+                                        defaultPage()
+                                    })
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error getting password:', error);
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
-                        }
-                    });
-                }
+                        });
+                    }
+                })
             })
 
             /* [오른쪽] "주문자" 버튼 클릭 */
@@ -545,7 +551,7 @@
                     success: function (data) {
                         if(data.httpStatus === 200) {
                             const productUser = data.message.orderDetails
-                            if(!productUser.length) alert("해당 상품을 구매한 사용자가 없습니다.")
+                            if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w')
                             else {
                                 drawModalTable(productUser)
                                 $("#product-user-modal").modal('show')
@@ -587,7 +593,7 @@
             dom.empty();
 
             productUser.forEach((data, i) => {
-                const price = data['orderPrice'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                const price = Util.priceString(data['orderPrice'])
                 const body =
                     `
                     <tr>
@@ -642,10 +648,11 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if (data.httpStatus === 200) {
-                                    alert("카테고리 정보를 수정하였습니다.")
-                                    defaultPage()
+                                    Util.alert("카테고리 정보를 수정하였습니다.").then(() => {
+                                        defaultPage()
+                                    })
                                 } else {
-                                    alert("카테고리 정보 수정에 실패하였습니다.")
+                                    Util.alert("카테고리 정보 수정에 실패하였습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -674,7 +681,7 @@
                         if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
                         obj['deleteFile'] = uploadFile.getDeleteFile()
 
-                        if(obj['productCnt'] < limitProduct) alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`)
+                        if(obj['productCnt'] < limitProduct) Util.alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`, 'w')
                         else {
                             $.ajax({
                                 type: 'PUT',
@@ -684,10 +691,11 @@
                                 contentType: 'application/json',
                                 success: function (data) {
                                     if (data.httpStatus === 200) {
-                                        alert("상품 정보를 수정하였습니다.")
-                                        defaultPage()
+                                        Util.alert("상품 정보를 수정하였습니다.").then(() => {
+                                            defaultPage()
+                                        })
                                     } else {
-                                        alert("상품 정보 수정에 실패하였습니다.")
+                                        Util.alert("상품 정보 수정에 실패하였습니다.", 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {
@@ -720,11 +728,12 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if(data.httpStatus === 200) {
-                                    alert("카테고리가 추가되었습니다.")
-                                    defaultPage()
-                                    $("#new-category-modal").modal('hide')
+                                    Util.alert("카테고리가 추가되었습니다.").then(() => {
+                                        defaultPage()
+                                        $("#new-category-modal").modal('hide')
+                                    })
                                 }else {
-                                    alert("카테고리 추가에 실패하였습니다.")
+                                    Util.alert("카테고리 추가에 실패하였습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -760,11 +769,12 @@
                             contentType: 'application/json',
                             success: function (data) {
                                 if(data.httpStatus === 200) {
-                                    alert("상품이 추가되었습니다.")
-                                    defaultPage()
-                                    $("#new-product-modal").modal('hide')
+                                    Util.alert("상품이 추가되었습니다.").then(() => {
+                                        defaultPage()
+                                        $("#new-product-modal").modal('hide')
+                                    })
                                 }else {
-                                    alert("상품 추가에 실패하였습니다.")
+                                    Util.alert("상품 추가에 실패하였습니다.", 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -790,7 +800,7 @@
         $('#btn-upload-product').on("click", function (e) {
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-product li")].length;
-            if(numberOfLiElements === 1) alert("최대 업로드 개수는 1개입니다.")
+            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
             else $('#fileUpload-product').click();
         });
 
@@ -798,18 +808,18 @@
         $('#btn-upload-new-product').on("click", function(e){
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-new-product li")].length;
-            if(numberOfLiElements === 1) alert("최대 업로드 개수는 1개입니다.")
+            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
             else $('#fileUpload-new-product').click();
         })
 
         /* [오른쪽] 상품 정보 수정 -> 파일 업로드 */
         $("#fileUpload-product").on("change", function (e) {
-            if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
+            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
             else {
                 const selectedFile = e.target.files[0];
                 const fileName = selectedFile.name
 
-                if(!selectedFile.type.startsWith("image/")) alert("이미지 파일만 업로드 가능합니다.")
+                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w')
                 else {
                     const formData = new FormData();
                     formData.append("file", selectedFile);
@@ -838,12 +848,12 @@
 
         /* [+상품] 새로운 상품등록 모달 -> 파일 업로드 */
         $("#fileUpload-new-product").on("change", function (e) {
-            if(e.target.files.length >= 2) alert("최대 업로드 개수는 1개입니다.")
+            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
             else {
                 const selectedFile = e.target.files[0];
                 const fileName = selectedFile.name
 
-                if(!selectedFile.type.startsWith("image/")) alert("이미지 파일만 업로드 가능합니다.")
+                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w')
                 else {
 
                     const formData = new FormData();

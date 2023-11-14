@@ -242,7 +242,7 @@
         $("#check-Email").click(() => {
             const newUserEmail = $("#userEmail").val()
 
-            if(!newUserEmail.length) alert("이메일은 빈값일 수 없습니다.")
+            if(!newUserEmail.length) Util.alert("이메일은 빈값일 수 없습니다.", 'w')
             else {
                 $.ajax({
                     type: 'GET',
@@ -277,7 +277,7 @@
         $("#check-Id").click(() => {
             const newUserId = $("#newUserId").val();
 
-            if(!newUserId.length) alert("아이디는 빈값일 수 없습니다.")
+            if(!newUserId.length) Util.alert("아이디는 빈값일 수 없습니다.", 'w')
             else {
                 $.ajax({
                     type: 'GET',
@@ -312,8 +312,8 @@
                     const pwd = newPassword.val()
                     const pwdChk = newPasswordChk.val()
 
-                    if(!IdChk || !EmailChk) alert("아이디 및 이메일 중복 여부를 확인해주세요.")
-                    else if(pwd.length === 0 || pwd !== pwdChk) alert("입력하신 비밀번호가 다릅니다.")
+                    if(!IdChk || !EmailChk) Util.alert("아이디 및 이메일 중복 여부를 확인해주세요.", 'w')
+                    else if(pwd.length === 0 || pwd !== pwdChk) Util.alert("입력하신 비밀번호가 다릅니다.", 'w')
                     else {
                         FormDataToObj.getParameter("new-login-form").then(obj => {
                             obj['userId'] = $("#newUserId").val()
@@ -327,10 +327,11 @@
                                 contentType: 'application/json',
                                 success: function (data) {
                                     if(data.httpStatus === 200) {
-                                        alert("회원가입을 성공했습니다.")
-                                        $('#myModal').modal('hide');
+                                        Util.alert("회원가입을 성공했습니다.").then(() => {
+                                            $('#myModal').modal('hide');
+                                        })
                                     }else {
-                                        alert("회원가입을 실패했습니다.")
+                                        Util.alert("회원가입을 실패했습니다.", 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {

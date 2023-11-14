@@ -71,10 +71,9 @@
             if(post['file'])  uploadFile.setData(post['file']['fileList']).setFiles()
 
             $("#list-btn").on("click", function(e){
-                const result = confirm("수정 정보가 저장되지 않을수도 있습니다." + '\n' + "목록으로 돌아가시겠습니까?")
-                if(result) {
-                    window.location.href = `/bbs/${post['typeId']}`
-                }
+                Util.confirm(`수정 정보가 저장되지 않을수도 있습니다. <br /> 목록으로 돌아가시겠습니까?`).then((isOk) => {
+                    if(isOk) window.location.href = `/bbs/${post['typeId']}`
+                })
             })
 
             window.addEventListener("load", function() {
@@ -85,7 +84,7 @@
                         form.classList.add("was-validated")
                     } else {
                         event.preventDefault();
-                        if(ckEditor.getData().length === 0) alert("내용을 입력해주세요.")
+                        if(ckEditor.getData().length === 0) Util.alert("내용을 입력해주세요.", 'w')
                         else {
                             const obj = {
                                 'title' : $("#title").val(),
@@ -103,8 +102,9 @@
                                 contentType: "application/json",
                                 success: function(response) {
                                     if(response.httpStatus === 200){
-                                        alert("수정되었습니다.")
-                                        window.location.href = `/bbs/${post['typeId']}`
+                                        Util.alert("수정되었습니다.").then(() => {
+                                            window.location.href = `/bbs/${post['typeId']}`
+                                        })
                                     }
                                 },
                                 error: function(error) {

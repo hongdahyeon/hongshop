@@ -205,8 +205,9 @@
         $("#goto-qna-post").on("click", function(e){
             if(qnaPost) window.location.href = `/bbs/${qnaPost['postTypeId']}`
             else {
-                alert("죄송합니다." + '\n' + "아직 질의응답 게시판이 없습니다." + '\n' + "잠시만 기다려주세요.")
-                $("#alertModal").modal('hide')
+                Util.alert(`죄송합니다. <br /> 아직 질의응답 게시판이 없습니다. <br /> 잠시만 기다려주세요.`).then(() => {
+                    $("#alertModal").modal('hide')
+                })
             }
         })
 
@@ -220,7 +221,7 @@
 
             if(productStock == 0) $("#alertModal").modal('show')
             else {
-                const price = productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                const price = Util.priceString(productPrice)
                 $("#hongProductId").val(productId)
                 $("#product-name").text(productName)                            // 상품 이름
                 $("#product-price").text(`가격: ${price} 원`)                    // 상품 가격
@@ -249,51 +250,52 @@
 
                         // 장바구니 담기
                         if(submitButtonId === 'into-cart') {
-                            const result = confirm("해당 상품을 장바구니에 담으시겠습니까?")
-                            if(result) {
-                                $.ajax({
-                                    type: 'GET',
-                                    url: `/api/find-cart/${obj['hongProductId']}`,
-                                    dataType: 'json',
-                                    contentType: 'application/json',
-                                    success: function (data) {
-                                        if(data.httpStatus === 200) {
-                                            if(!data.message) alert("이미 해당 상품이 장바구니에 있습니다." + '\n' + "확인해주세요.")
-                                            else {
-                                                const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
-                                                $.ajax({
-                                                    type: 'POST',
-                                                    url: `/api/cart`,
-                                                    dataType: 'json',
-                                                    data: JSON.stringify(OBJ),
-                                                    contentType: 'application/json',
-                                                    success: function (data) {
-                                                        if (data.httpStatus === 200) {
-                                                            const result = confirm('해당 물품이 장바구니에 담겼습니다.' + '\n' + "장바구니를 보러가시겠습니까?")
-                                                            if (result) window.location.href = '/user/cart'
-                                                            else $("#product-purchase-modal").modal('hide')
-                                                        } else {
-                                                            alert("해당 물품을 장바구니에 담기에 실패했습니다.")
+                            Util.confirm("해당 상품을 장바구니에 담으시겠습니까?").then((isOk) => {
+                                if(isOk) {
+                                    $.ajax({
+                                        type: 'GET',
+                                        url: `/api/find-cart/${obj['hongProductId']}`,
+                                        dataType: 'json',
+                                        contentType: 'application/json',
+                                        success: function (data) {
+                                            if(data.httpStatus === 200) {
+                                                if(!data.message) Util.alert(`이미 해당 상품이 장바구니에 있습니다. <br/> 확인해주세요.`, 'w')
+                                                else {
+                                                    const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: `/api/cart`,
+                                                        dataType: 'json',
+                                                        data: JSON.stringify(OBJ),
+                                                        contentType: 'application/json',
+                                                        success: function (data) {
+                                                            if (data.httpStatus === 200) {
+                                                                Util.confirm(`해당 물품이 장바구니에 담겼습니다. <br/> 장바구니를 보러가시겠습니까?`).then((isOk) => {
+                                                                    if (isOk) window.location.href = '/user/cart'
+                                                                    else $("#product-purchase-modal").modal('hide')
+                                                                })
+                                                            } else {
+                                                                Util.alert("해당 물품을 장바구니에 담기에 실패했습니다.", 'w')
+                                                            }
+                                                        },
+                                                        error: function (xhr, status, error) {
+                                                            console.error('Error getting password:', error);
                                                         }
-                                                    },
-                                                    error: function (xhr, status, error) {
-                                                        console.error('Error getting password:', error);
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error('Error getting password:', error);
                                         }
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Error getting password:', error);
-                                    }
-                                });
-                            }
+                                    });
+                                }
+                            })
                         } else if(submitButtonId === 'into-purchase') {
                             // 구매하기
-                            const result = confirm("해당상품을 구입하시겠습니까?")
-                            if(result) {
-                                window.location.href = `/order/shop?productId=${obj['hongProductId']}&orderNum=${obj['product-order-num']}`
-                            }
+                            Util.confirm("해당상품을 구입하시겠습니까?").then((isOk) => {
+                                if(isOk) window.location.href = `/order/shop?productId=${obj['hongProductId']}&orderNum=${obj['product-order-num']}`
+                            })
                         }
                     })
                 }

@@ -173,26 +173,28 @@
 
     /* 리뷰 삭제 버튼 이벤트 */
     function trashReview(id){
-        const result = confirm("해당 리뷰를 삭제하시겠습니까?")
-        if(result) {
-            $.ajax({
-                type: 'DELETE',
-                url: `/api/review/${id}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        alert(`${data.message}`)
-                        window.location.href = `/user/review`
-                    }else {
-                        alert("해당 리뷰 삭제에 실패했습니다.")
+        Util.confirm("해당 리뷰를 삭제하시겠습니까?").then((isOk) => {
+            if(isOk) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/api/review/${id}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            Util.alert(`${data.message}`).then(() => {
+                                window.location.href = `/user/review`
+                            })
+                        }else {
+                            Util.alert("해당 리뷰 삭제에 실패했습니다.", 'w')
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
-                }
-            });
-        }
+                });
+            }
+        })
     }
 
     /* 리뷰수정 버튼 이벤트 클릭 -> 리뷰 수정 모달 데이터로 채우기 */
@@ -224,16 +226,17 @@
 
     /* 리뷰 수정 모달 닫기 이벤트 -> 폼 validation 제거 , 파일 컨테이너 초기화 , 리뷰 내용 초기화 */
     $("#close-review-update-modal-btn, #close-reviewUpdateModal").on('click', function(e){
-        const result = confirm("작성중인 리뷰는 저장되지 않습니다." + '\n' + "리뷰작성을 취소하시겠습니까?")
-        if(result) {
-            uploadFile.domEmptyAndFileGroupIdNull();
-            $("#update-reviewContent").val('')
+        Util.confirm("작성중인 리뷰는 저장되지 않습니다. <br/> 리뷰작성을 취소하시겠습니까?").then((isOk) => {
+            if(isOk) {
+                uploadFile.domEmptyAndFileGroupIdNull();
+                $("#update-reviewContent").val('')
 
-            const form = document.getElementById("review-update-form")
-            form.classList.remove("was-validated")      // validation 지우기
+                const form = document.getElementById("review-update-form")
+                form.classList.remove("was-validated")      // validation 지우기
 
-            $("#review-update-modal").modal('hide')
-        }
+                $("#review-update-modal").modal('hide')
+            }
+        })
     })
 
     /* 리뷰 수정하기 form */
@@ -258,10 +261,11 @@
                         contentType: 'application/json',
                         success: function (data) {
                             if (data.httpStatus === 200) {
-                                alert(`${data.message}`)
-                                window.location.href = '/user/review'
+                                Util.alert(`${data.message}`).then(() => {
+                                    window.location.href = '/user/review'
+                                })
                             } else {
-                                alert("해당 리뷰 수정에 실패했습니다.")
+                                Util.alert("해당 리뷰 수정에 실패했습니다.", 'w')
                             }
                         },
                         error: function (xhr, status, error) {
