@@ -2,6 +2,8 @@ package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.couponHas.HongCouponHasService;
+import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
@@ -28,6 +30,7 @@ public class HongUserController {
     private final HongOrderService hongOrderService;
     private final HongCartService hongCartService;
     private final HongReviewService hongReviewService;
+    private final HongCouponHasService hongCouponHasService;
 
     @GetMapping("/myInfo")  // 회원정보 수정페이지
     public String myInfo(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
@@ -80,7 +83,9 @@ public class HongUserController {
 
 
     @GetMapping("/coupon")
-    public String couponUser(){
+    public String couponUser(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<HongCouponHasVO> hongCouponHasVOS = hongCouponHasService.listByHongUserWithDeleteYn(principalDetails.getUser());
+        model.addAttribute("couponLst", hongCouponHasVOS);
         return "user/coupon";
     }
 

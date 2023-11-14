@@ -19,6 +19,8 @@ public interface HongCouponHasService {
 
     List<HongCouponHasVO> listByHongUser(HongUser hongUser);
 
+    List<HongCouponHasVO> listByHongUserWithDeleteYn(HongUser hongUser);
+
     void delete(Long id);
 
     Integer useCoupon(Long id);

@@ -12,7 +12,8 @@ import java.util.List;
 * @summary  (1)  findAllByDeleteYnIs : 전체 리스트 조회 -> 삭제여부 N
  *          (2) findAllByHongUserIdAndDeleteYnAndUseAt : 전체 리스트 조회 -> 사용자ID, 삭제여부 N, 사용여부 N
  *              - 사용여부가 Y이면 이미 사용한 쿠폰
- *          (3) findAllByUseAtAndDeleteYnAndHongCoupon_Id : 전체 리스트 조회 -> 사용여부 N, 삭제여부 N, 쿠폰 ID
+ *          (3) findAllByHongUserIdAndDeleteYn : 전체 리스트 조회 -> 사용자 Id, 삭제여부 N
+ *          (4) findAllByUseAtAndDeleteYnAndHongCoupon_Id : 전체 리스트 조회 -> 사용여부 N, 삭제여부 N, 쿠폰 ID
  *              - 관리자 입장에서 쿠폰을 삭제할 수 있는 경우는
  *                  -> 쿠폰 사용여부가 N일 떄
  *                  -> 쿠폰 사용여부가 Y이지만, 해당 쿠폰을 갖고 있는 사용자들이 이미 쿠폰을 사용했거나 삭제했을 때
@@ -24,6 +25,8 @@ public interface HongCouponHasRepository extends JpaRepository<HongCouponHas, Lo
     List<HongCouponHas> findAllByDeleteYnIs(String deleteYn);
 
     List<HongCouponHas> findAllByHongUserIdAndDeleteYnAndUseAt(Long userId, String deleteYn, String useAt);
+
+    List<HongCouponHas> findAllByHongUserIdAndDeleteYn(Long userId, String deleteYn);
 
     List<HongCouponHas> findAllByUseAtAndDeleteYnAndHongCoupon_Id(String useAt, String deleteYn, Long couponId);
 }
