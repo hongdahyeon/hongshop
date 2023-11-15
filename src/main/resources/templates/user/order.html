@@ -281,7 +281,7 @@
                     url: `/api/user-order-review/${orderId}`,
                     dataType: 'json',
                     success: function (data) {
-                        if(!data.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w')
+                        if(!data.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w', 'w')
                         else {
                             setRadioDiv(orderId)                    // 주문 -> 상품건들에 대한 라디오 버튼 div 만들기
                             $("#review-write-modal").modal('show')
@@ -291,7 +291,7 @@
                         console.error('Error getting password:', error);
                     }
                 });
-            } else if(deliverStatus != 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w')
+            } else if(deliverStatus != 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w', 'w')
             else {
                 $("#city").val(city)
                 $("#street").val(street)
@@ -375,7 +375,7 @@
                                         window.location.href=`/user/order`
                                     })
                                 }else {
-                                    Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w')
+                                    Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -413,7 +413,7 @@
                                         else window.location.href = '/user/order'
                                     })
                                 } else {
-                                    Util.alert("리뷰작성에 실패했습니다.", 'w')
+                                    Util.alert("리뷰작성에 실패했습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {

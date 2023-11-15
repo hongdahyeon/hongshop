@@ -116,7 +116,7 @@
         const newPasswordChk = $("#newPasswordChk")
 
         $(document).ready(function() {
-            if(user.city.length == 0 || user.street.length == 0 || user.zipcode.length == 0) Util.alert("주소 정보를 입력해주세요.", 'w')
+            if(user.city.length == 0 || user.street.length == 0 || user.zipcode.length == 0) Util.alert("주소 정보를 입력해주세요.", 'w', 'w')
 
             newPassword.on('input', chckValidate)
             newPasswordChk.on('input', chckValidate)
@@ -199,8 +199,8 @@
                     const pwd = newPassword.val()
                     const pwdChk = newPasswordChk.val()
 
-                    if(changePwd &&(pwd.length === 0 || pwd !== pwdChk)) Util.alert("입력하신 비밀번호가 다릅니다.", 'w')
-                    else if(changeEmail && !emailChk) Util.alert("이메일 중복을 확인해주세요.", 'w')
+                    if(changePwd &&(pwd.length === 0 || pwd !== pwdChk)) Util.alert("입력하신 비밀번호가 다릅니다.", 'w', 'w')
+                    else if(changeEmail && !emailChk) Util.alert("이메일 중복을 확인해주세요.", 'w', 'w')
                     else {
                         FormDataToObj.getParameter("update-form").then(obj => {
                             if(changeEmail) obj['userEmail'] = $("#userEmail").val()
@@ -216,7 +216,7 @@
                                           window.location.href='/'
                                       })
                                   }else {
-                                      Util.alert("회원정보 수정을 실패했습니다.", 'w')
+                                      Util.alert("회원정보 수정을 실패했습니다.", 'w', 'w')
                                   }
                               },
                               error: function (xhr, status, error) {

@@ -78,7 +78,7 @@
                 const regId = this.getAttribute("data-num");
                 const postId = this.getAttribute("data-value");
 
-                if(user['role'] == 'ROLE_USER' && regId != user['id']) Util.alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.", 'w')
+                if(user['role'] == 'ROLE_USER' && regId != user['id']) Util.alert("본인이 작성한 게시글에 대해서만 볼 수 있습니다.", 'w', 'w')
                 else window.location.href = `/bbs/view/${postId}`
             });
         });

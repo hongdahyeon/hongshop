@@ -84,7 +84,7 @@
                         form.classList.add("was-validated")
                     } else {
                         event.preventDefault();
-                        if(ckEditor.getData().length === 0) Util.alert("내용을 입력해주세요.", 'w')
+                        if(ckEditor.getData().length === 0) Util.alert("내용을 입력해주세요.", 'w' , 'w')
                         else {
                             const obj = {
                                 'title' : $("#title").val(),

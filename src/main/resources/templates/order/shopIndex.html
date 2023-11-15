@@ -148,9 +148,9 @@
 
         $(document).ready(function(e) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            if(product !== null) Util.alert("선택하신 상품에 대한 정보 및 주소정보를 확인해주세요.", 'w')       // 만일 장바구니 선택 없이 넘어오게되면 내보내기
+            if(product !== null) Util.alert("선택하신 상품에 대한 정보 및 주소정보를 확인해주세요.", 'w', 'w')       // 만일 장바구니 선택 없이 넘어오게되면 내보내기
             else {
-                Util.alert("잘못된 접근입니다.", 'w').then(() => {
+                Util.alert("잘못된 접근입니다.", 'w', 'w').then(() => {
                     window.location.href = "/"
                 })
             }
@@ -210,7 +210,7 @@
                                     window.location.href = '/user/order'
                                 })
                             } else {
-                                Util.alert("주문에 실패했습니다.", 'w')
+                                Util.alert("주문에 실패했습니다.", 'w', 'w')
                             }
                         },
                         error: function (xhr, status, error) {
@@ -263,7 +263,7 @@
                                                 addressChanging(true)
                                             })
                                         } else {
-                                            Util.alert("주소 변경에 실패하였습니다.", 'w')
+                                            Util.alert("주소 변경에 실패하였습니다.", 'w', 'w')
                                         }
                                     },
                                     error: function (xhr, status, error) {

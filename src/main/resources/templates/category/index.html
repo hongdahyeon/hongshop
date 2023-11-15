@@ -259,7 +259,7 @@
                                         contentType: 'application/json',
                                         success: function (data) {
                                             if(data.httpStatus === 200) {
-                                                if(!data.message) Util.alert(`이미 해당 상품이 장바구니에 있습니다. <br/> 확인해주세요.`, 'w')
+                                                if(!data.message) Util.alert(`이미 해당 상품이 장바구니에 있습니다. <br/> 확인해주세요.`, 'w', 'w')
                                                 else {
                                                     const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
                                                     $.ajax({
@@ -275,7 +275,7 @@
                                                                     else $("#product-purchase-modal").modal('hide')
                                                                 })
                                                             } else {
-                                                                Util.alert("해당 물품을 장바구니에 담기에 실패했습니다.", 'w')
+                                                                Util.alert("해당 물품을 장바구니에 담기에 실패했습니다.", 'w', 'w')
                                                             }
                                                         },
                                                         error: function (xhr, status, error) {

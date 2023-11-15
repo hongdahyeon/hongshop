@@ -1,12 +1,14 @@
 package hongshop.hongshop.domain.user.impl;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.user.HongRoleType;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserRepository;
 import hongshop.hongshop.domain.user.HongUserService;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
+import hongshop.hongshop.domain.user.vo.HongUserMessageVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
 import hongshop.hongshop.global.mail.EmailService;
 import hongshop.hongshop.global.util.StringUtil;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +40,9 @@ import java.util.Optional;
  *           (10) initialPassword : 사용자 비번 초기화 -> 이메일 전송
  *           (11) findUserId : 사용자 이름 & 이메일로 아이디 찾기 -> 이메일 전송
  *           (12) updateUserNonLocked : 사용자 계정 정지 초기화
- *           (13) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
+ *           (13) getAddress : id를 통해 유저 주소 정보 가져오기
+ *           (14) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
+ *           (15) getMessageCanUser : 'ROLE_SUPER' 권한을 갖는 유저 리스트 가져오기 -> 이때 내 자신이 있다면 나는 빼고
  **/
 
 @Service
@@ -163,5 +168,15 @@ public class HongUserServiceImpl implements HongUserService {
     public List<HongUserCouponVO> getUserListForCoupon() {
         List<HongUser> hongUsers = hongUserRepository.findAll();
         return hongUsers.stream().map(HongUserCouponVO::new).toList();
+    }
+
+    @Override
+    public List<HongUserMessageVO> getMessageCanUser(HongUser itsMe) {
+        List<HongRoleType> roleTypeList = new ArrayList<>();
+        roleTypeList.add(HongRoleType.ROLE_SUPER);
+//        roleTypeList.add(HongRoleType.ROLE_ADMIN);
+        List<HongUser> allByRoleIn = hongUserRepository.findAllByRoleIn(roleTypeList);
+        return allByRoleIn.stream().filter(user -> !user.getId().equals(itsMe.getId()))
+                .map(HongUserMessageVO::new).toList();
     }
 }

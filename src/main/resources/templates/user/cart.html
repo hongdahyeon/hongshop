@@ -120,7 +120,7 @@
 
         /* 체크박스 전체 선택/해제 버튼 */
         $("#chk-all").on("click", function(e) {
-            if(cart.length === 0) Util.alert(`아직 장바구니가 비어있습니다. <br/> 상품을 먼저 담아주세요.`, 'w')
+            if(cart.length === 0) Util.alert(`아직 장바구니가 비어있습니다. <br/> 상품을 먼저 담아주세요.`, 'w', 'w')
             else {
                 const checkboxes = $(".image-checkbox")
                 const checkedLen = getCheckedChkBox().length
@@ -144,7 +144,7 @@
             const productName = $(`#name-${cartId}`).text()
             const productImg = $(`#img-${cartId}`).attr('src')
 
-            if(productStock == 0) Util.alert("현재 해당 상품의 재고가 없어서 주문 및 변경이 불가능합니다.", 'w')
+            if(productStock == 0) Util.alert("현재 해당 상품의 재고가 없어서 주문 및 변경이 불가능합니다.", 'w', 'w')
             else {
                 // 모달 열기
                 const price = Util.priceString(productPrice)
@@ -203,7 +203,7 @@
                                                 window.location.href = '/user/cart'
                                             })
                                         } else {
-                                            Util.alert("장바구니 정보 수정에 실패하였습니다.", 'w')
+                                            Util.alert("장바구니 정보 수정에 실패하였습니다.", 'w', 'w')
                                         }
                                     },
                                     error: function (xhr, status, error) {
@@ -229,7 +229,7 @@
         $("#delete-btn").on("click", function(e) {
             const ids = getCheckedChkBox()
 
-            if(ids.length === 0) Util.alert("삭제할 상품을 선택해주세요.", 'w')
+            if(ids.length === 0) Util.alert("삭제할 상품을 선택해주세요.", 'w', 'w')
             else {
                 Util.confirm("해당 상품들을 삭제하시겠습니까?").then((isOk) => {
                     if(isOk) {
@@ -283,9 +283,9 @@
             const ids = getCheckedChkBox()
             const able = canPurchase()
 
-            if(!able) Util.alert("주문 불가능한 상품이 있습니다. <br/> 확인 부탁드립니다.", 'w')
+            if(!able) Util.alert("주문 불가능한 상품이 있습니다. <br/> 확인 부탁드립니다.", 'w', 'w')
             else {
-                if (ids.length === 0) Util.alert("주문할 상품을 선택해주세요.", 'w')
+                if (ids.length === 0) Util.alert("주문할 상품을 선택해주세요.", 'w', 'w')
                 else {
                     const queryString = '?ids=' + ids.join('&ids=');
                     Util.confirm("해당 상품들을 주문하시겠습니까?").then((isOk) => {

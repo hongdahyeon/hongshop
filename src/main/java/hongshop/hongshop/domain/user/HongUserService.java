@@ -4,6 +4,7 @@ import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
+import hongshop.hongshop.domain.user.vo.HongUserMessageVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public interface HongUserService {
     Address getAddress(Long id);
 
     List<HongUserCouponVO> getUserListForCoupon();
+
+    List<HongUserMessageVO> getMessageCanUser(HongUser itsMe);
 }

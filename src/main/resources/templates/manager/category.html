@@ -551,7 +551,7 @@
                     success: function (data) {
                         if(data.httpStatus === 200) {
                             const productUser = data.message.orderDetails
-                            if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w')
+                            if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w', 'w')
                             else {
                                 drawModalTable(productUser)
                                 $("#product-user-modal").modal('show')
@@ -652,7 +652,7 @@
                                         defaultPage()
                                     })
                                 } else {
-                                    Util.alert("카테고리 정보 수정에 실패하였습니다.", 'w')
+                                    Util.alert("카테고리 정보 수정에 실패하였습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -681,7 +681,7 @@
                         if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
                         obj['deleteFile'] = uploadFile.getDeleteFile()
 
-                        if(obj['productCnt'] < limitProduct) Util.alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`, 'w')
+                        if(obj['productCnt'] < limitProduct) Util.alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`, 'w', 'w')
                         else {
                             $.ajax({
                                 type: 'PUT',
@@ -695,7 +695,7 @@
                                             defaultPage()
                                         })
                                     } else {
-                                        Util.alert("상품 정보 수정에 실패하였습니다.", 'w')
+                                        Util.alert("상품 정보 수정에 실패하였습니다.", 'w', 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {
@@ -733,7 +733,7 @@
                                         $("#new-category-modal").modal('hide')
                                     })
                                 }else {
-                                    Util.alert("카테고리 추가에 실패하였습니다.", 'w')
+                                    Util.alert("카테고리 추가에 실패하였습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -774,7 +774,7 @@
                                         $("#new-product-modal").modal('hide')
                                     })
                                 }else {
-                                    Util.alert("상품 추가에 실패하였습니다.", 'w')
+                                    Util.alert("상품 추가에 실패하였습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -800,7 +800,7 @@
         $('#btn-upload-product').on("click", function (e) {
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-product li")].length;
-            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
+            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w', 'w')
             else $('#fileUpload-product').click();
         });
 
@@ -808,18 +808,18 @@
         $('#btn-upload-new-product').on("click", function(e){
             e.preventDefault();
             const numberOfLiElements = [...document.querySelectorAll("#upload-container-new-product li")].length;
-            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
+            if(numberOfLiElements === 1) Util.alert("최대 업로드 개수는 1개입니다.", 'w', 'w')
             else $('#fileUpload-new-product').click();
         })
 
         /* [오른쪽] 상품 정보 수정 -> 파일 업로드 */
         $("#fileUpload-product").on("change", function (e) {
-            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
+            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w', 'w')
             else {
                 const selectedFile = e.target.files[0];
                 const fileName = selectedFile.name
 
-                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w')
+                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w', 'w')
                 else {
                     const formData = new FormData();
                     formData.append("file", selectedFile);
@@ -848,12 +848,12 @@
 
         /* [+상품] 새로운 상품등록 모달 -> 파일 업로드 */
         $("#fileUpload-new-product").on("change", function (e) {
-            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w')
+            if(e.target.files.length >= 2) Util.alert("최대 업로드 개수는 1개입니다.", 'w', 'w')
             else {
                 const selectedFile = e.target.files[0];
                 const fileName = selectedFile.name
 
-                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w')
+                if(!selectedFile.type.startsWith("image/")) Util.alert("이미지 파일만 업로드 가능합니다.", 'w', 'w')
                 else {
 
                     const formData = new FormData();

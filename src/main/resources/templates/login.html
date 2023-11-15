@@ -242,7 +242,7 @@
         $("#check-Email").click(() => {
             const newUserEmail = $("#userEmail").val()
 
-            if(!newUserEmail.length) Util.alert("이메일은 빈값일 수 없습니다.", 'w')
+            if(!newUserEmail.length) Util.alert("이메일은 빈값일 수 없습니다.", 'w', 'w')
             else {
                 $.ajax({
                     type: 'GET',
@@ -277,7 +277,7 @@
         $("#check-Id").click(() => {
             const newUserId = $("#newUserId").val();
 
-            if(!newUserId.length) Util.alert("아이디는 빈값일 수 없습니다.", 'w')
+            if(!newUserId.length) Util.alert("아이디는 빈값일 수 없습니다.", 'w', 'w')
             else {
                 $.ajax({
                     type: 'GET',
@@ -312,8 +312,8 @@
                     const pwd = newPassword.val()
                     const pwdChk = newPasswordChk.val()
 
-                    if(!IdChk || !EmailChk) Util.alert("아이디 및 이메일 중복 여부를 확인해주세요.", 'w')
-                    else if(pwd.length === 0 || pwd !== pwdChk) Util.alert("입력하신 비밀번호가 다릅니다.", 'w')
+                    if(!IdChk || !EmailChk) Util.alert("아이디 및 이메일 중복 여부를 확인해주세요.", 'w', 'w')
+                    else if(pwd.length === 0 || pwd !== pwdChk) Util.alert("입력하신 비밀번호가 다릅니다.", 'w', 'w')
                     else {
                         FormDataToObj.getParameter("new-login-form").then(obj => {
                             obj['userId'] = $("#newUserId").val()
@@ -331,7 +331,7 @@
                                             $('#myModal').modal('hide');
                                         })
                                     }else {
-                                        Util.alert("회원가입을 실패했습니다.", 'w')
+                                        Util.alert("회원가입을 실패했습니다.", 'w', 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {

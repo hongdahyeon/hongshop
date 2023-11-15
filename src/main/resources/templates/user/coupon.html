@@ -229,7 +229,7 @@
                 return $(this).val()
             }).get();
 
-            if(lst.length === 0) Util.alert('요청할 쿠폰을 선택해주세요.', 'w')
+            if(lst.length === 0) Util.alert('요청할 쿠폰을 선택해주세요.', 'w', 'w')
             else {
                 const obj = {'couponId': lst}
                 $.ajax({
@@ -244,7 +244,7 @@
                                 window.location.href = '/user/coupon'
                             })
                         } else {
-                            Util.alert("쿠폰 요청에 실패했습니다.", 'w')
+                            Util.alert("쿠폰 요청에 실패했습니다.", 'w', 'w')
                         }
                     },
                     error: function (xhr, status, error) {
@@ -261,7 +261,7 @@
                 return $(this).val()
             }).get();
 
-            if(lst.length === 0) Util.alert('삭제할 요청을 선택해주세요.', 'w')
+            if(lst.length === 0) Util.alert('삭제할 요청을 선택해주세요.', 'w', 'w')
             else {
                 const queryString = '?ids=' + lst.join('&ids=');
                 $.ajax({
@@ -275,7 +275,7 @@
                                 window.location.href = `/user/coupon`
                             })
                         } else {
-                            Util.alert("쿠폰 요청 삭제에 실패했습니다.", 'w')
+                            Util.alert("쿠폰 요청 삭제에 실패했습니다.", 'w', 'w')
                         }
                     },
                     error: function (xhr, status, error) {
@@ -304,7 +304,7 @@
                                     window.location.href = `/user/coupon`
                                 })
                             }else {
-                                Util.alert("해당 쿠폰 삭제에 실패했습니다.", 'w')
+                                Util.alert("해당 쿠폰 삭제에 실패했습니다.", 'w', 'w')
                             }
                         },
                         error: function (xhr, status, error) {

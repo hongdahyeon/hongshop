@@ -257,7 +257,7 @@
         $(".post-page-btn").on("click", function(e){
             const postTypeId = $(this).val()
             const postUseAt = $(this).attr("data-useAt")
-            if(postUseAt === 'N') Util.alert(`해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다. <br/> 사용여부를 Y로 변경해주세요.`, 'w')
+            if(postUseAt === 'N') Util.alert(`해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다. <br/> 사용여부를 Y로 변경해주세요.`, 'w', 'w')
             else {
                 window.location.href = `/bbs/${postTypeId}`
             }
@@ -268,7 +268,7 @@
             const postTypeId = $(this).val()
             const postLen = $(this).attr("data-num")
 
-            if(postLen > 0) Util.alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.", 'w')
+            if(postLen > 0) Util.alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.", 'w', 'w')
             else {
                 Util.confirm("해당 게시판을 삭제하시겠습니까?").then((isOk) => {
                     if (isOk) {
@@ -367,7 +367,7 @@
                                         window.location.href='/manager/postType'
                                     })
                                 }else {
-                                    Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w')
+                                    Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w', 'w')
                                 }
                             },
                             error: function (xhr, status, error) {
@@ -406,7 +406,7 @@
                                                     window.location.href = '/manager/postType'
                                                 })
                                             } else {
-                                                Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w')
+                                                Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
                                             }
                                         },
                                         error: function (xhr, status, error) {
@@ -428,7 +428,7 @@
                                             window.location.href = '/manager/postType'
                                         })
                                     } else {
-                                        Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w')
+                                        Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
                                     }
                                 },
                                 error: function (xhr, status, error) {

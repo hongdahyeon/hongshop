@@ -20,26 +20,18 @@ class Util {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
 
-    static returnIcon(icon) {
-        switch(icon) {
-            case 'w':
-                return 'warning'
-            case 's':
-                return 'success'
-        }
-    }
-
-    static alert(html, icon = 's') {
+    static alert(html, icon = 's', btn = 's') {
         return Swal.fire({
-            icon: this.returnIcon(icon),
-            html
+            html,
+            icon: (icon === 's') ? 'success' : 'warning',
+            confirmButtonColor: (btn === 's') ? '#3085d6' : '#d33'
         });
     }
 
     static confirm(html, icon = 'w', confirmButtonText = '확인', cancelButtonText = '취소') {
         return Swal.fire({
             html,
-            icon: this.returnIcon(icon),
+            icon: (icon === 'w') ? 'warning' : 'success',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',

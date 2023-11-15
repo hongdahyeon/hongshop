@@ -4,7 +4,8 @@
       layout:decorate="~{layouts/default}">
 
 <th:block layout:fragment="head">
-  <title>HONG SHOP</title>
+    <title>HONG SHOP</title>
+    <link rel="stylesheet" type="text/css" th:href="@{'/assets/css/chat/chat.container.css'}">
 </th:block>
 
 <th:block layout:fragment="content">
@@ -13,16 +14,84 @@
             <h3><b>Hong Shop</b></h3>
             <span>Hong Shop 톡톡입니다 🎙</span>
         </div>
-      <div class="text-center" style="margin-top: 10px">
-          <button type="button" class="btn btn-outline-info" onclick="location.href='/'">홈화면 돌아가기</button>
-      </div>
+        <div class="text-center" style="margin-top: 10px">
+            <button type="button" class="btn btn-outline-info" onclick="location.href='/'">홈화면 돌아가기</button>
+        </div>
+
+        <hr class="hr" />
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <h3 style="font-weight: bold">☎ 채팅방</h3>
+                    <!-- Vertical tabs -->
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a th:each="user, userStat: ${messageCanUser}" class="nav-link receiver-link"  data-bs-toggle="tab" role="tab" aria-selected="false" th:id="|user-${user.id}-tab|" th:href="'#user'+${user.id}" th:aria-controls="|user${user.id}|" th:data-num="${user.id}" th:text="${user.userNm}"></a>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="tab-content" id="tab-content" style="overflow-y: auto; min-height: 400px; max-height: 400px;;">
+                        <th:block th:each="user, userStat : ${messageCanUser}">
+                            <div class="tab-pane fade" th:id="|user${user.id}|" role="tabpanel" th:aria-labelledby="|user-${user.id}-tab|">
+                                <div class="chat-container" th:id="|chat-container-div-${user.id}|"></div>
+                            </div>
+                        </th:block>
+                    </div>
+                    <div>
+                        <label for="message-content"></label>
+                        <textarea class="form-control" id="message-content" name="messageContent" style="margin-top: 10px; height: 100px;"></textarea>
+                        <div class="card-text d-flex justify-content-between" style="margin-top: 20px;">
+                            <div class="text-start"></div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-primary" id="save-message-content">수정</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </th:block>
 
 
 <th:block layout:fragment="script">
+    <script th:src="@{'/assets/js/page/chat.container.js'}"></script>
     <script th:inline="javascript">
-        console.log("talk...")
+        const messageCanUser = /*[[${messageCanUser}]]*/[];
+        const sender = /*[[${sender}]]*/null;
+        let receiverId = null;
+        const chatContainer = new Chat()
+
+        $(document).ready(function(e) {
+            if(messageCanUser.length === 0) {
+                Util.alert("톡톡을 할 수 있는 대상자가 없습니다. <br/> 잠시후에 다시 찾아주세요.", 'w', 'w').then(() => {
+                    window.location.href = '/'
+                })
+            }
+
+            $(".receiver-link").on('click', function(e){
+                receiverId = $(this).attr('data-num')
+                console.log("receiverId : ", receiverId)
+                chatContainer.setDomId(`chat-container-div-${receiverId}`).draw()
+            })
+        })
+
+        console.log("sender : ", sender)
+        console.log("messageCanUser : ", messageCanUser)
+
+        $("#save-message-content").on('click', function(e) {
+            if(receiverId === null) Util.alert("톡톡을 발송할 대상을 선택해주세요.", 'w', 'w')
+            else {
+                console.log("save-message-content clicked")
+                const messageContent = $("#message-content").val()
+                console.log("messageContent ; ", messageContent)
+                const obj = {'senderId': sender.id, 'receiverId': receiverId, 'messageContent': messageContent}
+                console.log("obj : ", obj)
+            }
+        })
+
     </script>
 </th:block>
 
