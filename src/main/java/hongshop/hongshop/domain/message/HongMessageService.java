@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface HongMessageService {
 
-    Long join(HongMessageDTO hongMessageDTO);
+    List<HongMessageVO> join(HongMessageDTO hongMessageDTO);
 
-    List<HongMessageVO> getMessageLst(HongUser receiver, HongUser sender);
+    List<HongMessageVO> getMessageLst(Long receiverId, Long senderId);
 
     List<HongMessageVO> getMessageLstByReceiver(HongUser receiver);
 }

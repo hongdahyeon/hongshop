@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.message.vo;
 
 import hongshop.hongshop.domain.message.HongMessage;
+import hongshop.hongshop.domain.user.HongUser;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -29,5 +30,11 @@ public class HongMessageVO {
         this.receiverUserId = hongMessage.getReceiver().getUserId();
 
         this.messageContent = StringEscapeUtils.unescapeHtml4(hongMessage.getMessageContent());
+    }
+
+    public HongMessageVO(HongUser hongUser) {
+        this.senderId = hongUser.getId();
+        this.senderName = hongUser.getUserName();
+        this.senderUserId = hongUser.getUserId();
     }
 }

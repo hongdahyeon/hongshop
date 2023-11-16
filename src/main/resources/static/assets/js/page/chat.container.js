@@ -1,7 +1,13 @@
 class Chat {
     constructor() {
         this._id = null;
+        this._loginId = null;
         this._data = []
+    }
+
+    setLoginId(loginId) {
+        this._loginId = loginId
+        return this
     }
 
     setData(data = []) {
@@ -18,18 +24,21 @@ class Chat {
         const dom = $(`#${this._id}`)
         dom.empty()
 
-        const body = `   <div class="message receiver-message">
-                                    <span>이름</span>
-                                    <br>
-                                    <span>Id</span>
-                                </div>
+        if(this._data.length !== 0) {
+            this._data.forEach((data, i) => {
+                let body = ''
+                if(data['senderId'] == this._loginId) {
+                    body = `<div class="message sender-message">
+                                <span >${data['messageContent']}</span>  
+                            </div>`
+                }else {
+                    body = `<div class="message receiver-message">
+                                <span>${data['messageContent']}</span>
+                            </div>`
+                }
 
-                                <!-- Sender's message -->
-                                <div class="message sender-message">
-                                    <span>이름</span>
-                                    <br>
-                                    <span>Id</span>
-                                </div>`
-        dom.append(body)
+                dom.append(body)
+            })
+        }
     }
 }

@@ -30,9 +30,11 @@ public class MessageController {
 
         if(user.getRole().equals(HongRoleType.ROLE_SUPER)) {
             List<HongMessageVO> messageLstByReceiver = hongMessageService.getMessageLstByReceiver(user);
+            model.addAttribute("isSuper", true);
             model.addAttribute("messageCanUser", messageLstByReceiver);
         }else {
             List<HongUserMessageVO> messageCanUser = hongUserService.getMessageCanUser(user);
+            model.addAttribute("isSuper", false);
             model.addAttribute("messageCanUser", messageCanUser);
         }
 

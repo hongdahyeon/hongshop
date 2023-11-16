@@ -19,8 +19,8 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-11-15
 * @summary  (1) join: 메시지 저장
- *          (2) getMessageLst : 받는자, 보내는자 -> 메시지 리스트
- *          (3) getMessageLstByReceiver : 받는자 -> 메시지 리스트
+ *          (2) getMessageLst : 받는자, 보내는자 -> 메시지 리스트 (receiver, sender 가 나눈 대화 내용 리스트 조회)
+ *          (3) getMessageLstByReceiver : 받은자(receiver)입장에서 -> 자기한테 보낸 사용자 리스트 조회
 **/
 
 @Service
@@ -33,9 +33,9 @@ public class HongMessageServiceIml implements HongMessageService {
 
     @Override
     @Transactional(readOnly = false)
-    public Long join(HongMessageDTO hongMessageDTO) {
-        HongUser receiver = hongUserRepository.findById(hongMessageDTO.getReceiverId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        HongUser sender = hongUserRepository.findById(hongMessageDTO.getSenderId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+    public List<HongMessageVO> join(HongMessageDTO hongMessageDTO) {
+        HongUser receiver = hongUserRepository.findById(hongMessageDTO.getReceiverId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));            // 톡톡을 나누는 상대 사용자 id
+        HongUser sender = hongUserRepository.findById(hongMessageDTO.getSenderId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));                // 로그인한 사용자 id
 
         HongMessage hongMessage = HongMessage.hongMessageInsert()
                                         .messageContent(hongMessageDTO.getMessageContent())
@@ -43,19 +43,21 @@ public class HongMessageServiceIml implements HongMessageService {
                                         .sender(sender)
                                         .build();
 
-        HongMessage save = hongMessageRepository.save(hongMessage);
-        return save.getId();
+        hongMessageRepository.save(hongMessage);
+
+        return this.getMessageLst(receiver.getId(), sender.getId());    // 현재 저장된 메시지까지 해서 receiver, sender가 나눈 대화 내용 return
     }
 
     @Override
-    public List<HongMessageVO> getMessageLst(HongUser receiver, HongUser sender) {
-        List<HongMessage> all = hongMessageRepository.findAllByReceiver_IdAndSender_IdOrderByCreatedDateDesc(receiver.getId(), sender.getId());
-        return all.stream().map(HongMessageVO::new).toList();
+    public List<HongMessageVO> getMessageLst(Long receiverId, Long senderId) {
+        List<HongMessage> all = hongMessageRepository.findMessagesBetweenSenderAndReceiver(receiverId, senderId);
+        return all.stream()
+                .map(HongMessageVO::new).toList();
     }
 
     @Override
     public List<HongMessageVO> getMessageLstByReceiver(HongUser receiver) {
-        List<HongMessage> all = hongMessageRepository.findAllByReceiver_IdOrderByCreatedDateDesc(receiver.getId());
-        return all.stream().map(HongMessageVO::new).toList();
+        List<HongUser> userLst = hongMessageRepository.findDistinctSendersByReceiver(receiver.getId());
+        return userLst.stream().map(HongMessageVO::new).toList();
     }
 }

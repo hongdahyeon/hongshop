@@ -26,16 +26,31 @@
                     <h3 style="font-weight: bold">☎ 채팅방</h3>
                     <!-- Vertical tabs -->
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a th:each="user, userStat: ${messageCanUser}" class="nav-link receiver-link"  data-bs-toggle="tab" role="tab" aria-selected="false" th:id="|user-${user.id}-tab|" th:href="'#user'+${user.id}" th:aria-controls="|user${user.id}|" th:data-num="${user.id}" th:text="${user.userNm}"></a>
+                        <th:block th:if="${isSuper}">
+                            <a th:each="user, userStat: ${messageCanUser}" class="nav-link receiver-link"  data-bs-toggle="tab" role="tab" aria-selected="false" th:id="|user-${user.senderId}-tab|" th:href="'#user'+${user.senderId}" th:aria-controls="|user${user.senderId}|" th:data-num="${user.senderId}" th:text="${user.senderName}"></a>
+                        </th:block>
+                        <th:block th:unless="${isSuper}">
+                            <a th:each="user, userStat: ${messageCanUser}" class="nav-link receiver-link"  data-bs-toggle="tab" role="tab" aria-selected="false" th:id="|user-${user.id}-tab|" th:href="'#user'+${user.id}" th:aria-controls="|user${user.id}|" th:data-num="${user.id}" th:text="${user.userNm}"></a>
+                        </th:block>
                     </div>
                 </div>
 
+
                 <div class="col-md-9">
                     <div class="tab-content" id="tab-content" style="overflow-y: auto; min-height: 400px; max-height: 400px;;">
-                        <th:block th:each="user, userStat : ${messageCanUser}">
-                            <div class="tab-pane fade" th:id="|user${user.id}|" role="tabpanel" th:aria-labelledby="|user-${user.id}-tab|">
-                                <div class="chat-container" th:id="|chat-container-div-${user.id}|"></div>
-                            </div>
+                        <th:block th:if="${isSuper}">
+                            <th:block th:each="user, userStat : ${messageCanUser}">
+                                <div class="tab-pane fade" th:id="|user${user.senderId}|" role="tabpanel" th:aria-labelledby="|user-${user.senderId}-tab|">
+                                    <div class="chat-container" th:id="|chat-container-div-${user.senderId}|"></div>
+                                </div>
+                            </th:block>
+                        </th:block>
+                        <th:block th:unless="${isSuper}">
+                            <th:block th:each="user, userStat : ${messageCanUser}">
+                                <div class="tab-pane fade" th:id="|user${user.id}|" role="tabpanel" th:aria-labelledby="|user-${user.id}-tab|">
+                                    <div class="chat-container" th:id="|chat-container-div-${user.id}|"></div>
+                                </div>
+                            </th:block>
                         </th:block>
                     </div>
                     <div>
@@ -44,7 +59,7 @@
                         <div class="card-text d-flex justify-content-between" style="margin-top: 20px;">
                             <div class="text-start"></div>
                             <div class="text-end">
-                                <button type="button" class="btn btn-primary" id="save-message-content">수정</button>
+                                <button type="button" class="btn btn-primary" id="save-message-content">전송하기</button>
                             </div>
                         </div>
                     </div>
@@ -65,6 +80,8 @@
         const chatContainer = new Chat()
 
         $(document).ready(function(e) {
+            chatContainer.setLoginId(sender.id)
+
             if(messageCanUser.length === 0) {
                 Util.alert("톡톡을 할 수 있는 대상자가 없습니다. <br/> 잠시후에 다시 찾아주세요.", 'w', 'w').then(() => {
                     window.location.href = '/'
@@ -72,9 +89,22 @@
             }
 
             $(".receiver-link").on('click', function(e){
-                receiverId = $(this).attr('data-num')
-                console.log("receiverId : ", receiverId)
-                chatContainer.setDomId(`chat-container-div-${receiverId}`).draw()
+                receiverId = $(this).attr('data-num')                   // 현재 로그인한 사용자 입장에서 톡톡을 보낼 사용자Id
+
+                $.ajax({
+                    type: 'GET',
+                    url: `/api/message/${receiverId}`,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if(data.httpStatus === 200) {
+                            chatContainer.setDomId(`chat-container-div-${receiverId}`).setData(data.message).draw()
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
             })
         })
 
@@ -84,11 +114,28 @@
         $("#save-message-content").on('click', function(e) {
             if(receiverId === null) Util.alert("톡톡을 발송할 대상을 선택해주세요.", 'w', 'w')
             else {
-                console.log("save-message-content clicked")
                 const messageContent = $("#message-content").val()
-                console.log("messageContent ; ", messageContent)
                 const obj = {'senderId': sender.id, 'receiverId': receiverId, 'messageContent': messageContent}
-                console.log("obj : ", obj)
+
+                $.ajax({
+                    type: 'POST',
+                    url: `/api/message`,
+                    dataType: 'json',
+                    data: JSON.stringify(obj),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (data.httpStatus === 200) {
+                            // 메시지 리로드하기
+                            chatContainer.setData(data.message).draw()
+                            $("#message-content").val('')
+                        } else {
+                            Util.alert("죄송합니다. <br/> 톡톡 전송에 실패했습니다.", 'w', 'w')
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error getting password:', error);
+                    }
+                });
             }
         })
 
