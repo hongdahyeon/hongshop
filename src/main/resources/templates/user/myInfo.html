@@ -158,23 +158,16 @@
                     })
                 }else {
                     // check duplicate email
-                    $.ajax({
-                        type: 'GET',
-                        url: `/front/api/checkEmail?userEmail=${userEmail}`,
-                        dataType: 'json',
-                        success: function (data) {
-                            if (!data.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
-                            else {
-                                $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
-                                $("#userEmail").prop('disabled', true)
-                                $("#check-Email").prop('disabled', true)
-                                emailChk = true
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
+
+                    Http.get(`/front/api/checkEmail?userEmail=${userEmail}`).then((res) => {
+                        if (!res.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
+                        else {
+                            $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
+                            $("#userEmail").prop('disabled', true)
+                            $("#check-Email").prop('disabled', true)
+                            emailChk = true
                         }
-                    });
+                    })
                 }
             }
         })
@@ -204,25 +197,16 @@
                     else {
                         FormDataToObj.getParameter("update-form").then(obj => {
                             if(changeEmail) obj['userEmail'] = $("#userEmail").val()
-                            $.ajax({
-                              type: 'PUT',
-                              url: `/api/user`,
-                              dataType: 'json',
-                              data: JSON.stringify(obj),
-                              contentType: 'application/json',
-                              success: function (data) {
-                                  if(data.httpStatus === 200) {
-                                      Util.alert("회원정보를 수정하였습니다.").then(() => {
-                                          window.location.href='/'
-                                      })
-                                  }else {
-                                      Util.alert("회원정보 수정을 실패했습니다.", 'w', 'w')
-                                  }
-                              },
-                              error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
-                              }
-                            });
+
+                            Http.put(`/api/user`, obj).then((res) => {
+                                if(res['httpStatus'] === 200) {
+                                    Util.alert("회원정보를 수정하였습니다.").then(() => {
+                                        window.location.href='/'
+                                    })
+                                }else {
+                                    Util.alert("회원정보 수정을 실패했습니다.", 'w', 'w')
+                                }
+                            })
                         })
                     }
                 }

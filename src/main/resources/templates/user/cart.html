@@ -191,25 +191,16 @@
                         Util.confirm("해당 정보를 변경하시겠습니까?").then((isOk) => {
                             if(isOk) {
                                 const OBJ = {'cartCnt': obj['product-order-num'], hongProductId: obj['hongProductId']}
-                                $.ajax({
-                                    type: 'PUT',
-                                    url: `/api/cart/${obj['hongCartId']}`,
-                                    dataType: 'json',
-                                    data: JSON.stringify(OBJ),
-                                    contentType: 'application/json',
-                                    success: function (data) {
-                                        if (data.httpStatus === 200) {
-                                            Util.alert(`${data.message}`).then(() => {
-                                                window.location.href = '/user/cart'
-                                            })
-                                        } else {
-                                            Util.alert("장바구니 정보 수정에 실패하였습니다.", 'w', 'w')
-                                        }
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Error getting password:', error);
+
+                                Http.put(`/api/cart/${obj['hongCartId']}`, OBJ).then((res) => {
+                                    if (res['httpStatus'] === 200) {
+                                        Util.alert(`${res.message}`).then(() => {
+                                            window.location.href = '/user/cart'
+                                        })
+                                    } else {
+                                        Util.alert("장바구니 정보 수정에 실패하였습니다.", 'w', 'w')
                                     }
-                                });
+                                })
                             }
                         })
                     })
@@ -233,20 +224,12 @@
             else {
                 Util.confirm("해당 상품들을 삭제하시겠습니까?").then((isOk) => {
                     if(isOk) {
-                        $.ajax({
-                            type: 'DELETE',
-                            url: "/api/cart",
-                            data: {'ids': ids},
-                            traditional: true,
-                            success: function (data) {
-                                if (data.httpStatus === 200) {
-                                    Util.alert(`${data.message}`).then(() => {
-                                        window.location = `/user/cart`
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        const queryString = '?ids=' + ids.join('&ids=')
+                        Http.delete(`/api/cart${queryString}`).then((res) => {
+                            if (res['httpStatus'] === 200) {
+                                Util.alert(`${res.message}`).then(() => {
+                                    window.location = `/user/cart`
+                                })
                             }
                         })
                     }

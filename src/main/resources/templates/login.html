@@ -231,8 +231,6 @@
             window.location.href = '/oauth2/authorization/google'
         })
 
-
-
         /* 아이디/비번 찾기 */
         $("#find-user-password-userId").on("click", function(e){
             window.location.href = '/front/initialPassword'
@@ -244,23 +242,16 @@
 
             if(!newUserEmail.length) Util.alert("이메일은 빈값일 수 없습니다.", 'w', 'w')
             else {
-                $.ajax({
-                    type: 'GET',
-                    url: `/front/api/checkEmail?userEmail=${newUserEmail}`,
-                    dataType: 'json',
-                    success: function (data) {
-                        if (!data.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
-                        else {
-                            $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
-                            $("#userEmail").prop('disabled', true)
-                            $("#check-Email").prop('disabled', true)
-                            EmailChk = true
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
+
+                Http.get(`/front/api/checkEmail?userEmail=${newUserEmail}`).then((res) => {
+                    if(!res.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
+                    else {
+                        $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
+                        $("#userEmail").prop('disabled', true)
+                        $("#check-Email").prop('disabled', true)
+                        EmailChk = true
                     }
-                });
+                })
             }
         })
 
@@ -279,23 +270,16 @@
 
             if(!newUserId.length) Util.alert("아이디는 빈값일 수 없습니다.", 'w', 'w')
             else {
-                $.ajax({
-                    type: 'GET',
-                    url: `/front/api/checkId?userId=${newUserId}`,
-                    dataType: 'json',
-                    success: function (data) {
-                        if (!data.message) $("#IdChkMessage").css('color', 'red').html("중복되는 아이디입니다.")
-                        else {
-                            $("#IdChkMessage").css('color', 'green').html("사용 가능한 아이디입니다.")
-                            $("#newUserId").prop('disabled', true)
-                            $("#check-Id").prop('disabled', true)
-                            IdChk = true
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+
+                Http.get(`/front/api/checkId?userId=${newUserId}`).then((res) => {
+                    if (!res.message) $("#IdChkMessage").css('color', 'red').html("중복되는 아이디입니다.")
+                    else {
+                        $("#IdChkMessage").css('color', 'green').html("사용 가능한 아이디입니다.")
+                        $("#newUserId").prop('disabled', true)
+                        $("#check-Id").prop('disabled', true)
+                        IdChk = true
                     }
-                });
+                })
             }
         })
 
@@ -319,26 +303,15 @@
                             obj['userId'] = $("#newUserId").val()
                             obj['userEmail'] = $("#userEmail").val()
 
-                            $.ajax({
-                                type: 'POST',
-                                url: `/front/api/user`,
-                                dataType: 'json',
-                                data: JSON.stringify(obj),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if(data.httpStatus === 200) {
-                                        Util.alert("회원가입을 성공했습니다.").then(() => {
-                                            $('#myModal').modal('hide');
-                                        })
-                                    }else {
-                                        Util.alert("회원가입을 실패했습니다.", 'w', 'w')
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
+                            Http.post(`/front/api/user`, obj).then((res) => {
+                                if(res['httpStatus'] === 200) {
+                                    Util.alert("회원가입을 성공했습니다.").then(() => {
+                                        $('#myModal').modal('hide');
+                                    })
+                                }else {
+                                    Util.alert("회원가입을 실패했습니다.", 'w', 'w')
                                 }
-                            });
-
+                            })
                         })
                     }
                 }

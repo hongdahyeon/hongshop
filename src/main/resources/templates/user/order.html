@@ -276,21 +276,13 @@
             // 만일 배송완료된 주문건이라면 -> 해당 주문에 대해 리뷰작성이 가능하다.
             // 이때 이미 그 주문건에 대해 리뷰가 작성됐다면 더이상 리뷰 작성이 불가능하다.
             if(deliverStatus == 'DELIVERED') {
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/user-order-review/${orderId}`,
-                    dataType: 'json',
-                    success: function (data) {
-                        if(!data.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w', 'w')
-                        else {
-                            setRadioDiv(orderId)                    // 주문 -> 상품건들에 대한 라디오 버튼 div 만들기
-                            $("#review-write-modal").modal('show')
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Http.get(`/api/user-order-review/${orderId}`).then((res) => {
+                    if(!res.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w', 'w')
+                    else {
+                        setRadioDiv(orderId)                    // 주문 -> 상품건들에 대한 라디오 버튼 div 만들기
+                        $("#review-write-modal").modal('show')
                     }
-                });
+                })
             } else if(deliverStatus != 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w', 'w')
             else {
                 $("#city").val(city)
@@ -308,32 +300,23 @@
             const dom = $("#choose-product-radio-div")
             dom.empty()
 
-            $.ajax({
-                type: 'GET',
-                url: `/api/order-review/${orderId}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        const datas = data.message
+            Http.get(`/api/order-review/${orderId}`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    const datas = res.message
 
-                        datas.forEach((data, i) => {
-                            const disableOrNot = (data['reviewChkEmpty']) ? '' : 'disabled'
-                            const body = `<div class="form-check">
+                    datas.forEach((data, i) => {
+                        const disableOrNot = (data['reviewChkEmpty']) ? '' : 'disabled'
+                        const body = `<div class="form-check">
                                             <input class="form-check-input" type="radio" name="hongOrderDetailId" value="${data['orderDetailId']}" id="orderDetailId-${data['orderDetailId']}" ${disableOrNot} required>
                                             <label class="form-check-label" for="orderDetailId-${data['orderDetailId']}">
                                                ${data['productName']}
                                             </label>
                                         </div>`
 
-                            dom.append(body)
-                        })
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
+                        dom.append(body)
+                    })
                 }
-            });
+            })
         }
 
         /* 리뷰작성 모달창 닫기 */
@@ -363,25 +346,16 @@
 
                     FormDataToObj.getParameter("change-address-form").then((obj) => {
                         const deliverId = $("#deliverId").val()
-                        $.ajax({
-                            type: 'PUT',
-                            url: `/api/deliver-address/${deliverId}`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert(`${data.message}`).then(() => {
-                                        window.location.href=`/user/order`
-                                    })
-                                }else {
-                                    Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+
+                        Http.put(`/api/deliver-address/${deliverId}`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert(`${res.message}`).then(() => {
+                                    window.location.href=`/user/order`
+                                })
+                            }else {
+                                Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w', 'w')
                             }
-                        });
+                        })
                     })
                 }
             })
@@ -400,26 +374,17 @@
                     FormDataToObj.getParameter("review-write-form").then((obj) => {
                         obj['deleteFile'] = uploadFile.getDeleteFile();
                         if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
-                        $.ajax({
-                            type: 'POST',
-                            url: `/api/review`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if (data.httpStatus === 200) {
-                                    Util.confirm('리뷰작성에 성공하셨습니다. <br/> 리뷰를 보러가시겠습니까?').then((isOk) => {
-                                        if (isOk) window.location.href = '/user/review'
-                                        else window.location.href = '/user/order'
-                                    })
-                                } else {
-                                    Util.alert("리뷰작성에 실패했습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+
+                        Http.post(`/api/review`, obj).then((res) => {
+                            if (res['httpStatus'] === 200) {
+                                Util.confirm('리뷰작성에 성공하셨습니다. <br/> 리뷰를 보러가시겠습니까?').then((isOk) => {
+                                    if (isOk) window.location.href = '/user/review'
+                                    else window.location.href = '/user/order'
+                                })
+                            } else {
+                                Util.alert("리뷰작성에 실패했습니다.", 'w', 'w')
                             }
-                        });
+                        })
                     })
                 }
             })
@@ -438,23 +403,13 @@
             formData.append("file", selectedFile);
             if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
-            $.ajax({
-                type: "POST",
-                url: "/api/uploadFile",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    if(response.httpStatus === 200) {
-                        uploadFile.setFileGroupId(response.message.fileGroupId)
-                        uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                    }
-                },
-                error: function(error) {
-                    // Handle the error response
-                    console.error("File upload error:", error);
+
+            Http.filePost("/api/uploadFile", formData).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    uploadFile.setFileGroupId(res.message.fileGroupId)
+                    uploadFile.addFileList({'originalFileName': fileName, 'id': res.message.id})
                 }
-            });
+            })
         })
     </script>
 </th:block>

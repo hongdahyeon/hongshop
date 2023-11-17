@@ -156,43 +156,27 @@
 
     /* 리뷰 수정 버튼 이벤트 */
     function editReview(id) {
-        $.ajax({
-            type: 'GET',
-            url: `/api/review/${id}`,
-            dataType: 'json',
-            success: function (data) {
-                if(data.httpStatus === 200) {
-                    setReviewModal(data.message)
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error getting password:', error);
+
+        Http.get(`/api/review/${id}`).then((res) => {
+            if(res['httpStatus'] === 200) {
+                setReviewModal(res.message)
             }
-        });
+        })
     }
 
     /* 리뷰 삭제 버튼 이벤트 */
     function trashReview(id){
         Util.confirm("해당 리뷰를 삭제하시겠습니까?").then((isOk) => {
             if(isOk) {
-                $.ajax({
-                    type: 'DELETE',
-                    url: `/api/review/${id}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            Util.alert(`${data.message}`).then(() => {
-                                window.location.href = `/user/review`
-                            })
-                        }else {
-                            Util.alert("해당 리뷰 삭제에 실패했습니다.", 'w', 'w')
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Http.delete(`/api/review/${id}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        Util.alert(`${res.message}`).then(() => {
+                            window.location.href = `/user/review`
+                        })
+                    }else {
+                        Util.alert("해당 리뷰 삭제에 실패했습니다.", 'w', 'w')
                     }
-                });
+                })
             }
         })
     }
@@ -253,25 +237,15 @@
                     obj['deleteFile'] = uploadFile.getDeleteFile();
                     if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: `/api/review/${reviewId}`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if (data.httpStatus === 200) {
-                                Util.alert(`${data.message}`).then(() => {
-                                    window.location.href = '/user/review'
-                                })
-                            } else {
-                                Util.alert("해당 리뷰 수정에 실패했습니다.", 'w', 'w')
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
+                    Http.put(`/api/review/${reviewId}`, obj).then((res) => {
+                        if (res['httpStatus'] === 200) {
+                            Util.alert(`${res.message}`).then(() => {
+                                window.location.href = '/user/review'
+                            })
+                        } else {
+                            Util.alert("해당 리뷰 수정에 실패했습니다.", 'w', 'w')
                         }
-                    });
+                    })
                 })
             }
         })
@@ -290,23 +264,12 @@
         formData.append("file", selectedFile);
         if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
-        $.ajax({
-            type: "POST",
-            url: "/api/uploadFile",
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                if(response.httpStatus === 200) {
-                    uploadFile.setFileGroupId(response.message.fileGroupId)
-                    uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                }
-            },
-            error: function(error) {
-                // Handle the error response
-                console.error("File upload error:", error);
+        Http.filePost("/api/uploadFile", formData).then((res) => {
+            if(res['httpStatus'] === 200) {
+                uploadFile.setFileGroupId(res.message.fileGroupId)
+                uploadFile.addFileList({'originalFileName': fileName, 'id': res.message.id})
             }
-        });
+        })
     });
 
   </script>

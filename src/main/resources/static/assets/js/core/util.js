@@ -40,3 +40,64 @@ class Util {
         }).then((res) => res.isConfirmed)
     }
 }
+
+class Http {
+
+    static get(url, params = '', method = 'GET') {
+        return $.ajax({
+            type: method,
+            url: url,
+            data: params,
+            dataType: 'json'
+        })
+    }
+
+    static syncGet(url, params='', async = false, method = 'GET'){
+        return $.ajax({
+            type: method,
+            url: url,
+            data: params,
+            async: false,
+            dataType: 'json'
+        })
+    }
+
+    static post(url, data, method = 'POST') {
+            return $.ajax({
+                type: method,
+                url: url,
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: 'application/json'
+            })
+    }
+
+    static delete(url, data, method = 'DELETE') {
+        return $.ajax({
+            type: method,
+            url: url,
+            contentType: 'application/json'
+        })
+    }
+
+    static put(url, data, method='PUT') {
+        return $.ajax({
+            type: method,
+            url: url,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: 'application/json'
+        })
+    }
+
+    static filePost(url, formData, method = 'POST'){
+        return $.ajax({
+            type: method,
+            url: url,
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+    }
+
+}

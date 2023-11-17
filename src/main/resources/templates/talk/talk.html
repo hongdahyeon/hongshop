@@ -91,25 +91,13 @@
             $(".receiver-link").on('click', function(e){
                 receiverId = $(this).attr('data-num')                   // 현재 로그인한 사용자 입장에서 톡톡을 보낼 사용자Id
 
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/message/${receiverId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            chatContainer.setDomId(`chat-container-div-${receiverId}`).setData(data.message).draw()
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+              Http.get(`/api/message/${receiverId}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        chatContainer.setDomId(`chat-container-div-${receiverId}`).setData(res.message).draw()
                     }
-                });
+                })
             })
         })
-
-        console.log("sender : ", sender)
-        console.log("messageCanUser : ", messageCanUser)
 
         $("#save-message-content").on('click', function(e) {
             if(receiverId === null) Util.alert("톡톡을 발송할 대상을 선택해주세요.", 'w', 'w')
@@ -117,25 +105,14 @@
                 const messageContent = $("#message-content").val()
                 const obj = {'senderId': sender.id, 'receiverId': receiverId, 'messageContent': messageContent}
 
-                $.ajax({
-                    type: 'POST',
-                    url: `/api/message`,
-                    dataType: 'json',
-                    data: JSON.stringify(obj),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data.httpStatus === 200) {
-                            // 메시지 리로드하기
-                            chatContainer.setData(data.message).draw()
-                            $("#message-content").val('')
-                        } else {
-                            Util.alert("죄송합니다. <br/> 톡톡 전송에 실패했습니다.", 'w', 'w')
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Http.post(`/api/message`, obj).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        chatContainer.setData(res.message).draw()
+                        $("#message-content").val('')
+                    }else {
+                        Util.alert("죄송합니다. <br/> 톡톡 전송에 실패했습니다.", 'w', 'w')
                     }
-                });
+                })
             }
         })
 
