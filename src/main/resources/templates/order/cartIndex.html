@@ -197,25 +197,15 @@
 
             Util.confirm("해당 상품들을 결제하시겠습니까?").then((isOk) => {
                 if(isOk) {
-                    $.ajax({
-                        type: 'POST',
-                        url: `/api/order-from-cart`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if (data.httpStatus === 200) {
-                                Util.alert(`${data.message}번으로 주문되었습니다.`).then(() => {
-                                    window.location.href = '/user/order'
-                                })
-                            } else {
-                                Util.alert(`죄송합니다. 해당 상품들중 현재 재고가 없는 상품이 있어 주문에 실패하였습니다.`, 'w', 'w')
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
+                    Http.post(`/api/order-from-cart`, obj).then((res) => {
+                        if (res['httpStatus'] === 200) {
+                            Util.alert(`${res.message}번으로 주문되었습니다.`).then(() => {
+                                window.location.href = '/user/order'
+                            })
+                        } else {
+                            Util.alert(`죄송합니다. 해당 상품들중 현재 재고가 없는 상품이 있어 주문에 실패하였습니다.`, 'w', 'w')
                         }
-                    });
+                    })
                 }
             })
         })
@@ -255,25 +245,15 @@
                     Util.confirm("현재 주소를 사용자 주소 정보로 수정하시겠습니까?").then((isOk) => {
                         if(isOk) {
                             FormDataToObj.getParameter("update-address-form").then(obj => {
-                                $.ajax({
-                                    type: 'PUT',
-                                    url: `/api/user`,
-                                    dataType: 'json',
-                                    data: JSON.stringify(obj),
-                                    contentType: 'application/json',
-                                    success: function (data) {
-                                        if (data.httpStatus === 200) {
-                                            Util.alert("주소 정보를 변경하였습니다.").then(() => {
-                                                addressChanging(true)
-                                            })
-                                        } else {
-                                            Util.alert("주소 변경에 실패하였습니다.", 'w', 'w')
-                                        }
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Error getting password:', error);
+                                Http.put(`/api/user`, obj).then((res) => {
+                                    if (res['httpStatus'] === 200) {
+                                        Util.alert("주소 정보를 변경하였습니다.").then(() => {
+                                            addressChanging(true)
+                                        })
+                                    } else {
+                                        Util.alert("주소 변경에 실패하였습니다.", 'w', 'w')
                                     }
-                                });
+                                })
                             })
                         } else {
                             addressChanging(true)

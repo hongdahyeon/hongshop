@@ -134,21 +134,12 @@
 
         $(".log-btn").on("click", function(e){
             const fileId = $(this).attr("data-num")
-            $.ajax({
-                type: 'GET',
-                url: `/api/log/${fileId}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        drawModalTable(data.message)
-                        $("#download-log-modal").modal('show')
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
+            Http.get(`/api/log/${fileId}`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    drawModalTable(res.message)
+                    $("#download-log-modal").modal('show')
                 }
-            });
+            })
         })
 
         function drawModalTable(data = []){

@@ -120,24 +120,15 @@
 
             $("#change-userNonLocked").on("click", function(e) {
                 const userId = $("#locked-userId").val();
-                $.ajax({
-                    type: 'PUT',
-                    url: `/api/reset/userNonLocked/${userId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            Util.alert(`${data.message}`).then(() => {
-                                window.location.href='/manager/user'
-                            })
-                        }else {
-                            Util.alert("해당 사용자의 계정 정지 해제에 실패했습니다.", 'w', 'w')
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Http.put(`/api/reset/userNonLocked/${userId}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        Util.alert(`${res.message}`).then(() => {
+                            window.location.href='/manager/user'
+                        })
+                    }else {
+                        Util.alert("해당 사용자의 계정 정지 해제에 실패했습니다.", 'w', 'w')
                     }
-                });
+                })
             })
 
             /* alertModal 모달창 닫기 */
@@ -156,27 +147,17 @@
                     if(!isOk) $(`#userRole-${id}`).val(userRole)
                     else {
                         const obj = {'role': chanageUserRole}
-                        $.ajax({
-                            type: 'PUT',
-                            url: `/api/user/${id}/role`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert(data.message).then(() => {
-                                        window.location.href='/manager/user'
-                                    })
-                                }else {
-                                    Util.alert("해당 사용자의 권한 정보 변경에 실패하였습니다.").then(() => {
-                                        $(`#userRole-${id}`).val(userRole)
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.put(`/api/user/${id}/role`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert(res.message).then(() => {
+                                    window.location.href='/manager/user'
+                                })
+                            }else {
+                                Util.alert("해당 사용자의 권한 정보 변경에 실패하였습니다.").then(() => {
+                                    $(`#userRole-${id}`).val(userRole)
+                                })
                             }
-                        });
+                        })
                     }
                 })
             })

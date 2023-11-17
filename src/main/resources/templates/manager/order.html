@@ -100,27 +100,17 @@
                     if(!isOk) $(`#orderStatus-${orderId}`).val(orderStatus)
                     else {
                         const obj = {'orderStatus': chanageOrderStatus}
-                        $.ajax({
-                            type: 'PUT',
-                            url: `/api/order-status/${orderId}`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert(data.message).then(() => {
-                                        window.location.href='/manager/order'
-                                    })
-                                }else {
-                                    Util.alert("해당 상품의 주문 상태값 변경에 실패하였습니다.").then(() => {
-                                        $(`#orderStatus-${orderId}`).val(orderStatus)
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.put(`/api/order-status/${orderId}`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert(res.message).then(() => {
+                                    window.location.href='/manager/order'
+                                })
+                            }else {
+                                Util.alert("해당 상품의 주문 상태값 변경에 실패하였습니다.").then(() => {
+                                    $(`#orderStatus-${orderId}`).val(orderStatus)
+                                })
                             }
-                        });
+                        })
                     }
                 })
             })

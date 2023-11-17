@@ -396,34 +396,25 @@
                 document.getElementById("category-div").style.display = 'none'
                 document.getElementById("product-div").style.display = 'block'      // show
 
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/product-check-user/${hongProductId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
+                Http.get(`/api/product-check-user/${hongProductId}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
 
-                            // 물품 구매 사용자가 있다면 삭제 버튼 비활성화
-                            if(!data.message['orderUserEmpty']) $("#delete-product-btn").prop('disabled', true)
-                            else $("#delete-product-btn").prop('disabled', false)
+                        // 물품 구매 사용자가 있다면 삭제 버튼 비활성화
+                        if(!res.message['orderUserEmpty']) $("#delete-product-btn").prop('disabled', true)
+                        else $("#delete-product-btn").prop('disabled', false)
 
-                            uploadFile.domEmptyAndFileGroupIdNull()
-                            if(data.message['file'] != null) uploadFile.setFileGroupId(data.message['file']['id']).setData(data.message['file']['fileList']).setFiles()
+                        uploadFile.domEmptyAndFileGroupIdNull()
+                        if(res.message['file'] != null) uploadFile.setFileGroupId(res.message['file']['id']).setData(res.message['file']['fileList']).setFiles()
 
-                            $("#productName").val(data.message['productName'])                          // 상품 이름
-                            $("#hongProductId").val(data.message['productId'])                          // 상품 Id
-                            $("#productCnt").val(data.message['productCnt'])                            // 상품 개수 (변동)
-                            $("#originProductCnt").val(data.message['productCnt'])                      // 상품 개수 (hidden)
-                            $("#productPrice").val(data.message['productPrice'])                        // 상품 가격
-                            $("#productStock").val(data.message['productStock'])                        // 상품 재고
-                            $(`#newProductYn-${data.message['newProductYn']}`).prop('checked', true)    // 최산 상품 여부
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                        $("#productName").val(res.message['productName'])                          // 상품 이름
+                        $("#hongProductId").val(res.message['productId'])                          // 상품 Id
+                        $("#productCnt").val(res.message['productCnt'])                            // 상품 개수 (변동)
+                        $("#originProductCnt").val(res.message['productCnt'])                      // 상품 개수 (hidden)
+                        $("#productPrice").val(res.message['productPrice'])                        // 상품 가격
+                        $("#productStock").val(res.message['productStock'])                        // 상품 재고
+                        $(`#newProductYn-${res.message['newProductYn']}`).prop('checked', true)    // 최산 상품 여부
                     }
-                });
+                })
             })
 
             /* [왼쪽] 카테고리 nav-tab 클릭 */
@@ -434,25 +425,16 @@
                 document.getElementById("category-div").style.display = 'block'     // show
                 document.getElementById("product-div").style.display = 'none'
 
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/category-product/${hongCategoryId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            $("#hongCategoryId").val(data.message['categoryId'])                                        // 카테고리 Id
-                            $("#orderNum").val(data.message['orderNum'])                                                // 카테고리 순서
-                            $("#categoryName").val(data.message['categoryName'])                                        // 카테고리 이름
-                            $("#description").html(data.message['description'])                                         // 카테고리 설명
-                            if(data.message['productList'].length) $("#delete-category-btn").prop('disabled', true)     // 하위 상품 존재시, 카테고리 삭제 불가능
-                            else $("#delete-category-btn").prop('disabled', false)
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
+                Http.get(`/api/category-product/${hongCategoryId}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        $("#hongCategoryId").val(res.message['categoryId'])                                        // 카테고리 Id
+                        $("#orderNum").val(res.message['orderNum'])                                                // 카테고리 순서
+                        $("#categoryName").val(res.message['categoryName'])                                        // 카테고리 이름
+                        $("#description").html(res.message['description'])                                         // 카테고리 설명
+                        if(res.message['productList'].length) $("#delete-category-btn").prop('disabled', true)     // 하위 상품 존재시, 카테고리 삭제 불가능
+                        else $("#delete-category-btn").prop('disabled', false)
                     }
-                });
+                })
             })
 
             /* [왼쪽] "+상품" 클릭 */
@@ -494,22 +476,13 @@
 
                 Util.confirm("해당 상품을 삭제하시겠습니까?").then((isOk) => {
                     if(isOk) {
-                        $.ajax({
-                            type: 'DELETE',
-                            url: `/api/product/${productId}`,
-                            dataType: 'json',
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert(`${data.message}`).then(() => {
-                                        defaultPage()
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.delete(`/api/product/${productId}`).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert(`${res.message}`).then(() => {
+                                    defaultPage()
+                                })
                             }
-                        });
+                        })
                     }
                 })
             })
@@ -520,22 +493,13 @@
 
                 Util.confirm("해당 카테고리를 삭제하시겠습니까?").then((isOk) => {
                     if(isOk) {
-                        $.ajax({
-                            type: 'DELETE',
-                            url: `/api/category/${categoryId}`,
-                            dataType: 'json',
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert(`${data.message}`).then(() => {
-                                        defaultPage()
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.delete(`/api/category/${categoryId}`).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert(`${res.message}`).then(() => {
+                                    defaultPage()
+                                })
                             }
-                        });
+                        })
                     }
                 })
             })
@@ -543,25 +507,16 @@
             /* [오른쪽] "주문자" 버튼 클릭 */
             $("#show-product-order").on("click", function(e) {
                 const productId = $("#hongProductId").val()
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/product-user/${productId}`,
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data.httpStatus === 200) {
-                            const productUser = data.message.orderDetails
-                            if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w', 'w')
-                            else {
-                                drawModalTable(productUser)
-                                $("#product-user-modal").modal('show')
-                            }
+                Http.get(`/api/product-user/${productId}`).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        const productUser = res.message['orderDetails']
+                        if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w', 'w')
+                        else {
+                            drawModalTable(productUser)
+                            $("#product-user-modal").modal('show')
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error getting password:', error);
                     }
-                });
+                })
             })
         })
 
@@ -569,6 +524,7 @@
         function categoryModalEmpty(){
             $("#new-categoryName").val('')
             $("#new-description").val('')
+            $("#new-orderNum").val('')
 
             // validation 지우기
             const form = document.getElementById("new-category-form")
@@ -580,6 +536,7 @@
             $("#new-productName").val('')
             $("#new-productCnt").val('')
             $("#new-productPrice").val('')
+            $("#new-newProductYn-N").prop('checked', true)
             newUploadFile.domEmptyAndFileGroupIdNull()  // product modal file dom.empty()
 
             // validation 지우기
@@ -611,20 +568,11 @@
 
         /* [왼쪽] 카테고리->상품 리스트 조회 */
         function getCategoryWithProduct(){
-            $.ajax({
-                type: 'GET',
-                url: `/api/category-product`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        nav.setData(data.message).draw()
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
+            Http.get(`/api/category-product`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    nav.setData(res.message).draw()
                 }
-            });
+            })
         }
 
         /* [오른쪽] 카테고리 정보 변경 */
@@ -639,26 +587,15 @@
 
                     FormDataToObj.getParameter("category-form").then((obj) => {
                         const hongCategoryId = $("#hongCategoryId").val()
-
-                        $.ajax({
-                            type: 'PUT',
-                            url: `/api/category/${hongCategoryId}`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if (data.httpStatus === 200) {
-                                    Util.alert("카테고리 정보를 수정하였습니다.").then(() => {
-                                        defaultPage()
-                                    })
-                                } else {
-                                    Util.alert("카테고리 정보 수정에 실패하였습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.put(`/api/category/${hongCategoryId}`, obj).then((res) => {
+                            if (res['httpStatus'] === 200) {
+                                Util.alert("카테고리 정보를 수정하였습니다.").then(() => {
+                                    defaultPage()
+                                })
+                            } else {
+                                Util.alert("카테고리 정보 수정에 실패하였습니다.", 'w', 'w')
                             }
-                        });
+                        })
                     })
                 }
             })
@@ -683,25 +620,15 @@
 
                         if(obj['productCnt'] < limitProduct) Util.alert(`해당 상품의 경우 최소 상품이 ${limitProduct}개 필요합니다.`, 'w', 'w')
                         else {
-                            $.ajax({
-                                type: 'PUT',
-                                url: `/api/product/${productId}`,
-                                dataType: 'json',
-                                data: JSON.stringify(obj),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if (data.httpStatus === 200) {
-                                        Util.alert("상품 정보를 수정하였습니다.").then(() => {
-                                            defaultPage()
-                                        })
-                                    } else {
-                                        Util.alert("상품 정보 수정에 실패하였습니다.", 'w', 'w')
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
+                            Http.put(`/api/product/${productId}`, obj).then((res) => {
+                                if (res['httpStatus'] === 200) {
+                                    Util.alert("상품 정보를 수정하였습니다.").then(() => {
+                                        defaultPage()
+                                    })
+                                } else {
+                                    Util.alert("상품 정보 수정에 실패하였습니다.", 'w', 'w')
                                 }
-                            });
+                            })
                         }
                     })
                 }
@@ -719,28 +646,16 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("new-category-form").then((obj) => {
-
-                        $.ajax({
-                            type: 'POST',
-                            url: `/api/category`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert("카테고리가 추가되었습니다.").then(() => {
-                                        defaultPage()
-                                        $("#new-category-modal").modal('hide')
-                                    })
-                                }else {
-                                    Util.alert("카테고리 추가에 실패하였습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.post(`/api/category`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert("카테고리가 추가되었습니다.").then(() => {
+                                    defaultPage()
+                                    $("#new-category-modal").modal('hide')
+                                })
+                            }else {
+                                Util.alert("카테고리 추가에 실패하였습니다.", 'w', 'w')
                             }
-                        });
-
+                        })
                     })
                 }
             })
@@ -760,27 +675,16 @@
 
                         if(newUploadFile.getFileGroupId()) obj['fileGroupId'] = newUploadFile.getFileGroupId()
                         obj['deleteFile'] = newUploadFile.getDeleteFile()
-
-                        $.ajax({
-                            type: 'POST',
-                            url: `/api/product`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert("상품이 추가되었습니다.").then(() => {
-                                        defaultPage()
-                                        $("#new-product-modal").modal('hide')
-                                    })
-                                }else {
-                                    Util.alert("상품 추가에 실패하였습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.post(`/api/product`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert("상품이 추가되었습니다.").then(() => {
+                                    defaultPage()
+                                    $("#new-product-modal").modal('hide')
+                                })
+                            }else {
+                                Util.alert("상품 추가에 실패하였습니다.", 'w', 'w')
                             }
-                        });
+                        })
                     })
                 }
             })
@@ -825,23 +729,12 @@
                     formData.append("file", selectedFile);
                     if (uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/uploadFile",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            if (response.httpStatus === 200) {
-                                uploadFile.setFileGroupId(response.message.fileGroupId)
-                                uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                            }
-                        },
-                        error: function (error) {
-                            // Handle the error response
-                            console.error("File upload error:", error);
+                    Http.filePost("/api/uploadFile", formData).then((res) => {
+                        if(res['httpStatus'] === 200) {
+                            uploadFile.setFileGroupId(res.message.fileGroupId)
+                            uploadFile.addFileList({'originalFileName': fileName, 'id': res.message.id})
                         }
-                    });
+                    })
                 }
             }
         })
@@ -860,23 +753,12 @@
                     formData.append("file", selectedFile);
                     if (newUploadFile.getFileGroupId()) formData.append("fileGroupId", newUploadFile.getFileGroupId());
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/api/uploadFile",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                            if (response.httpStatus === 200) {
-                                newUploadFile.setFileGroupId(response.message.fileGroupId)
-                                newUploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                            }
-                        },
-                        error: function (error) {
-                            // Handle the error response
-                            console.error("File upload error:", error);
+                    Http.filePost("/api/uploadFile", formData).then((res) => {
+                        if(res['httpStatus'] === 200) {
+                            newUploadFile.setFileGroupId(res.message.fileGroupId)
+                            newUploadFile.addFileList({'originalFileName': fileName, 'id': res.message.id})
                         }
-                    });
+                    })
                 }
             }
         })

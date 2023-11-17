@@ -272,22 +272,13 @@
             else {
                 Util.confirm("해당 게시판을 삭제하시겠습니까?").then((isOk) => {
                     if (isOk) {
-                        $.ajax({
-                            type: 'DELETE',
-                            url: `/api/type/${postTypeId}`,
-                            dataType: 'json',
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if (data.httpStatus === 200) {
-                                    Util.alert(`${data.message}`).then(() => {
-                                        window.location.href = '/manager/postType'
-                                    })
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.delete(`/api/type/${postTypeId}`).then((res) => {
+                            if (res['httpStatus'] === 200) {
+                                Util.alert(`${res.message}`).then(() => {
+                                    window.location.href = '/manager/postType'
+                                })
                             }
-                        });
+                        })
                     }
                 })
             }
@@ -296,21 +287,11 @@
         /* 게시판 수정 버튼 클릭 이벤트 */
         $(".post-update-btn").on("click", function(e){
             const postTypeId = $(this).val()
-            $.ajax({
-                type: 'GET',
-                url: `/api/type/${postTypeId}`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        setPostUpdateModal(data.message)
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
+            Http.get(`/api/type/${postTypeId}`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    setPostUpdateModal(res.message)
                 }
-            });
-
+            })
         })
 
         /* 게시판 수정 버튼 클릭 시, 해당 게시판 정보로 모달 채우고 모달 띄우기 */
@@ -354,26 +335,15 @@
                     event.preventDefault();
 
                     FormDataToObj.getParameter("new-postType-form").then((obj) => {
-
-                        $.ajax({
-                            type: 'POST',
-                            url: `/api/type`,
-                            dataType: 'json',
-                            data: JSON.stringify(obj),
-                            contentType: 'application/json',
-                            success: function (data) {
-                                if(data.httpStatus === 200) {
-                                    Util.alert("게시판 유형이 추가되었습니다.").then(() => {
-                                        window.location.href='/manager/postType'
-                                    })
-                                }else {
-                                    Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w', 'w')
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error('Error getting password:', error);
+                        Http.post(`/api/type`, obj).then((res) => {
+                            if(res['httpStatus'] === 200) {
+                                Util.alert("게시판 유형이 추가되었습니다.").then(() => {
+                                    window.location.href='/manager/postType'
+                                })
+                            }else {
+                                Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w', 'w')
                             }
-                        });
+                        })
                     })
                 }
             })
@@ -394,47 +364,29 @@
                         if(postType === 'QNA' && (postType !== obj['postType'])){
                             Util.confirm(`만약 QNA 게시판에서 ${obj['postType']} 게시판 유형으로 변경하시면 <br/> 해당 게시글에 달린 댓글을 볼수 없습니다. <br/> 그래도 변경하시겠습니까?`).then((isOk) => {
                                 if(isOk) {
-                                    $.ajax({
-                                        type: 'PUT',
-                                        url: `/api/type/${postTypeId}`,
-                                        dataType: 'json',
-                                        data: JSON.stringify(obj),
-                                        contentType: 'application/json',
-                                        success: function (data) {
-                                            if (data.httpStatus === 200) {
-                                                Util.alert(data.message).then(() => {
-                                                    window.location.href = '/manager/postType'
-                                                })
-                                            } else {
-                                                Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('Error getting password:', error);
+
+                                    Http.put(`/api/type/${postTypeId}`, obj).then((res) => {
+                                        if (res['httpStatus'] === 200) {
+                                            Util.alert(res.message).then(() => {
+                                                window.location.href = '/manager/postType'
+                                            })
+                                        } else {
+                                            Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
                                         }
-                                    });
+                                    })
                                 }
                             })
                         }else {
-                            $.ajax({
-                                type: 'PUT',
-                                url: `/api/type/${postTypeId}`,
-                                dataType: 'json',
-                                data: JSON.stringify(obj),
-                                contentType: 'application/json',
-                                success: function (data) {
-                                    if (data.httpStatus === 200) {
-                                        Util.alert(data.message).then(() => {
-                                            window.location.href = '/manager/postType'
-                                        })
-                                    } else {
-                                        Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error('Error getting password:', error);
+
+                            Http.put(`/api/type/${postTypeId}`, obj).then((res) => {
+                                if (res['httpStatus'] === 200) {
+                                    Util.alert(res.message).then(() => {
+                                        window.location.href = '/manager/postType'
+                                    })
+                                } else {
+                                    Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
                                 }
-                            });
+                            })
                         }
                     })
                 }

@@ -95,27 +95,17 @@
                 else {
                     const obj = {'status': chanageDeliverStatus}
 
-                    $.ajax({
-                        type: 'PUT',
-                        url: `/api/deliver-status/${deliverId}`,
-                        dataType: 'json',
-                        data: JSON.stringify(obj),
-                        contentType: 'application/json',
-                        success: function (data) {
-                            if(data.httpStatus === 200) {
-                                Util.alert(data.message).then(() => {
-                                    window.location.href='/manager/deliver'
-                                })
-                            }else {
-                                Util.alert("해당 배송 정보 변경에 실패하였습니다.").then(() => {
-                                    $(`#deliverStatus-${deliverId}`).val(deliverStatus)
-                                })
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error getting password:', error);
+                    Http.put(`/api/deliver-status/${deliverId}`, obj).then((res) => {
+                        if(res['httpStatus'] === 200) {
+                            Util.alert(res.message).then(() => {
+                                window.location.href='/manager/deliver'
+                            })
+                        }else {
+                            Util.alert("해당 배송 정보 변경에 실패하였습니다.").then(() => {
+                                $(`#deliverStatus-${deliverId}`).val(deliverStatus)
+                            })
                         }
-                    });
+                    })
                 }
             })
         })
