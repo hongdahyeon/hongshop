@@ -101,29 +101,20 @@
         }
 
         const drawPostDom = () => {
-            $.ajax({
-                type: 'GET',
-                url: `/api/type/header`,
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function (data) {
-                    if(data.httpStatus === 200) {
-                        const category = data.message
-                        let body = ''
-                        const dom = document.getElementById("post-dropdown");
-                        dom.innerHTML = ''
+            Http.get(`/api/type/header`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    const category = res.message
+                    let body = ''
+                    const dom = document.getElementById("post-dropdown");
+                    dom.innerHTML = ''
 
-                        category.forEach((data, i) => {
-                            body += `<li><a class="dropdown-item" href="${data['postUrl']}">${data['postName']}</a></li>`
-                        })
+                    category.forEach((data, i) => {
+                        body += `<li><a class="dropdown-item" href="${data['postUrl']}">${data['postName']}</a></li>`
+                    })
 
-                        dom.innerHTML = body
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error getting password:', error);
+                    dom.innerHTML = body
                 }
-            });
+            })
         }
 
 

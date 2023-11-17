@@ -95,22 +95,13 @@
 
                             if(uploadFile.getFileGroupId()) obj['fileGroupId'] = uploadFile.getFileGroupId()
 
-                            $.ajax({
-                                type: "PUT",
-                                url: `/api/post/${post['id']}`,
-                                data: JSON.stringify(obj),
-                                contentType: "application/json",
-                                success: function(response) {
-                                    if(response.httpStatus === 200){
-                                        Util.alert("수정되었습니다.").then(() => {
-                                            window.location.href = `/bbs/${post['typeId']}`
-                                        })
-                                    }
-                                },
-                                error: function(error) {
-                                    console.error("File upload error:", error);
+                            Http.put(`/api/post/${post['id']}`, obj).then((res) => {
+                                if(res['httpStatus'] === 200){
+                                    Util.alert("수정되었습니다.").then(() => {
+                                        window.location.href = `/bbs/${post['typeId']}`
+                                    })
                                 }
-                            });
+                            })
                         }
                     }
                 })
@@ -129,23 +120,12 @@
                 formData.append("file", selectedFile);
                 if(uploadFile.getFileGroupId()) formData.append("fileGroupId", uploadFile.getFileGroupId());
 
-                $.ajax({
-                    type: "POST",
-                    url: "/api/uploadFile",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        if(response.httpStatus === 200) {
-                            uploadFile.setFileGroupId(response.message.fileGroupId)
-                            uploadFile.addFileList({'originalFileName': fileName, 'id': response.message.id})
-                        }
-                    },
-                    error: function(error) {
-                        // Handle the error response
-                        console.error("File upload error:", error);
+                Http.filePost("/api/uploadFile", formData).then((res) => {
+                    if(res['httpStatus'] === 200) {
+                        uploadFile.setFileGroupId(res.message.fileGroupId)
+                        uploadFile.addFileList({'originalFileName': fileName, 'id': res.message.id})
                     }
-                });
+                })
             });
         })
 

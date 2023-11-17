@@ -69,6 +69,7 @@
 /* 장바구니 page -> checkbox div */
 .top-checkbox {
     position: relative;
+    margin-left: 10px;
 }
 
 /* 장바구니 page -> checkbox */

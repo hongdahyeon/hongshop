@@ -46,52 +46,22 @@
             window.location.href = `/bbs/save/${type['postTypeId']}`
         })
 
-        function downloadFile(id) {
-            let filename = '';
-
-            fetch(`/api/downloadFile/${id}`)
-                .then(response => {
-                    const contentDisposition = response.headers.get('Content-Disposition');
-                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
-                    filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
-                    if(filename) return response.blob();
-                })
-                .then(blob => {
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.setAttribute('download', decodeURIComponent(filename));
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                })
-                .catch(error => {
-                    console.log("error : ", error)
-                })
-        }
-
+        /* 게시글 삭제 버튼 클릭 이벤트 */
         function deleteBbsctt(id){
             Util.confirm("삭제 하시겠습니까?").then((isOk) => {
                 if(isOk) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: `/api/post/${id}`,
-                        success: function (response) {
-                            if (response['httpStatus'] === 200) {
-                                Util.alert("게시글이 삭제되었습니다.").then(() => {
-                                    window.location.href = `/bbs/${postId}`
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            // Handle the error response
-                            console.error("upload error:", error);
+                    Http.delete(`/api/post/${id}`).then((res) => {
+                        if (res['httpStatus'] === 200) {
+                            Util.alert("게시글이 삭제되었습니다.").then(() => {
+                                window.location.href = `/bbs/${postId}`
+                            })
                         }
-                    });
+                    })
                 }
             })
         }
 
+        /* 게시글 수정 버튼 클릭 이벤트 */
         function editBbsctt(id){
             window.location.href = `/bbs/edit/${id}`
         }

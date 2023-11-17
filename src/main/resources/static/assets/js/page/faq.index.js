@@ -71,7 +71,7 @@ class faqAcc {
             const body =
                 `
                     <li style="margin-top: 10px;">
-                        <a href="#" onclick="downloadFile(${value.id})">
+                        <a href="#" onclick="Http.fileDownload(${value.id})">
                             <i data-feather="download" class="front-medium-2"></i>
                         </a>
                         ${value['originalFileName']}

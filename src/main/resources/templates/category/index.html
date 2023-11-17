@@ -252,43 +252,24 @@
                         if(submitButtonId === 'into-cart') {
                             Util.confirm("해당 상품을 장바구니에 담으시겠습니까?").then((isOk) => {
                                 if(isOk) {
-                                    $.ajax({
-                                        type: 'GET',
-                                        url: `/api/find-cart/${obj['hongProductId']}`,
-                                        dataType: 'json',
-                                        contentType: 'application/json',
-                                        success: function (data) {
-                                            if(data.httpStatus === 200) {
-                                                if(!data.message) Util.alert(`이미 해당 상품이 장바구니에 있습니다. <br/> 확인해주세요.`, 'w', 'w')
-                                                else {
-                                                    const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
-                                                    $.ajax({
-                                                        type: 'POST',
-                                                        url: `/api/cart`,
-                                                        dataType: 'json',
-                                                        data: JSON.stringify(OBJ),
-                                                        contentType: 'application/json',
-                                                        success: function (data) {
-                                                            if (data.httpStatus === 200) {
-                                                                Util.confirm(`해당 물품이 장바구니에 담겼습니다. <br/> 장바구니를 보러가시겠습니까?`).then((isOk) => {
-                                                                    if (isOk) window.location.href = '/user/cart'
-                                                                    else $("#product-purchase-modal").modal('hide')
-                                                                })
-                                                            } else {
-                                                                Util.alert("해당 물품을 장바구니에 담기에 실패했습니다.", 'w', 'w')
-                                                            }
-                                                        },
-                                                        error: function (xhr, status, error) {
-                                                            console.error('Error getting password:', error);
-                                                        }
-                                                    });
-                                                }
+                                    Http.get(`/api/find-cart/${obj['hongProductId']}`).then((res) => {
+                                        if(res['httpStatus'] === 200) {
+                                            if(!res.message) Util.alert(`이미 해당 상품이 장바구니에 있습니다. <br/> 확인해주세요.`, 'w', 'w')
+                                            else {
+                                                const OBJ = {'hongProductId': obj['hongProductId'], 'cartCnt': obj['product-order-num']}
+                                                Http.post(`/api/cart`, OBJ).then((res) => {
+                                                    if (res['httpStatus'] === 200) {
+                                                        Util.confirm(`해당 물품이 장바구니에 담겼습니다. <br/> 장바구니를 보러가시겠습니까?`).then((isOk) => {
+                                                            if (isOk) window.location.href = '/user/cart'
+                                                            else $("#product-purchase-modal").modal('hide')
+                                                        })
+                                                    } else {
+                                                        Util.alert("해당 물품을 장바구니에 담기에 실패했습니다.", 'w', 'w')
+                                                    }
+                                                })
                                             }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('Error getting password:', error);
                                         }
-                                    });
+                                    })
                                 }
                             })
                         } else if(submitButtonId === 'into-purchase') {

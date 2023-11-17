@@ -8,7 +8,7 @@
     <title>HONG SHOP</title>
     <style>
         .ck-editor__editable { height: 300px; }
-        .ck-content { font-size: 12px; }
+        .ck-content { font-size: 14px; }
     </style>
 </th:block>
 
@@ -77,7 +77,7 @@
                 const body =
                     `
                     <li style="margin-top: 10px;">
-                        <a href="#" onclick="downloadFile(${value.id})">
+                        <a href="#" onclick="Http.fileDownload(${value.id})">
                             <i data-feather="download" class="front-medium-2"></i>
                         </a>
                         ${value['originalFileName']}
@@ -88,57 +88,27 @@
             feather.replace()
         }
 
-        function downloadFile(id) {
-            let filename = '';
-
-            fetch(`/api/downloadFile/${id}`)
-                .then(response => {
-                    const contentDisposition = response.headers.get('Content-Disposition');
-                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
-                    filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
-                    if(filename) return response.blob();
-                })
-                .then(blob => {
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.setAttribute('download', decodeURIComponent(filename));
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                })
-                .catch(error => {
-                    console.log("error : ", error)
-                })
-        }
-
+        /* 삭제버튼 클릭 이벤트 */
         $("#delete-btn").on("click", function(e) {
-            console.log("delete-btn clicked...")
             Util.confirm("삭제 하시겠습니까?").then((isOk) => {
                 if(isOk) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: `/api/post/${post['id']}`,
-                        success: function (response) {
-                            if (response['httpStatus'] === 200) {
-                                Util.alert("게시글이 삭제되었습니다.").then(() => {
-                                    window.location.href = `/bbs/${post['typeId']}`
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            // Handle the error response
-                            console.error("upload error:", error);
+                    Http.delete(`/api/post/${post['id']}`).then((res) => {
+                        if (res['httpStatus'] === 200) {
+                            Util.alert("게시글이 삭제되었습니다.").then(() => {
+                                window.location.href = `/bbs/${post['typeId']}`
+                            })
                         }
-                    });
+                    })
                 }
             })
         })
 
+        /* 목록버튼 클릭 이벤트 */
         $("#list-btn").on("click", function(e){
             window.location.href = `/bbs/${post['typeId']}`
         })
 
+        /* 수정버튼 클릭 이벤트 */
         $("#edit-btn").on("click", function(e){
             window.location.href = `/bbs/edit/${post['id']}`
         })

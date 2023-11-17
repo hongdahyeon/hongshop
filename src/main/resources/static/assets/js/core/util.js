@@ -100,4 +100,29 @@ class Http {
         })
     }
 
+    static fileDownload(id){
+        let filename = ''
+        return $.ajax({
+            url: `/api/downloadFile/${id}`,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (blobData, status, xhr) {
+                const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                filename = matches && matches[1] ? matches[1].replace(/['"]/g, '').replace('UTF-8', '') : "";
+
+                if (filename) {
+                    const link = $('<a style="display: none;"></a>');
+                    link.attr('href', window.URL.createObjectURL(blobData));
+                    link.attr('download', decodeURIComponent(filename));
+                    $('body').append(link);
+                    link[0].click();
+                    link.remove();
+                }
+            }
+        });
+    }
+
 }
