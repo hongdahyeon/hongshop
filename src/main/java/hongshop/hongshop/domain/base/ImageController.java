@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.base;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ImageController {
 
-    private final String rootPath = "D:\\hongFile\\";
+    @Value("${hong.img-url}")
+    private String rootPath;
     @CrossOrigin
     @GetMapping("/image")
     public ResponseEntity<?> returnImage(@RequestParam String imageId) {

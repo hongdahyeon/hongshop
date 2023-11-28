@@ -35,11 +35,15 @@
         const postId = /*[[${id}]]*/ null;
         const type = /*[[${type}]]*/ []
         const user = /*[[${user}]]*/ {};
-        const postList = /*[[${postList}]]*/ [];
+        const id = /*[[${id}]]*/ null
         const faq = new faqAcc("faq-accordion", user['role'])
 
         $(document).ready(function(e) {
-            faq.setData(postList).draw()
+            Http.get(`/api/postsWithFileByPostType/${id}`).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    faq.setData(res.message).draw()
+                }
+            })
         })
 
         $("#new-bbsctt").on("click", function(e) {

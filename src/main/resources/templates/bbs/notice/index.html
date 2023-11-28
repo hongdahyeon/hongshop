@@ -28,31 +28,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-hover table-bordered" id="notice-table">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;">번호</th>
-                        <th style="width: 30%">제목</th>
-                        <th style="width: 10%">첨부파일</th>
-                        <th style="width: 10%">조회수</th>
-                    </tr>
-                </thead>
-                <tbody id="notice-tbody">
-                    <th:block th:if="${postList.size() > 0}">
-                        <tr th:each="post, postStat : ${postList}" th:data-num="${post.regId}" th:data-value="${post.id}">
-                            <td style="width: 10%;" th:text="${postStat.index + 1}"></td>
-                            <td style="width: 50%" class="text-start" th:text="${post.title}"></td>
-                            <td style="width: 10%" th:text="${(post.file == null) ? 0 : post.file.fileList.size()}"></td>
-                            <td style="width: 10%" th:text="${post.readCnt}"></td>
-                        </tr>
-                    </th:block>
-                    <th:block th:unless="${postList.size() > 0}">
-                        <tr>
-                            <td colspan="4">게시글이 비어있습니다.</td>
-                        </tr>
-                    </th:block>
-                </tbody>
-            </table>
+            <div id="notice-table"></div>
         </div>
     </div>
 </th:block>
@@ -60,17 +36,25 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
+        const id = /*[[${id}]]*/ null
         const type = /*[[${type}]]*/ []
+        const table = new Table("notice-table")
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const tbody = document.getElementById("notice-tbody")
-            const tableRows = tbody.querySelectorAll('tr')
-            tableRows.forEach(function (row) {
-                row.addEventListener('click', function () {
-                    const postId = this.getAttribute('data-value');
-                    window.location.href = `/bbs/view/${postId}`;
-                });
-            });
+        $(document).ready(function() {
+            table
+                .get(`/api/postsWithFileByPostType/${id}`)
+                .add(new Column("index").title("#").width("15%").center())
+                .add(new Column("title").title("제목").width("30%").left())
+                .add(new Column("readCnt").title("조회수").width("20%").center())
+                .add(new Column("file").title("첨부파일").width("20%").center().formatter(function(cell) {
+                    const cellData = cell.getValue()
+                    return (cellData === null) ? '0 개' : `${cellData['fileList'].length} 개`
+                }))
+                .init()
+
+            table.rowClick((data, row) => {
+                window.location.href = `/bbs/view/${data['id']}`
+            })
         })
 
         $("#new-bbsctt").on("click", function(e) {

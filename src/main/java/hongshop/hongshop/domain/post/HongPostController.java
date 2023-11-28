@@ -2,11 +2,10 @@ package hongshop.hongshop.domain.post;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
-import hongshop.hongshop.domain.post.vo.HongPostVO;
-import hongshop.hongshop.domain.postType.HongPostTypeService;
 import hongshop.hongshop.domain.post.html.BbsType;
 import hongshop.hongshop.domain.post.html.CRUD;
-import hongshop.hongshop.domain.postType.PostType;
+import hongshop.hongshop.domain.post.vo.HongPostVO;
+import hongshop.hongshop.domain.postType.HongPostTypeService;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -34,18 +33,10 @@ public class HongPostController {
     @GetMapping("/{id}")
     public String list(@PathVariable Long id, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails){
         HongPostTypeVO view = hongPostTypeService.view(id);
-        List<HongPostVO> postList = hongPostService.postsWithFileByPostType(id);
-
-        if(view.getPostType().equals(PostType.FAQ.toString())) {
-            postList.forEach(post ->  {
-                post.setContent(StringEscapeUtils.unescapeHtml4(post.getContent()));
-            });
-        }
 
         model.addAttribute("id", id);
         model.addAttribute("type", view);
         model.addAttribute("user", principalDetails.getUser());
-        model.addAttribute("postList", postList);
         return "bbs/" + BbsType.getHtmlName(view.getPostType(), CRUD.INDEX.html());
     }
 
