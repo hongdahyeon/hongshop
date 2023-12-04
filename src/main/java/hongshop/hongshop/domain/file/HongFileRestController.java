@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,5 +81,13 @@ public class HongFileRestController {
         System.out.println("multipartFile = " + multipartFile);
         Map<String, Object> params = hongFileService.uploadCKImageFile(multipartFile);
         return params;
+    }
+
+    @GetMapping("/file-list")
+    @Operation(summary = "get File List", description = "업로드된 파일 리스트 조회")
+    @ApiDocumentResponse
+    public Response all(){
+        List<HongFileVO> all = hongFileService.all();
+        return Response.ok(all);
     }
 }

@@ -5,16 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        
-        tr {
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -23,68 +13,13 @@
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
                     <h3>파일 업로드/다운로드 기록</h3>
+                    <p style="color: red; font-size: 15px">* 테이블행을 클릭하면, 해당 파일의 로그 확인이 가능합니다.</p>
                 </div>
                 <div class="text-end"></div>
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="cart-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;" rowspan="2">파일그룹ID</th>
-                        <th style="width: 50%" colspan="7">파일</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 5%;">파일ID</th>
-                        <th style="width: 10%;">파일이름</th>
-                        <th style="width: 5%;">파일크기</th>
-                        <th style="width: 5%;">파일확장자</th>
-                        <th style="width: 20%;">파일저장 경로</th>
-                        <th style="width: 5%;">다운로드 회수</th>
-                        <th style="width: 5%">로그확인</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <th:block th:if="${fileGroupList.size() == 0}">
-                        <tr>
-                            <td colspan="8">파일정보가 비어있습니다.</td>
-                        </tr>
-                    </th:block>
-                    <th:block th:unless="${fileGroupList.size() == 0}">
-                        <th:block th:each="file, fileStat : ${fileGroupList}">
-                            <tr>
-                                <td th:text="${file.id}" style="width: 5%" th:rowspan="${file.fileList.size()}"></td>
-                                <td th:text="${file.fileList.get(0).id}" style="width: 5%;"></td>
-                                <td th:text="${file.fileList.get(0).originalFileName}" style="width: 10%;"></td>
-                                <td th:text="${file.fileList.get(0).fileSize}" style="width: 5%;"></td>
-                                <td th:text="${file.fileList.get(0).extension}" style="width: 5%;"></td>
-                                <td th:text="${file.fileList.get(0).filePath}" style="width: 20%;"></td>
-                                <td th:text="${file.fileList.get(0).downCnt}" style="width: 5%;"></td>
-                                <td style="width: 5%;"  >
-                                    <button type="button" class="btn btn-sm btn-outline-success log-btn" th:data-num="${file.fileList.get(0).id}">로그</button>
-                                </td>
-                            </tr>
-                            <th:block th:if="${file.fileList.size() > 1}">
-                                <th:block th:each="fileList , fileListStat : ${file.fileList}">
-                                    <th:block th:unless="${fileListStat.first}">
-                                        <tr>
-                                            <td th:text="${fileList.id}" style="width: 5%;"></td>
-                                            <td th:text="${fileList.originalFileName}" style="width: 10%;"></td>
-                                            <td th:text="${fileList.fileSize}" style="width: 5%;"></td>
-                                            <td th:text="${fileList.extension}" style="width: 5%;"></td>
-                                            <td th:text="${fileList.filePath}" style="width: 20%;"></td>
-                                            <td th:text="${fileList.downCnt}" style="width: 5%;"></td>
-                                            <td style="width: 5%;">
-                                                <button type="button" class="btn btn-sm btn-outline-success log-btn" th:data-num="${fileList.id}">로그</button>
-                                            </td>
-                                        </tr>
-                                    </th:block>
-                                </th:block>
-                            </th:block>
-                        </th:block>
-                    </th:block>
-                </tbody>
-            </table>
+            <div id="fileDownload-table"></div>
         </div>
 
         <!-- s: download-log-modal -->
@@ -100,17 +35,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <table class="table table-hover table-bordered" id="download-log-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 5%;">번호</th>
-                                    <th style="width: 10%">다운로드 사용자 이름</th>
-                                    <th style="width: 10%">다운로드 사용자 ID</th>
-                                    <th style="width: 10%">다운로드날짜</th>
-                                </tr>
-                            </thead>
-                            <tbody id="download-log-tbody"></tbody>
-                        </table>
+                        <div id="download-log-table"></div>
                     </div>
 
                     <!-- Modal footer -->
@@ -121,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <!-- e: productUserModal -->
+        <!-- e: download-log-modal -->
 
     </div>
 </th:block>
@@ -130,39 +55,32 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
-        const fileGroupList = /*[[${fileGroupList}]]*/[];
+        let table = new Table("fileDownload-table")
+        let downloadLogTable = new Table("download-log-table")
+        downloadLogTable
+            .add(new Column("index").title("").center().width("20%"))
+            .add(new Column("userName").title("다운로드 사용자 이름").left().width("30%"))
+            .add(new Column("userId").title("다운로드 사용자 이름").left().width("30%"))
 
-        $(".log-btn").on("click", function(e){
-            const fileId = $(this).attr("data-num")
-            Http.get(`/api/log/${fileId}`).then((res) => {
-                if(res['httpStatus'] === 200) {
-                    drawModalTable(res.message)
-                    $("#download-log-modal").modal('show')
-                }
+        $(document).ready(function(e) {
+            table
+                .get('/api/file-list')
+                .add(new Column("index").title("#").width("5%").center())
+                .add(new Column("originalFileName").title("파일 이름").width("20%").left())
+                .add(new Column("fileSize").title("파일 크기").width("10%").left())
+                .add(new Column("extension").title("확장자").width("10%").left())
+                .add(new Column("filePath").title("파일 저장 경로").width("20%").left())
+                .add(new Column("downCnt").title("다운로드 횟수").width("10%").center())
+                .init()
+
+            table.rowClick((data, row) => {
+                const fileId = data.id
+                downloadLogTable
+                    .get(`/api/log/${fileId}`)
+                    .init()
+                $("#download-log-modal").modal('show')
             })
         })
-
-        function drawModalTable(data = []){
-            const dom = $("#download-log-tbody")
-            dom.empty()
-
-            let body = ``
-            if(!data.length) body += `<tr><td colspan="4"> 다운로드 기록이 없습니다. </td></tr>`
-            else {
-                data.forEach((data, i) => {
-                    body +=
-                        `
-                        <tr>
-                            <td>${i+1}</td>
-                            <td>${data['userName']}</td>
-                            <td>${data['userId']}</td>
-                            <td>${data['downloadDate'].toString().substring(0, 10)}</td>
-                        </tr>
-                        `
-                })
-            }
-            dom.append(body)
-        }
     </script>
 </th:block>
 

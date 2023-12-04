@@ -3,6 +3,9 @@ class Table {
     constructor(id) {
         this._id = id
         this._layout = "fitDataFill"
+        this._placeholder = "검색결과가 존재하지 않습니다."
+        this._minHeight = 50
+        this._maxHeight = 300
         this._resizeable = true
         this._rowClick = null
         this._afterComplete = null
@@ -45,11 +48,13 @@ class Table {
 
                 // 1. data with index
                 const data = res.message.map((item, index) => ({ ...item, index: index + 1 }))
-                console.log("data : ", data)
+
                 // 2. tabulator option
                 const option = {
                     data: data,
+                    placeholder: this._placeholder,
                     layout: this._layout,
+                    minHeight: this._minHeight,
                     columnDefaults: {
                         resizable: this._resizeable
                     },

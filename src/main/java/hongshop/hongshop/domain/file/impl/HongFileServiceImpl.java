@@ -1,5 +1,6 @@
 package hongshop.hongshop.domain.file.impl;
 
+import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFile;
 import hongshop.hongshop.domain.file.HongFileRepository;
 import hongshop.hongshop.domain.file.HongFileService;
@@ -36,6 +37,7 @@ import java.util.UUID;
  *          (5) updateFileState : 파일 최종 저장시, 'PROCESS -> SAVED' 변경
  *          (6) uploadCKImageFile : CKEdtior 이미지 업로드
  *          (7) deleteFiles : 파일 삭제
+ *          (8) all : 삭제여부N, 파일 업로드 상태 SAVED인 파일 리스트 전체 조회
 **/
 
 @Service
@@ -164,5 +166,11 @@ public class HongFileServiceImpl implements HongFileService {
             HongFile hongFile = hongFileRepository.findById(fileId).orElseThrow(() -> new IllegalArgumentException("there is no file"));
             hongFile.deleteFile();
         }
+    }
+
+    @Override
+    public List<HongFileVO> all() {
+        List<HongFile> all = hongFileRepository.findAllByDeleteYnAndFileState("N", FileState.SAVED);
+        return all.stream().map(HongFileVO::new).toList();
     }
 }

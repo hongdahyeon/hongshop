@@ -30,4 +30,5 @@ public interface HongFileService {
 
     void deleteFiles(List<Long> deleteFile);
 
+    List<HongFileVO> all();
 }
