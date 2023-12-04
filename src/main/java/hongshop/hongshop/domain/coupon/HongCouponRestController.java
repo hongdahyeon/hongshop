@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.coupon;
 
 
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponGroupRequestVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -68,5 +69,14 @@ public class HongCouponRestController {
         List<HongCouponGroupRequestVO> list = hongCouponService.couponAndRequest();
         return Response.ok(list);
     }
+
+    @GetMapping("/coupon-hist-user")
+    @Operation(summary = "쿠폰 사용자 리스트 조회", description = "쿠폰 사용자 리스트 조회")
+    @ApiDocumentResponse
+    public Response couponHistUser(){
+        List<HongCouponGroupHistVO> couponHist = hongCouponService.couponAndUserHist();
+        return Response.ok(couponHist);
+    }
+
 
 }

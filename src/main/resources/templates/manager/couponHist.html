@@ -5,16 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        tr {
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -28,65 +18,59 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="couponHist-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;" rowspan="2">쿠폰ID</th>
-                        <th style="width: 10%;" rowspan="2">쿠폰이름</th>
-                        <th style="width: 5%;" rowspan="2">할인가격</th>
-                        <th style="width: 30%" colspan="2">쿠폰 사용자 이력</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 5%;">사용Id</th>
-                        <th style="width: 10%;">사용날짜</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <th:block th:if="${couponHist.size() == 0}">
-                    <tr>
-                        <td colspan="5">쿠폰 사용 이력이 비어있습니다.</td>
-                    </tr>
-                </th:block>
-                <th:block th:unless="${couponHist.size() == 0}">
-                    <th:block th:each="coupon, couponStat : ${couponHist}">
-                        <tr>
-                            <th:block th:if="${coupon.histUserVOList.size() >= 1}">
-                                <td th:text="${coupon.couponId}" style="width: 5%" th:rowspan="${coupon.histUserVOList.size()}"></td>
-                                <td th:text="${coupon.couponName}" style="width: 10%;" th:rowspan="${coupon.histUserVOList.size()}"></td>
-                                <td th:text="${#numbers.formatInteger(coupon.couponRate, 0, 'COMMA')}" style="width: 5%;" th:rowspan="${coupon.histUserVOList.size()}"></td>
-                                <td th:text="${coupon.histUserVOList.get(0).userId}" style="width: 5%;"></td>
-                                <td th:text="${#strings.substring(coupon.histUserVOList.get(0).useDate, 0, 10)}" style="width: 10%;"></td>
-                            </th:block>
-                            <th:block th:unless="${coupon.histUserVOList.size() >= 1}">
-                                <td th:text="${coupon.couponId}" style="width: 5%" ></td>
-                                <td th:text="${coupon.couponName}" style="width: 10%;"></td>
-                                <td th:text="${coupon.couponRate}" style="width: 5%;"></td>
-                                <td colspan="2">사용이력이 없습니다.</td>
-                            </th:block>
-                        </tr>
-                        <th:block th:if="${coupon.histUserVOList.size() > 1}">
-                            <th:block th:each="userHist , userHistStat : ${coupon.histUserVOList}">
-                                <th:block th:unless="${userHistStat.first}">
-                                    <tr>
-                                        <td th:text="${userHist.userId}" style="width: 5%;"></td>
-                                        <td th:text="${#strings.substring(userHist.useDate, 0, 10)}" style="width: 10%;"></td>
-                                    </tr>
-                                </th:block>
-                            </th:block>
-                        </th:block>
-                    </th:block>
-                </th:block>
-                </tbody>
-            </table>
+            <div id="coupon-hist-table"></div>
         </div>
-
-
     </div>
 </th:block>
 
 
 <th:block layout:fragment="script">
-    <script th:inline="javascript"></script>
+    <script th:inline="javascript">
+        let table = new Table("coupon-hist-table")
+        $(document).ready(function(e) {
+            table
+                .get('/api/coupon-hist-user')
+                .add(new Column("index").title("#").width("5%").center())
+                .add(new Column("couponName").title("쿠폰 이름").width("10%").left())
+                .add(new Column("couponRate").title("쿠폰 가격").width("10%").left().formatter(function(cell) {
+                    const cellData = cell.getValue()
+                    return `${Util.priceString(cellData)} 원`
+                }))
+                .add(new Column("histUserVOList").title("사용 사용자 개수").width("10%").left().formatter(function(cell) {
+                    const cellData = cell.getValue()
+                    return `${cellData.length} 개`
+                }))
+                .rowFormatter(function(row) {
+                    const rowData = row.getData()
+                    const histUserList = rowData['histUserVOList']
+
+                    const holderEl = document.createElement("div")
+                    const tableEl = document.createElement("div")
+
+                    holderEl.style.boxSizing = "border-box";
+                    holderEl.style.padding = "10px 30px 10px 10px";
+                    holderEl.style.borderTop = "1px #333";
+                    holderEl.style.borderBotom = "1px #333";
+                    tableEl.style.border = "1px solid #333";
+
+                    holderEl.appendChild(tableEl);
+
+                    row.getElement().appendChild(holderEl);
+
+                    const subTable = new Table(tableEl)
+                        .subTable()
+                        .setData(histUserList)
+                        .add(new Column("userId").title("사용자").left().width("20%"))
+                        .add(new Column("useDate").title("사용날짜").left().width("20%").formatter(function(cell) {
+                            const data = cell.getValue()
+                            return `${data.toString().substring(0, 10)}`
+                        }))
+                        .init()
+                })
+                .init()
+        })
+
+    </script>
 </th:block>
 
 </html>

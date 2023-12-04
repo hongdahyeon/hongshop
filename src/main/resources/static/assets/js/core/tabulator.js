@@ -2,38 +2,101 @@ class Table {
 
     constructor(id) {
         this._id = id
+        this._subTable = false
         this._layout = "fitDataFill"
         this._placeholder = "검색결과가 존재하지 않습니다."
         this._minHeight = 50
         this._maxHeight = 300
-        this._resizeable = true
+        this._resizeable = false
+        this._rowFormatter = null
         this._rowClick = null
+        this._selectable = false
         this._afterComplete = null
         this._columns = []
         this._url = ''
+        this._data = []
         this._table = null
     }
 
+    /*
+    * @param: url
+    */
     get(url = '') {
         this._url = url
         return this
     }
 
+    /*
+    * row selectable true
+    */
+    selectable() {
+        this._selectable = true
+        return this
+    }
+
+    /*
+    * @param: data[]
+    */
+    setData(data = []){
+        this._data = data
+        return this
+    }
+
+    /*
+    * make subTable
+    */
+    subTable(){
+        this._subTable = true
+        return this
+    }
+
+    /*
+    * @param: layout
+    * - default: fitDataFill
+    */
+    changeLayout(layout = ''){
+        this._layout = layout
+        return this
+    }
+
+    /*
+    * rowClick: rowClick use
+    */
     rowClick(callback) {
         this._rowClick = callback
         return this
     }
 
+    /*
+    * rowFormatter: rowFormatter use
+    */
+    rowFormatter(callback) {
+        this._rowFormatter = callback
+        return this
+    }
+
+    /*
+    * afterComplete: settings after draw table
+    */
     afterComplete(callback) {
         this._afterComplete = callback
         return this
     }
 
-    resizeable(val = true){
-        this._resizeable = val
+    /*
+    * @param: val
+    * - default: false
+    * - can resize column
+    * */
+    resizeable(){
+        this._resizeable = true
         return this
     }
 
+    /*
+    * @param: column
+    * - table column add
+    */
     add(column) {
         if(column instanceof Column) {
             this._columns.push(column.getCol())
@@ -41,43 +104,63 @@ class Table {
         return this
     }
 
+    /*
+    * draw table
+    * - subTable : use data[] and draw
+    * - table : get data and draw
+    */
     init() {
-
-        Http.get(`${this._url}`).then((res) => {
-            if(res['httpStatus'] === 200) {
-
-                // 1. data with index
-                const data = res.message.map((item, index) => ({ ...item, index: index + 1 }))
-
-                // 2. tabulator option
-                const option = {
-                    data: data,
-                    placeholder: this._placeholder,
-                    layout: this._layout,
-                    minHeight: this._minHeight,
-                    columnDefaults: {
-                        resizable: this._resizeable
-                    },
-                    columns:this._columns
+        if(this._subTable) {
+            const data = this._data.map((item, index) => ({ ...item, index: index + 1 }))
+            this._initOptions(data)
+        }else {
+            Http.get(`${this._url}`).then((res) => {
+                if (res['httpStatus'] === 200) {
+                    // 1. data with index
+                    const data = res.message.map((item, index) => ({...item, index: index + 1}))
+                    this._initOptions(data)
                 }
+            })
+        }
+    }
 
-                const table = new Tabulator(`#${this._id}`, option)
+    /*
+    * table options
+    */
+    _initOptions(data){
+        // 2. tabulator option
+        const option = {
+            data: data,
+            selectable: this._selectable,
+            placeholder: this._placeholder,
+            layout: this._layout,
+            minHeight: this._minHeight,
+            columnDefaults: {
+                resizable: this._resizeable
+            },
+            columns:this._columns
+        }
 
-                // if clicking row not null
-                if(this._rowClick) {
-                    table.on('rowClick', (e, row) => {
-                        this._rowClick(row.getData(), row._row)
-                    })
-                }
+        if(this._rowFormatter) {
+            option['rowFormatter'] = this._rowFormatter
+        }
 
-                // if after complete not null
-                if(this._afterComplete) {
-                    table.on("renderComplete", () => this._afterComplete())
-                }
+        const dom = (!this._subTable) ? `#${this._id}` : this._id
+        const table = new Tabulator(dom, option)
 
-                this._table = table
-            }
-        })
+        // if clicking row not null
+        if(this._rowClick) {
+            table.on('rowClick', (e, row) => {
+                this._rowClick(row.getData(), row._row)
+            })
+        }
+
+        // if after complete not null
+        if(this._afterComplete) {
+            table.on("renderComplete", () => this._afterComplete())
+        }
+
+        this._table = table
     }
 }
 
