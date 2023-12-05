@@ -235,3 +235,5 @@
 * commit146 : $.ajax -> 공통처리 [ 상품주문화면, 게시판 섹션 (3)] (23/11/17)
 * commit147 : 게시판 부분 tabulator 적용 (23/11/28)
 * commit148 : 파일 다운로드 기록 부분 테뷸레이터 적용 (23/12/04)
+* commit149 : 쿠폰 사용 기록 tabulator 적용 (23/12/04)
+    - tabulator -> subTable 적용
