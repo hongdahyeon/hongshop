@@ -98,4 +98,12 @@ public class HongOrderRestController {
         List<HongOrderReviewVO> orderDetailReviews = hongOrderService.getOrderDetailReviews(id, principalDetails.getUser());
         return Response.ok(orderDetailReviews);
     }
+
+    @GetMapping("/order-with-reviewChk")
+    @Operation(summary = "orderId 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크", description = "orderId 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크")
+    @ApiDocumentResponse
+    public Response orderWithReviewChk(){
+        List<HongOrderVO> list = hongOrderService.listWithChkReview();
+        return Response.ok(list);
+    }
 }

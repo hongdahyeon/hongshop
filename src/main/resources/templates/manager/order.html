@@ -5,15 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        tr{
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -28,59 +19,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="order-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">번호</th>
-                        <th style="width: 10%">주문자</th>
-                        <th style="width: 10%">주문상태</th>
-                        <th style="width: 10%">주문날짜</th>
-                        <th style="width: 20%">주문상품</th>
-                        <th style="width: 10%">주문개수</th>
-                        <th style="width: 20%">주문가격</th>
-                        <th style="width: 10%">상태변경</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <th:block th:if="${orderList.size() == 0}">
-                        <tr>
-                            <td colspan="8">사용자 주문 정보가 비어있습니다.</td>
-                        </tr>
-                    </th:block>
-                    <th:block th:unless="${orderList.size() == 0}">
-                        <th:block  th:each="orders, orStat : ${orderList}">
-                            <tr>
-                                <td th:text="${orStat.index + 1}" th:rowspan="${orders.orderDetails.size()}" style="width: 5%"></td>
-                                <td th:text="${orders.userId}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%"></td>
-                                <td th:text="${orders.orderStatus}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%"></td>
-                                <td th:text="${#strings.substring(orders.orderDate, 0, 10)}" th:rowspan="${orders.orderDetails.size()}" style="width: 10%"></td>
-                                <td th:text="${orders.orderDetails.get(0).productName}" style="width: 20%"></td>
-                                <td th:text="|${orders.orderDetails.get(0).orderCnt}개|" style="width: 10%"></td>
-                                <td th:text="${#numbers.formatInteger(orders.orderDetails.get(0).orderPrice, 0, 'COMMA')}" style="width: 20%"></td>
-                                <td th:rowspan="${orders.orderDetails.size()}" style="width: 10%">
-                                    <select th:id="|orderStatus-${orders.orderId}|" class="form-select-sm orderStatus-select" style="width: 150px" th:data-num="${orders.orderId}" th:disabled="${orders.writeReviewEmpty == false}" th:data-status="${orders.orderStatus}">
-                                        <option value="CHARGED" th:selected="${orders.orderStatus eq 'CHARGED'}">CHARGED</option>
-                                        <option value="CANCEL" th:selected="${orders.orderStatus eq 'CANCEL'}">CANCEL</option>
-                                        <option value="DELIVER_SUCCESS" th:selected="${orders.orderStatus eq 'DELIVER_SUCCESS'}">DELIVER_SUCCESS</option>
-                                        <option value="DELIVER_ING" th:selected="${orders.orderStatus eq 'DELIVER_ING'}">DELIVER_ING</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <th:block th:if="${orders.orderDetails.size() > 1}">
-                                <th:block th:each="detail, detailStat : ${orders.orderDetails}">
-                                    <th:block th:if="${!detailStat.first}">
-                                        <tr>
-                                            <td th:text="${detail.productName}" style="width: 20%"></td>
-                                            <td th:text="|${detail.orderCnt}개|" style="width: 10%"></td>
-                                            <td th:text="${#numbers.formatInteger(detail.orderPrice, 0, 'COMMA')}" style="width: 20%"></td>
-                                        </tr>
-                                    </th:block>
-                                </th:block>
-                            </th:block>
-                        </th:block>
-                    </th:block>
-                </tbody>
-            </table>
+            <div id="order-table"></div>
         </div>
     </div>
 </th:block>
@@ -89,32 +28,87 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         const order = /*[[${orderList}]]*/[];
+        let table = new Table("order-table")
 
         $(document).ready(function(e){
-            $(".orderStatus-select").on("change", function(e){
-                const orderId = $(this).attr("data-num")
-                const orderStatus = $(this).attr("data-status")
-                const chanageOrderStatus = $(this).val()
 
-                Util.confirm("해당 상품의 주문상태값을 변경하시겠습니까?").then((isOk) => {
-                    if(!isOk) $(`#orderStatus-${orderId}`).val(orderStatus)
-                    else {
-                        const obj = {'orderStatus': chanageOrderStatus}
-                        Http.put(`/api/order-status/${orderId}`, obj).then((res) => {
-                            if(res['httpStatus'] === 200) {
-                                Util.alert(res.message).then(() => {
-                                    window.location.href='/manager/order'
-                                })
-                            }else {
-                                Util.alert("해당 상품의 주문 상태값 변경에 실패하였습니다.").then(() => {
-                                    $(`#orderStatus-${orderId}`).val(orderStatus)
-                                })
-                            }
-                        })
-                    }
+            table
+                .get('/api/order-with-reviewChk')
+                .add(new Column("index").title("#").width("5%").center())
+                .add(new Column("userId").title("주문자").width("20%").left())
+                .add(new Column("orderStatus").title("주문상태").width("10%").left())
+                .add(new Column("orderDate").title("주문날짜").width("10%").left())
+                .add(new Column("orderDetails").title("주문상품 개수").width("20%").left().formatter(function(cell) {
+                    const cellData = cell.getValue()
+                    return `${cellData.length} 개`
+                }))
+                .add(new Column("orderId").title("상태변경").width("20%").center().formatter(function(cell) {
+                    const rowData = cell.getData()
+                    return `<select id="orderStatus-${rowData.orderId}" class="form-select-sm orderStatus-select" style="width: 150px" data-num="${rowData.orderId}" data-status="${rowData.orderStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
+                                <option value="CHARGED" ${(rowData.orderStatus == 'CHARGED') ? 'selected' : ''}>CHARGED</option>
+                                <option value="CANCEL" ${(rowData.orderStatus == 'CANCEL') ? 'selected' : ''}>CANCEL</option>
+                                <option value="DELIVER_SUCCESS" ${(rowData.orderStatus == 'DELIVER_SUCCESS') ? 'selected' : ''}>DELIVER_SUCCESS</option>
+                                <option value="DELIVER_ING" ${(rowData.orderStatus == 'DELIVER_ING') ? 'selected' : ''}>DELIVER_ING</option>
+                            </select>`
+                }))
+                .rowFormatter(function(row) {
+                    const rowData = row.getData()
+                    const orderDetails = rowData['orderDetails']
+
+                    const holderEl = document.createElement("div")
+                    const tableEl = document.createElement("div")
+
+                    holderEl.style.boxSizing = "border-box";
+                    holderEl.style.padding = "10px 30px 10px 10px";
+                    holderEl.style.borderTop = "1px #333";
+                    holderEl.style.borderBotom = "1px #333";
+                    tableEl.style.border = "1px solid #333";
+
+                    holderEl.appendChild(tableEl);
+
+                    row.getElement().appendChild(holderEl);
+
+                    new Table(tableEl)
+                        .subTable()
+                        .setData(orderDetails)
+                        .add(new Column("productName").title("주문상품").left().width("20%"))
+                        .add(new Column("orderCnt").title("주문개수").left().width("20%").formatter(function(cell) {
+                            const data = cell.getValue()
+                            return `${data} 개`
+                        }))
+                        .add(new Column("orderPrice").title("주문가격").left().width("20%").formatter(function(cell) {
+                            const data = cell.getValue()
+                            return `${Util.priceString(data)} 원`
+                        }))
+                        .init()
                 })
-            })
+                .init()
         })
+
+
+        function changeSelect(selectElement) {
+            const orderId = selectElement.getAttribute("data-num")
+            const orderStatus = selectElement.getAttribute("data-status")
+            const chanageOrderStatus = selectElement.options[selectElement.selectedIndex].value
+
+            Util.confirm("해당 상품의 주문상태값을 변경하시겠습니까?").then((isOk) => {
+                if(!isOk) $(`#orderStatus-${orderId}`).val(orderStatus)
+                else {
+                    const obj = {'orderStatus': chanageOrderStatus}
+                    Http.put(`/api/order-status/${orderId}`, obj).then((res) => {
+                        if(res['httpStatus'] === 200) {
+                            Util.alert(res.message).then(() => {
+                                window.location.href='/manager/order'
+                            })
+                        }else {
+                            Util.alert("해당 상품의 주문 상태값 변경에 실패하였습니다.").then(() => {
+                                $(`#orderStatus-${orderId}`).val(orderStatus)
+                            })
+                        }
+                    })
+                }
+            })
+        }
     </script>
 </th:block>
 
