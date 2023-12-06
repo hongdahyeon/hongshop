@@ -29,47 +29,15 @@
 </th:block>
 
 <th:block layout:fragment="script">
-    <script th:src="@{'/assets/js/page/faq.index.js'}"></script>
+    <script th:src="@{'/assets/js/page/bbs/faq/faq.index.js'}"></script>
     <script th:inline="javascript">
-
         const postId = /*[[${id}]]*/ null;
         const type = /*[[${type}]]*/ []
         const user = /*[[${user}]]*/ {};
         const id = /*[[${id}]]*/ null
         const faq = new faqAcc("faq-accordion", user['role'])
-
-        $(document).ready(function(e) {
-            Http.get(`/api/postsWithFileByPostType/${id}`).then((res) => {
-                if(res['httpStatus'] === 200) {
-                    faq.setData(res.message).draw()
-                }
-            })
-        })
-
-        $("#new-bbsctt").on("click", function(e) {
-            window.location.href = `/bbs/save/${type['postTypeId']}`
-        })
-
-        /* 게시글 삭제 버튼 클릭 이벤트 */
-        function deleteBbsctt(id){
-            Util.confirm("삭제 하시겠습니까?").then((isOk) => {
-                if(isOk) {
-                    Http.delete(`/api/post/${id}`).then((res) => {
-                        if (res['httpStatus'] === 200) {
-                            Util.alert("게시글이 삭제되었습니다.").then(() => {
-                                window.location.href = `/bbs/${postId}`
-                            })
-                        }
-                    })
-                }
-            })
-        }
-
-        /* 게시글 수정 버튼 클릭 이벤트 */
-        function editBbsctt(id){
-            window.location.href = `/bbs/edit/${id}`
-        }
     </script>
+    <script th:src="@{'/assets/js/page/bbs/faq/bbs.faq.index.js'}"></script>
 </th:block>
 
 </html>
