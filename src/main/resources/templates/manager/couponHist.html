@@ -13,6 +13,7 @@
             <div class="card-text d-flex justify-content-between">
                 <div class="text-start">
                     <h3>쿠폰 사용 기록</h3>
+                    <p style="color: red; font-size: 15px">* 테이블행을 클릭하면, 해당 쿠폰 사용자 리스트 조회가 가능합니다.</p>
                 </div>
                 <div class="text-end"></div>
             </div>
@@ -20,6 +21,32 @@
         <div class="card-body">
             <div id="coupon-hist-table"></div>
         </div>
+
+        <!-- s: userList-log-modal -->
+        <div class="modal modal-lg" id="user-couponUseHist-log-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">쿠폰 사용자 리스트 조회</h4>
+                        <button type="button" class="btn-close" id="close-userList-log-btn" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div id="couponUse-Log-table"></div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" id="cancel-userList-log-btn" data-bs-dismiss="modal">취소</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- e: userList-log-modal -->
     </div>
 </th:block>
 
@@ -27,47 +54,28 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         let table = new Table("coupon-hist-table")
+        let userListLogTable = new Table("couponUse-Log-table", false)
+        userListLogTable
+            .add(new Column("index").title("#").center().width("10%"))
+            .add(new Column("userId").title("사용자").left().width("20%"))
+            .add(new Column("useDate").title("사용날짜").left().width("20%").formatter(function(cell){ return `${cell.getValue().toString().substring(0,10)}` }))
+
         $(document).ready(function(e) {
             table
                 .get('/api/coupon-hist-user')
                 .add(new Column("index").title("#").width("5%").center())
-                .add(new Column("couponName").title("쿠폰 이름").width("10%").left())
-                .add(new Column("couponRate").title("쿠폰 가격").width("10%").left().formatter(function(cell) {
-                    const cellData = cell.getValue()
-                    return `${Util.priceString(cellData)} 원`
-                }))
-                .add(new Column("histUserVOList").title("사용 사용자 개수").width("10%").left().formatter(function(cell) {
-                    const cellData = cell.getValue()
-                    return `${cellData.length} 개`
-                }))
-                .rowFormatter(function(row) {
-                    const rowData = row.getData()
-                    const histUserList = rowData['histUserVOList']
-
-                    const holderEl = document.createElement("div")
-                    const tableEl = document.createElement("div")
-
-                    holderEl.style.boxSizing = "border-box";
-                    holderEl.style.padding = "10px 30px 10px 10px";
-                    holderEl.style.borderTop = "1px #333";
-                    holderEl.style.borderBotom = "1px #333";
-                    tableEl.style.border = "1px solid #333";
-
-                    holderEl.appendChild(tableEl);
-
-                    row.getElement().appendChild(holderEl);
-
-                    const subTable = new Table(tableEl)
-                        .subTable()
-                        .setData(histUserList)
-                        .add(new Column("userId").title("사용자").left().width("20%"))
-                        .add(new Column("useDate").title("사용날짜").left().width("20%").formatter(function(cell) {
-                            const data = cell.getValue()
-                            return `${data.toString().substring(0, 10)}`
-                        }))
-                        .init()
-                })
+                .add(new Column("couponName").title("쿠폰 이름").width("20%").left())
+                .add(new Column("couponRate").title("쿠폰 가격").width("20%").left().formatter(function(cell) { return `${Util.priceString(cell.getValue())} 원`}))
+                .add(new Column("histUserVOList").title("사용 사용자").width("20%").left().formatter(function(cell) { return `${cell.getValue().length} 명` }))
                 .init()
+
+            table.rowClick((data, row) => {
+                userListLogTable
+                    .setData(data['histUserVOList'])
+                    .init()
+
+                $("#user-couponUseHist-log-modal").modal('show')
+            })
         })
 
     </script>

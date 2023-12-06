@@ -1,7 +1,8 @@
 class Table {
 
-    constructor(id) {
+    constructor(id, useUrl = true) {
         this._id = id
+        this._useUrl = useUrl
         this._subTable = false                              // 서브 테이블 여부
         this._layout = "fitDataFill"                        // 테이블 레이아웃
         this._placeholder = "검색결과가 존재하지 않습니다."      // 데이터 0건일 경우
@@ -119,7 +120,7 @@ class Table {
     * - table : get data and draw
     */
     init() {
-        if(this._subTable) {
+        if(!this._useUrl) {
             const data = this._data.map((item, index) => ({ ...item, index: index + 1 }))
             this._initOptions(data)
         }else {
