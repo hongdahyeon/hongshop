@@ -5,15 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        tr{
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -27,61 +18,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="cart-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;" rowspan="2">번호</th>
-                        <th style="width: 10%" rowspan="2">사용자ID</th>
-                        <th style="width: 10%" rowspan="2">계정정지 여부</th>
-                        <th style="width: 10%" rowspan="2">ROLE</th>
-                        <th style="width: 10%" rowspan="2">이름</th>
-                        <th style="width: 10%" rowspan="2">이메일</th>
-                        <th style="width: 10%" COLSPAN="3">주소</th>
-                        <th style="width: 10%" rowspan="2">ROLE 변경</th>
-                    </tr>
-                    <tr>
-                        <th>시/도</th>
-                        <th>시군구/읍면동</th>
-                        <th>우편번호</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <th:block th:if="${userList.size() == 0}">
-                    <tr>
-                        <td colspan="11">사용자 정보가 비어있습니다.</td>
-                    </tr>
-                </th:block>
-                <th:block th:unless="${userList.size() == 0}">
-                    <th:block  th:each="user, userStat : ${userList}">
-                        <tr>
-                            <td th:text="${userStat.index + 1}" style="width: 5%"></td>
-                            <td th:text="${user.userId}" style="width: 10%"></td>
-                            <td style="width: 10%">
-                                <th:block th:if="${user.userNonLocked == false}">
-                                    <a href="#" class="user-is-unlocked" th:data-num="${user.userId}">정지</a>
-                                </th:block>
-                                <th:block th:unless="${user.userNonLocked == false}">
-                                    <a>-</a>
-                                </th:block>
-                            </td>
-                            <td th:text="${user.role}" style="width: 10%"></td>
-                            <td th:text="${user.userName}" style="width: 10%"></td>
-                            <td th:text="${user.userEmail}" style="width: 20%"></td>
-                            <td th:text="${user.city}" style="width: 10%"></td>
-                            <td th:text="${user.street}" style="width: 20%"></td>
-                            <td th:text="${user.zipcode}" style="width: 10%"></td>
-                            <td style="width: 10%">
-                                <select th:id="|userRole-${user.id}|" class="form-select-sm userRole-select" style="width: 150px" th:data-num="${user.id}" th:data-userId="${user.userId}" th:data-role="${user.role}">
-                                    <option value="ROLE_ADMIN" th:selected="${user.role eq 'ROLE_ADMIN'}">ROLE_ADMIN</option>
-                                    <option value="ROLE_USER" th:selected="${user.role eq 'ROLE_USER'}">ROLE_USER</option>
-                                    <option value="ROLE_SUPER" th:selected="${user.role eq 'ROLE_SUPER'}">ROLE_SUPER</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </th:block>
-                </th:block>
-                </tbody>
-            </table>
+            <div id="user-table-div"></div>
         </div>
 
         <!-- s: Alert Modal -->
@@ -93,7 +30,7 @@
                             <input type="hidden" id="locked-userId" />
                             <p>해당 사용자의 경우 비밀번호 5회 오류로 계정이 정지되었습니다.</p>
                             <div style="margin-top: 10px" class="text-end">
-                                <button type="button" class="btn btn-outline-secondary" id="close-alertModal">닫기</button>
+                                <button type="button" class="btn btn-outline-secondary" id="close-alertModal" data-bs-dismiss="modal">닫기</button>
                                 <button type="button" class="btn btn-outline-primary" id="change-userNonLocked">사용자계정 풀기</button>
                             </div>
                         </div>
@@ -109,6 +46,7 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+        let table = new Table("user-table-div")
     </script>
     <script th:src="@{'/assets/js/page/manager/user.js'}"></script>
 </th:block>

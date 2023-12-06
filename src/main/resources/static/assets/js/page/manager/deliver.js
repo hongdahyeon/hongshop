@@ -1,8 +1,9 @@
 $(document).ready(function(e) {
     table
         .get(`/api/deliver-with-reviewChk`)
+        .headerBottom()
         .add(new Column("index").title("#").width("5%").center())
-        .add(new Column("orderUser").title("주문자Id").width("10%").left())
+        .add(new Column("orderUser").title("주문자Id").width("20%").left())
         .add(new Column("orderDate").title("주문날짜").width("10%").center().formatter(function(cell) {
             const cellData = cell.getValue()
             return cellData.toString().substring(0, 10)
@@ -15,13 +16,12 @@ $(document).ready(function(e) {
         )
         .add(new Column("deliverId").title("배송 상태 변경").width("20%").center().formatter(function(cell) {
             const rowData = cell.getData()
-            return `<select id="deliverStatus-${rowData.deliverId}" class="form-select-sm select" style="width: 150px" data-num="${rowData.deliverId}" data-status="${rowData.deliverStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
-                                    <option value="DELIVERING" ${(rowData.deliverStatus == 'DELIVERING') ? 'selected' : ''}>DELIVERING</option>
-                                    <option value="DELIVERED" ${(rowData.deliverStatus == 'DELIVERED') ? 'selected' : ''}>DELIVERED</option>
-                                    <option value="AWAIT" ${(rowData.deliverStatus == 'AWAIT') ? 'selected' : ''}>AWAIT</option>
-                                    <option value="CANCEL" ${(rowData.deliverStatus == 'CANCEL') ? 'selected' : ''}>CANCEL</option>
-                            </select>`
-
+            return `<select id="deliverStatus-${rowData['deliverId']}" class="form-select-sm select" style="width: 150px" data-num="${rowData['deliverId']}" data-status="${rowData['deliverStatus']}" ${(rowData['writeReviewEmpty'] === false) ? 'disabled' : ''} onChange="changeSelect(this)">
+                            <option value="DELIVERING" ${(rowData['deliverStatus'] === 'DELIVERING') ? 'selected' : ''}>DELIVERING</option>
+                            <option value="DELIVERED" ${(rowData['deliverStatus'] === 'DELIVERED') ? 'selected' : ''}>DELIVERED</option>
+                            <option value="AWAIT" ${(rowData['deliverStatus'] === 'AWAIT') ? 'selected' : ''}>AWAIT</option>
+                            <option value="CANCEL" ${(rowData['deliverStatus'] === 'CANCEL') ? 'selected' : ''}>CANCEL</option>
+                    </select>`
         }))
         .init()
 })

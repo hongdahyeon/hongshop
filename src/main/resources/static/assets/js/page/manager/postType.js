@@ -1,17 +1,54 @@
+$(document).ready(function() {
+    table
+        .get('/api/listWithPost')
+        .add(new Column("index").title("#").center().width("10%"))
+        .add(new Column("postType").title("게시판 유형").left().width("10%"))
+        .add(new Column("postName").title("게시판 이름").left().width("10%"))
+        .add(new Column("orderNum").title("정렬 순서").center().width("10%"))
+        .add(new Column("useAt").title("사용여부").center().width("10%").formatter(function(cell) { return (cell.getValue() === 'Y') ? '사용' : '미사용' }))
+        .add(new Column("hongPost").title("게시글 개수").center().width("10%").formatter(function(cell) {
+            return `${cell.getValue().length} 개`
+        }))
+        .add(new Column("postUrl").title("url").left().width("10%"))
+        .add(new Column("postTypeId").title("게시글 보러가기").width("10%").formatter(function(cell) {
+            const rowData = cell.getData()
+            return `<button type="button" class="btn btn-sm btn-outline-primary post-page-btn" data-num="${rowData['postTypeId']}" data-useAt="${rowData['useAt']}" onclick="gotoPost(this)">보러가기</button>`
+        }))
+        .add(new Column("postTypeId").title("수정하기").center().width("10%").formatter(function(cell) {
+            const rowData = cell.getData()
+            return `<button type="button" class="btn btn-sm btn-outline-secondary post-update-btn" data-num="${rowData['postTypeId']}" onclick="editPost(this)">수정</button>`
+        }))
+        .add(new Column("postTypeId").title("삭제하기").center().width("10%").formatter(function(cell) {
+            const rowData = cell.getData()
+            return `<button type="button" class="btn btn-sm btn-outline-danger post-delete-btn" data-num="${rowData['postTypeId']}"  data-size="${rowData['hongPost'].length}" onclick="deletePost(this)">삭제</button>`
+        }))
+        .init()
+})
+
 /* 게시판 보러가기 버튼 클릭 이벤트 */
-$(".post-page-btn").on("click", function(e){
-    const postTypeId = $(this).val()
-    const postUseAt = $(this).attr("data-useAt")
+function gotoPost(This) {
+    const postTypeId = This.getAttribute("data-num")
+    const postUseAt = This.getAttribute("data-useAt")
     if(postUseAt === 'N') Util.alert(`해당 게시판은 사용여부가 N이기 때문에 게시판URL이 생성되지 않았습니다. <br/> 사용여부를 Y로 변경해주세요.`, 'w', 'w')
     else {
         window.location.href = `/bbs/${postTypeId}`
     }
-})
+}
+
+/* 게시판 수정 버튼 클릭 이벤트 */
+function editPost(This) {
+    const postTypeId = This.getAttribute("data-num")
+    Http.get(`/api/type/${postTypeId}`).then((res) => {
+        if(res['httpStatus'] === 200) {
+            setPostUpdateModal(res.message)
+        }
+    })
+}
 
 /* 게시판 삭제 버튼 클릭 이벤트 */
-$(".post-delete-btn").on("click", function(e){
-    const postTypeId = $(this).val()
-    const postLen = $(this).attr("data-num")
+function deletePost(This) {
+    const postTypeId = This.getAttribute("data-num")
+    const postLen = This.getAttribute("data-size")
 
     if(postLen > 0) Util.alert("해당 게시판은 하위에 게시글이 있기 때문에 삭제가 불가능합니다.", 'w', 'w')
     else {
@@ -27,17 +64,7 @@ $(".post-delete-btn").on("click", function(e){
             }
         })
     }
-})
-
-/* 게시판 수정 버튼 클릭 이벤트 */
-$(".post-update-btn").on("click", function(e){
-    const postTypeId = $(this).val()
-    Http.get(`/api/type/${postTypeId}`).then((res) => {
-        if(res['httpStatus'] === 200) {
-            setPostUpdateModal(res.message)
-        }
-    })
-})
+}
 
 /* 게시판 수정 버튼 클릭 시, 해당 게시판 정보로 모달 채우고 모달 띄우기 */
 function setPostUpdateModal(data) {

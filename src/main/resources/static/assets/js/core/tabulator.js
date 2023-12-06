@@ -8,6 +8,7 @@ class Table {
         this._placeholder = "검색결과가 존재하지 않습니다."      // 데이터 0건일 경우
         this._minHeight = 50
         this._maxHeight = 300
+        this._columnHeaderVertAlign = ""                    // align header contents to bottom of cell
         this._resizeable = false                            // 테이블 row resize 가능 여부
         this._rowFormatter = null                           // 테이블 각 row formatter
         this._rowClick = null                               // 테이블 각 row click function
@@ -104,6 +105,14 @@ class Table {
     }
 
     /*
+     * header bottom
+     * */
+    headerBottom() {
+        this._columnHeaderVertAlign = "bottom"
+        return this
+    }
+
+    /*
     * @param: column
     * - table column add
     */
@@ -159,6 +168,7 @@ class Table {
             data: data,
             selectable: this._selectable,
             placeholder: this._placeholder,
+            columnHeaderVertAlign: this._columnHeaderVertAlign,
             layout: this._layout,
             minHeight: this._minHeight,
             columnDefaults: {
