@@ -73,7 +73,7 @@
                 .add(new Column("orderDetails").title("주문상품 개수").width("20%").left().formatter(function(cell) { return `${cell.getValue().length} 개` }))
                 .add(new Column("orderId").title("상태변경").width("20%").center().formatter(function(cell) {
                     const rowData = cell.getData()
-                    return `<select id="orderStatus-${rowData.orderId}" class="form-select-sm orderStatus-select" style="width: 150px" data-num="${rowData.orderId}" data-status="${rowData.orderStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
+                    return `<select id="orderStatus-${rowData.orderId}" class="form-select-sm select" style="width: 150px" data-num="${rowData.orderId}" data-status="${rowData.orderStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
                                 <option value="CHARGED" ${(rowData.orderStatus == 'CHARGED') ? 'selected' : ''}>CHARGED</option>
                                 <option value="CANCEL" ${(rowData.orderStatus == 'CANCEL') ? 'selected' : ''}>CANCEL</option>
                                 <option value="DELIVER_SUCCESS" ${(rowData.orderStatus == 'DELIVER_SUCCESS') ? 'selected' : ''}>DELIVER_SUCCESS</option>

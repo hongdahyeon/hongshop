@@ -48,7 +48,7 @@
                 )
                 .add(new Column("deliverId").title("배송 상태 변경").width("20%").center().formatter(function(cell) {
                     const rowData = cell.getData()
-                    return `<select id="deliverStatus-${rowData.deliverId}" class="form-select-sm deliverStatus-select" style="width: 150px" data-num="${rowData.deliverId}" data-status="${rowData.deliverStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
+                    return `<select id="deliverStatus-${rowData.deliverId}" class="form-select-sm select" style="width: 150px" data-num="${rowData.deliverId}" data-status="${rowData.deliverStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
                                     <option value="DELIVERING" ${(rowData.deliverStatus == 'DELIVERING') ? 'selected' : ''}>DELIVERING</option>
                                     <option value="DELIVERED" ${(rowData.deliverStatus == 'DELIVERED') ? 'selected' : ''}>DELIVERED</option>
                                     <option value="AWAIT" ${(rowData.deliverStatus == 'AWAIT') ? 'selected' : ''}>AWAIT</option>

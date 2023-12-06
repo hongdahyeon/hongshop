@@ -177,7 +177,7 @@ class Table {
         // if clicking row not null
         if(this._rowClick) {
             table.on('rowClick', (e, row) => {
-                if(!e.target.classList.contains("tabulator-checkbox")) {
+                if(!e.target.classList.contains("tabulator-checkbox") && !e.target.classList.contains("select")) {
                     this._rowClick(row.getData(), row._row)
                 }
             })
