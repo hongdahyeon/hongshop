@@ -244,3 +244,4 @@
 * commit153 : 상태값 변경 col은 rowClick 제외 (23/12/06)
 * commit154 : bbs 하위 html -> js와 분리 (23/12/06)
 * commit155 : html & js 분리 (23/12/06)
+* commit156 : 사용자 관리, 게시판 관리 테뷸레이터 적용 (23/12/06)
