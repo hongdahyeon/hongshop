@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
 * @fileName HongDeliverRestController
 * @author dahyeon
@@ -57,6 +59,14 @@ public class HongDeliverRestController {
     public Response updateAddress(@PathVariable Long id, @RequestBody HongDeliverAddressDTO hongDeliverAddressDTO) {
         hongDeliverService.updateAddres(id, hongDeliverAddressDTO);
         return Response.ok("해당 배송 주소정보를 변경하였습니다.");
+    }
+
+    @GetMapping("/deliver-with-reviewChk")
+    @Operation(summary = "deliver 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크", description = "deliver 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크")
+    @ApiDocumentResponse
+    public Response deliverWithReviewChk(){
+        List<HongDeliverVO> list = hongDeliverService.allWithChkReview();
+        return Response.ok(list);
     }
 
 }

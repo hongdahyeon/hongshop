@@ -2,16 +2,17 @@ class Table {
 
     constructor(id) {
         this._id = id
-        this._subTable = false
-        this._layout = "fitDataFill"
-        this._placeholder = "검색결과가 존재하지 않습니다."
+        this._subTable = false                              // 서브 테이블 여부
+        this._layout = "fitDataFill"                        // 테이블 레이아웃
+        this._placeholder = "검색결과가 존재하지 않습니다."      // 데이터 0건일 경우
         this._minHeight = 50
         this._maxHeight = 300
-        this._resizeable = false
-        this._rowFormatter = null
-        this._rowClick = null
-        this._selectable = false
-        this._afterComplete = null
+        this._resizeable = false                            // 테이블 row resize 가능 여부
+        this._rowFormatter = null                           // 테이블 각 row formatter
+        this._rowClick = null                               // 테이블 각 row click function
+        this._selectable = false                            // 테이블 row select 가능 여부
+        this._afterComplete = null                          // 테이블 draw after
+        this._checkbox = false
         this._columns = []
         this._url = ''
         this._data = []
@@ -23,6 +24,14 @@ class Table {
     */
     get(url = '') {
         this._url = url
+        return this
+    }
+
+    /*
+    * use checkbox
+    */
+    checkbox() {
+        this._checkbox = true
         return this
     }
 
@@ -128,6 +137,22 @@ class Table {
     * table options
     */
     _initOptions(data){
+
+        if(this._checkbox) {
+            const checkbox = {
+                formatter: "rowSelection",
+                titleFormatter: "rowSelection",
+                hozAlign: "center",
+                headerSort: false,
+                width: 42,
+                cssClass: "tabulator-checkbox",
+                cellClick: function(e, cell) {
+                    cell.getRow().toggleSelect()
+                }
+            }
+            this._columns.unshift(checkbox)
+        }
+
         // 2. tabulator option
         const option = {
             data: data,
@@ -151,7 +176,9 @@ class Table {
         // if clicking row not null
         if(this._rowClick) {
             table.on('rowClick', (e, row) => {
-                this._rowClick(row.getData(), row._row)
+                if(!e.target.classList.contains("tabulator-checkbox")) {
+                    this._rowClick(row.getData(), row._row)
+                }
             })
         }
 
@@ -174,6 +201,7 @@ class Column {
         this._hozAlign = 'center'
         this._headerHozAlign = 'center'
         this._formatter = null
+        this._columns = []
     }
 
     title(title = '') {
@@ -214,17 +242,25 @@ class Column {
         return this
     }
 
+    add(column) {
+        if(column instanceof Column) {
+            this._columns.push(column.getCol())
+        }
+        return this
+    }
+
     getCol() {
         const obj = {
-            title : this._title,
-            field : this._field,
+            title: this._title,
             headerSort: this._headerSort,
             width: this._width,
             hozAlign: this._hozAlign,
             headerHozAlign: this._headerHozAlign
         }
 
-        if(this._formatter) obj.formatter = this._formatter
+        if(this._field) obj.field = this._field
+        if(this._formatter !== null) obj.formatter = this._formatter
+        if(this._columns.length) obj.columns = this._columns
 
         return obj
     }

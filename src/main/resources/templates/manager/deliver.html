@@ -5,15 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        tr{
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -28,53 +19,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="cart-table">
-                <thead>
-                <tr>
-                    <th style="width: 5%;" rowspan="2">번호</th>
-                    <th style="width: 10%" rowspan="2">사용자ID</th>
-                    <th style="width: 10%" rowspan="2">주문날짜</th>
-                    <th style="width: 10%" rowspan="2">주문상태</th>
-                    <th style="width: 10%" rowspan="2">배송상태</th>
-                    <th style="width: 10%" COLSPAN="3">주소</th>
-                    <th style="width: 10%" rowspan="2">배송상태 변경</th>
-                </tr>
-                <tr>
-                    <th>시/도</th>
-                    <th>시군구/읍면동</th>
-                    <th>우편번호</th>
-                </tr>
-                </thead>
-                <tbody>
-                <th:block th:if="${delivers.size() == 0}">
-                    <tr>
-                        <td colspan="9">배송 정보가 비어있습니다.</td>
-                    </tr>
-                </th:block>
-                <th:block th:unless="${delivers.size() == 0}">
-                    <th:block  th:each="deliver, deliverStatus : ${delivers}">
-                        <tr>
-                            <td th:text="${deliverStatus.index + 1}" style="width: 5%"></td>
-                            <td th:text="${deliver.orderUser}" style="width: 10%"></td>
-                            <td style="width: 10%" th:text="${#strings.substring(deliver.orderDate, 0, 10)}"></td>
-                            <td th:text="${deliver.orderStatus}" style="width: 10%"></td>
-                            <td th:text="${deliver.deliverStatus}" style="width: 10%"></td>
-                            <td th:text="${deliver.address.city}" style="width: 10%"></td>
-                            <td th:text="${deliver.address.street}" style="width: 10%"></td>
-                            <td th:text="${deliver.address.zipcode}" style="width: 10%"></td>
-                            <td style="width: 10%">
-                                <select th:id="|deliverStatus-${deliver.deliverId}|" class="form-select-sm deliverStatus-select" style="width: 150px" th:disabled="${deliver.writeReviewEmpty == false}" th:data-num="${deliver.deliverId}" th:data-status="${deliver.deliverStatus}">
-                                    <option value="DELIVERING" th:selected="${deliver.deliverStatus eq 'DELIVERING'}">DELIVERING</option>
-                                    <option value="DELIVERED" th:selected="${deliver.deliverStatus eq 'DELIVERED'}">DELIVERED</option>
-                                    <option value="AWAIT" th:selected="${deliver.deliverStatus eq 'AWAIT'}">AWAIT</option>
-                                    <option value="CANCEL" th:selected="${deliver.deliverStatus eq 'CANCEL'}">CANCEL</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </th:block>
-                </th:block>
-                </tbody>
-            </table>
+            <div id="deliver-div"></div>
         </div>
 
     </div>
@@ -84,11 +29,40 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
-        /* 배송 정보 바꾸기 이벤트 */
-        $(".deliverStatus-select").on("change", function(e){
-            const deliverId = $(this).attr("data-num")
-            const deliverStatus = $(this).attr("data-status")
-            const chanageDeliverStatus = $(this).val()
+        let table = new Table("deliver-div")
+
+        $(document).ready(function(e) {
+            table
+                .get(`/api/deliver-with-reviewChk`)
+                .add(new Column("index").title("#").width("5%").center())
+                .add(new Column("orderUser").title("주문자Id").width("10%").left())
+                .add(new Column("orderDate").title("주문날짜").width("10%").center().formatter(function(cell) {
+                    const cellData = cell.getValue()
+                    return cellData.toString().substring(0, 10)
+                }))
+                .add(new Column("orderStatus").title("배송 상태").width("10%").center())
+                .add(new Column().title("주소").width("30%").center()
+                    .add(new Column("address").title("주소: 시/도").width("10%").center().formatter(function(cell) { return cell.getValue().city}))
+                    .add(new Column("address").title("주소: 시군구/읍면동").width("10%").center().formatter(function(cell) { return cell.getValue().street}))
+                    .add(new Column("address").title("주소: 우편번호").width("10%").center().formatter(function(cell) { return cell.getValue().zipcode}))
+                )
+                .add(new Column("deliverId").title("배송 상태 변경").width("20%").center().formatter(function(cell) {
+                    const rowData = cell.getData()
+                    return `<select id="deliverStatus-${rowData.deliverId}" class="form-select-sm deliverStatus-select" style="width: 150px" data-num="${rowData.deliverId}" data-status="${rowData.deliverStatus}" ${(rowData.writeReviewEmpty == false) ? 'disabled' : ''} onChange="changeSelect(this)">
+                                    <option value="DELIVERING" ${(rowData.deliverStatus == 'DELIVERING') ? 'selected' : ''}>DELIVERING</option>
+                                    <option value="DELIVERED" ${(rowData.deliverStatus == 'DELIVERED') ? 'selected' : ''}>DELIVERED</option>
+                                    <option value="AWAIT" ${(rowData.deliverStatus == 'AWAIT') ? 'selected' : ''}>AWAIT</option>
+                                    <option value="CANCEL" ${(rowData.deliverStatus == 'CANCEL') ? 'selected' : ''}>CANCEL</option>
+                            </select>`
+
+                }))
+                .init()
+        })
+
+        function changeSelect(selectElement) {
+            const deliverId = selectElement.getAttribute("data-num")
+            const deliverStatus = selectElement.getAttribute("data-status")
+            const chanageDeliverStatus = selectElement.options[selectElement.selectedIndex].value
 
             Util.confirm(`해당 배송 정보를 바꾸시겠습니까?`).then((isOk) => {
                 if(!isOk) $(`#deliverStatus-${deliverId}`).val(deliverStatus)
@@ -108,7 +82,7 @@
                     })
                 }
             })
-        })
+        }
 
     </script>
 </th:block>
