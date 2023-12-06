@@ -238,3 +238,4 @@
 * commit149 : 쿠폰 사용 기록 tabulator 적용 (23/12/04)
     - tabulator -> subTable 적용
 * commit150 : 주문관리 테뷸레이터 적용 (23/12/05)
+* commit151 : 배송관리 테뷸레이터 적용 (23/12/06)
