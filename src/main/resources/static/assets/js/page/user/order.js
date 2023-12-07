@@ -146,7 +146,8 @@ window.addEventListener("load", function() {
                 Http.put(`/api/deliver-address/${deliverId}`, obj).then((res) => {
                     if(res['httpStatus'] === 200) {
                         Util.alert(`${res.message}`).then(() => {
-                            window.location.href=`/user/order`
+                            table.submit()
+                            $("#change-address-modal").modal('hide')
                         })
                     }else {
                         Util.alert("해당 배송 주소정보 변경에 실패하였습니다.", 'w', 'w')

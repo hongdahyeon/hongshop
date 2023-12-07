@@ -84,7 +84,7 @@ function deleteCoupon(This) {
             Http.delete(`/api/coupon/${couponId}`).then((res) => {
                 if(res['httpStatus'] === 200) {
                     Util.alert(`${res.message}`).then(() => {
-                        window.location.href = `/manager/coupon`
+                        table.submit()
                     })
                 }else {
                     Util.alert("삭제에 실패했습니다.", 'w', 'w')
@@ -144,27 +144,33 @@ $("#give-coupon-btn").on('click', function(e) {
 /* 쿠폰 등록하기 모달 닫기 이벤트 */
 $("#cancel-new-coupon-btn, #close-new-coupon-modal-btn").on("click", function(e) {
     Util.confirm("작성중인 쿠폰은 저장되지 않습니다. <br/> 쿠폰작성을 취소하시겠습니까?").then((isOk) => {
-        if(isOk) {
-            newCouponForm.val('')
-            const form = document.getElementById("new-coupon-form")
-            form.classList.remove("was-validated")
-            $("#new-coupon-modal").modal('hide')
-        }
+        if(isOk) clearNewCouponForm()
     })
 })
+
+/* 쿠폰 등록 폼 clear */
+function clearNewCouponForm(){
+    newCouponForm.val('')
+    const form = document.getElementById("new-coupon-form")
+    form.classList.remove("was-validated")
+    $("#new-coupon-modal").modal('hide')
+}
 
 
 /* 쿠폰 수정하기 모달 닫기 이벤트 */
 $("#cancel-update-coupon-btn, #close-update-coupon-modal-btn").on("click", function(e){
     Util.confirm(`수정중이던 쿠폰은 저장되지 않습니다. <br/> 쿠폰수정을 취소하시겠습니까?`).then((isOk) => {
-        if(isOk) {
-            updateCouponForm.val('')
-            const form = document.getElementById("update-coupon-form")
-            form.classList.remove("was-validated")
-            $("#update-coupon-modal").modal('hide')
-        }
+        if(isOk) clearUpdateCouponForm()
     })
 })
+
+/* 쿠폰 수정 폼 clear */
+function clearUpdateCouponForm(){
+    updateCouponForm.val('')
+    const form = document.getElementById("update-coupon-form")
+    form.classList.remove("was-validated")
+    $("#update-coupon-modal").modal('hide')
+}
 
 /* 쿠폰 등록하기 */
 window.addEventListener("load", function(event) {
@@ -186,7 +192,8 @@ window.addEventListener("load", function(event) {
                     Http.post(`/api/coupon`, obj).then((res) => {
                         if (res['httpStatus'] === 200) {
                             Util.alert(`쿠폰이 추가되었습니다.`).then(() => {
-                                window.location.href = '/manager/coupon'
+                                table.submit()
+                                clearNewCouponForm()
                             })
                         } else {
                             Util.alert(`쿠폰 등록에 실패했습니다.`, 'w', 'w')
@@ -218,7 +225,8 @@ window.addEventListener("load", function(event) {
                     Http.put(`/api/coupon/${hongCouponId}`, obj).then((res) => {
                         if (res['httpStatus'] === 200) {
                             Util.alert("쿠폰 정보를 변경하였습니다.").then(() => {
-                                window.location.href = `/manager/coupon`
+                                table.submit()
+                                clearUpdateCouponForm()
                             })
                         } else {
                             Util.alert("쿠폰 변경에 실패했습니다.", 'w', 'w')

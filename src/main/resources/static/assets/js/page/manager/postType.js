@@ -57,7 +57,7 @@ function deletePost(This) {
                 Http.delete(`/api/type/${postTypeId}`).then((res) => {
                     if (res['httpStatus'] === 200) {
                         Util.alert(`${res.message}`).then(() => {
-                            window.location.href = '/manager/postType'
+                            table.submit()
                         })
                     }
                 })
@@ -85,14 +85,14 @@ $("#new-postType").on("click", function(e){
 /* 게시판 생성 모달 -> 취소, x 버튼 클릭 이벤트 */
 $("#cancel-new-postType-btn, #close-new-postType-modal-btn").on("click", function(e){
     Util.confirm('작성중인 내용은 저장되지 않습니다. <br/> 작성을 취소하시겠습니까?').then((isOk) => {
-        if(isOk) $("#new-postType-modal").modal('hide')
+        if(isOk) clearNewPostForm()
     })
 })
 
 /* 게시판 수정 모달 -> 취소, x 버튼 클릭 이벤트 */
 $("#cancel-update-postType-btn, #close-update-postType-modal-btn").on("click", function(e){
     Util.confirm('작성중인 내용은 저장되지 않습니다. <br/> 작성을 취소하시겠습니까?').then((isOk) => {
-        if(isOk) $("#update-postType-modal").modal('hide')
+        if(isOk)clearUpdatePostForm()
     })
 })
 
@@ -110,7 +110,8 @@ window.addEventListener("load", function() {
                 Http.post(`/api/type`, obj).then((res) => {
                     if(res['httpStatus'] === 200) {
                         Util.alert("게시판 유형이 추가되었습니다.").then(() => {
-                            window.location.href='/manager/postType'
+                            table.submit()
+                            clearNewPostForm()
                         })
                     }else {
                         Util.alert("해당 게시판 유형 추가에 실패하였습니다.", 'w', 'w')
@@ -135,32 +136,49 @@ window.addEventListener("load", function() {
 
                 if(postType === 'QNA' && (postType !== obj['postType'])){
                     Util.confirm(`만약 QNA 게시판에서 ${obj['postType']} 게시판 유형으로 변경하시면 <br/> 해당 게시글에 달린 댓글을 볼수 없습니다. <br/> 그래도 변경하시겠습니까?`).then((isOk) => {
-                        if(isOk) {
-
-                            Http.put(`/api/type/${postTypeId}`, obj).then((res) => {
-                                if (res['httpStatus'] === 200) {
-                                    Util.alert(res.message).then(() => {
-                                        window.location.href = '/manager/postType'
-                                    })
-                                } else {
-                                    Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
-                                }
-                            })
-                        }
+                        if(isOk) updatePost(obj)
                     })
-                }else {
-
-                    Http.put(`/api/type/${postTypeId}`, obj).then((res) => {
-                        if (res['httpStatus'] === 200) {
-                            Util.alert(res.message).then(() => {
-                                window.location.href = '/manager/postType'
-                            })
-                        } else {
-                            Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
-                        }
-                    })
-                }
+                }else updatePost(obj)
             })
         }
     })
 })
+
+function updatePost(obj){
+    Http.put(`/api/type/${postTypeId}`, obj).then((res) => {
+        if (res['httpStatus'] === 200) {
+            Util.alert(res.message).then(() => {
+                table.submit()
+                clearUpdatePostForm()
+            })
+        } else {
+            Util.alert("해당 게시판 유형 수정에 실패하였습니다.", 'w', 'w')
+        }
+    })
+}
+
+/* 게시판 생성폼 닫기 전, form clear */
+function clearNewPostForm() {
+    const postForm = $("#new-postName, #new-orderNum")
+    postForm.val('')
+    $("#new-QNA").prop("checked", true)
+    $("#new-useAt-N").prop("checked", true)
+
+    const form = document.getElementById("new-postType-form")
+    form.classList.remove("was-validated")
+
+    $("#new-postType-modal").modal('hide')
+}
+
+
+function clearUpdatePostForm(){
+    const postForm = $("#update-postName, #update-orderNum")
+    postForm.val('')
+    $("#update-QNA").prop("checked", true)
+    $("#update-useAt-N").prop("checked", true)
+
+    const form = document.getElementById("update-postType-form")
+    form.classList.remove("was-validated")
+
+    $("#update-postType-modal").modal('hide')
+}

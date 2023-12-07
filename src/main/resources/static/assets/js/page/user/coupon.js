@@ -105,7 +105,7 @@ function deleteCouonHas(This) {
             Http.delete(`/api/coupon-has/${couponHasId}`).then((res) => {
                 if(res['httpStatus'] === 200) {
                     Util.alert(`${res.message}`).then(() => {
-                        window.location.href = `/user/coupon`
+                        couponTable.submit()
                     })
                 }else {
                     Util.alert("해당 쿠폰 삭제에 실패했습니다.", 'w', 'w')

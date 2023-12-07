@@ -33,7 +33,8 @@ $(document).ready(function(e){
         Http.put(`/api/reset/userNonLocked/${userId}`).then((res) => {
             if(res['httpStatus'] === 200) {
                 Util.alert(`${res.message}`).then(() => {
-                    window.location.href='/manager/user'
+                    table.submit()
+                    $("#alertModal").modal('hide')
                 })
             }else {
                 Util.alert("해당 사용자의 계정 정지 해제에 실패했습니다.", 'w', 'w')
@@ -62,7 +63,7 @@ function changeSelect(selectElement) {
             Http.put(`/api/user/${id}/role`, obj).then((res) => {
                 if(res['httpStatus'] === 200) {
                     Util.alert(res.message).then(() => {
-                        window.location.href='/manager/user'
+                        table.submit()
                     })
                 }else {
                     Util.alert("해당 사용자의 권한 정보 변경에 실패하였습니다.").then(() => {

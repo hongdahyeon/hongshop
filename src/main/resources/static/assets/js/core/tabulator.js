@@ -22,6 +22,26 @@ class Table {
         this._table = null
     }
 
+   /*
+    * table data reload
+    */
+    submit(){
+        Http.get(`${this._url}`).then((res) => {
+            if (res['httpStatus'] === 200) {
+                const data = res.message.map((item, index) => ({...item, index: index + 1}))
+                this._table.replaceData(data)
+            }
+        })
+    }
+
+   /*
+    * select row to deselect
+    */
+    deselectAll(){
+        this._table.deselectRow();
+        this._selectedRows = []
+    }
+
     /*
     * @param: url
     */
@@ -113,6 +133,9 @@ class Table {
         return this
     }
 
+    /*
+    * get selected rows list
+    */
     getSelectedRows() {
         return this._selectedRows
     }

@@ -36,7 +36,7 @@ function changeSelect(selectElement) {
             Http.put(`/api/deliver-status/${deliverId}`, obj).then((res) => {
                 if(res['httpStatus'] === 200) {
                     Util.alert(res.message).then(() => {
-                        window.location.href='/manager/deliver'
+                        table.submit()
                     })
                 }else {
                     Util.alert("해당 배송 정보 변경에 실패하였습니다.").then(() => {
