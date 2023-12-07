@@ -86,4 +86,12 @@ public class HongCouponRestController {
         return Response.ok(list);
     }
 
+    @GetMapping("/coupons-for-request")
+    @Operation(summary = "쿠폰 리스트 조회 - 사용자가 요청 가능한 쿠폰들(사용여부Y, 삭제여부N)", description = "쿠폰 리스트 조회 - 사용자가 요청 가능한 쿠폰들(사용여부Y, 삭제여부N)")
+    @ApiDocumentResponse
+    public Response couponList(){
+        List<HongCouponVO> list = hongCouponService.listForUserRequest();
+        return Response.ok(list);
+    }
+
 }

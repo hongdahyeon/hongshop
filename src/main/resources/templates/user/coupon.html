@@ -5,15 +5,6 @@
 
 <th:block layout:fragment="head">
     <title>HONG SHOP</title>
-    <style>
-        th, td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        tr{
-            text-align: center;
-        }
-    </style>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -30,41 +21,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-bordered" id="coupon-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">번호</th>
-                        <th style="width: 10%">쿠폰이름</th>
-                        <th style="width: 10%">할인가격(원)</th>
-                        <th style="width: 5%">사용여부</th>
-                        <th style="width: 10%">시작일</th>
-                        <th style="width: 10%">종료일</th>
-                        <th style="width: 5%">삭제</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <th:block th:if="${couponLst.size() == 0}">
-                    <tr>
-                        <td colspan="7">쿠폰 정보가 비어있습니다.</td>
-                    </tr>
-                </th:block>
-                <th:block th:unless="${couponLst.size() == 0}">
-                    <th:block  th:each="coupon, couponStat : ${couponLst}">
-                        <tr>
-                            <td th:text="${couponStat.index + 1}" style="width: 5%"></td>
-                            <td th:text="${coupon.hongCouponVO.couponName}" style="width: 10%"></td>
-                            <td th:text="${#numbers.formatInteger(coupon.hongCouponVO.couponRate, 0, 'COMMA')}" style="width: 10%"></td>
-                            <td th:text="${(coupon.useAt == 'Y') ? '사용' : '미사용'}" style="width: 5%"></td>
-                            <td th:text="${#strings.substring(coupon.hongCouponVO.startDate, 0, 10)}" style="width: 10%"></td>
-                            <td th:text="${#strings.substring(coupon.hongCouponVO.startDate, 0, 10)}" style="width: 10%"></td>
-                            <td style="width: 5%">
-                                <button type="button" class="btn btn-sm btn-outline-danger coupon-delete-btn" th:data-delete="${coupon.useAt}" th:value="${coupon.hongCouponHasId}">삭제</button>
-                            </td>
-                        </tr>
-                    </th:block>
-                </th:block>
-                </tbody>
-            </table>
+            <div id="coupon-table-div"></div>
         </div>
 
         <!-- s: chooseCouponModal -->
@@ -80,40 +37,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <table class="table table-hover table-bordered" id="request-user-table">
-                            <thead>
-                            <tr>
-                                <th style="width: 5%;"></th>
-                                <th style="width: 10%;">쿠폰이름</th>
-                                <th style="width: 10%">쿠폰 <br/> 할인가격</th>
-                                <th style="width: 10%">시작일</th>
-                                <th style="width: 10%">종료일</th>
-                            </tr>
-                            </thead>
-                            <tbody id="request-user-tbody">
-                                <th:block th:if="${couponForRequest.size() == 0}">
-                                    <tr>
-                                        <td colspan="5">요청가능한 쿠폰이 없습니다.</td>
-                                    </tr>
-                                </th:block>
-                                <th:block th:unless="${couponForRequest.size() == 0}">
-                                    <th:block th:each="coupon , couponStat : ${couponForRequest}">
-                                        <tr class="clickable-row">
-                                            <td style="width: 5%">
-                                                <div class="form-check" style="text-align: center; display: inline-block;">
-                                                    <input class="form-check-input request-chk" type="checkbox" th:value="${coupon.couponId}" th:id="|checkbox-${coupon.couponId}|">
-                                                    <label class="form-check-label" th:for="|checkbox-${coupon.couponId}|"></label>
-                                                </div>
-                                            </td>
-                                            <td th:text="${coupon.couponName}" style="width: 10%"></td>
-                                            <td th:text="${#numbers.formatInteger(coupon.couponRate, 0, 'COMMA')}" style="width: 10%"></td>
-                                            <td th:text="${#strings.substring(coupon.startDate, 0, 10)}" style="width: 10%"></td>
-                                            <td th:text="${#strings.substring(coupon.endDate, 0, 10)}" style="width: 10%"></td>
-                                        </tr>
-                                    </th:block>
-                                </th:block>
-                            </tbody>
-                        </table>
+                        <div id="request-user-table-div"></div>
                     </div>
 
                     <!-- Modal footer -->
@@ -140,40 +64,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <table class="table table-hover table-bordered" id="get-request-coupon-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 5%;"></th>
-                                    <th style="width: 10%;">쿠폰이름</th>
-                                    <th style="width: 10%;">할인가격</th>
-                                    <th style="width: 10%">시작일</th>
-                                    <th style="width: 10%">종료일</th>
-                                </tr>
-                            </thead>
-                            <tbody id="get-request-coupon-tbody">
-                            <th:block th:if="${userRequestNotApproved.size() == 0}">
-                                <tr>
-                                    <td colspan="5">요청한 쿠폰이 없습니다.</td>
-                                </tr>
-                            </th:block>
-                            <th:block th:unless="${userRequestNotApproved.size() == 0}">
-                                <th:block th:each="userRequest, userRequestStat : ${userRequestNotApproved}">
-                                    <tr class="clickable-del-row">
-                                        <td style="width: 5%">
-                                            <div class="form-check" style="text-align: center; display: inline-block;">
-                                                <input class="form-check-input request-del-chk" type="checkbox" th:value="${userRequest.hongCouponRequestId}" th:id="|checkbox-${userRequest.hongCouponRequestId}|">
-                                                <label class="form-check-label" th:for="|checkbox-${userRequest.hongCouponRequestId}|"></label>
-                                            </div>
-                                        </td>
-                                        <td style="width: 10%" th:text="${userRequest.couponName}"></td>
-                                        <td style="width: 10%" th:text="${#numbers.formatInteger(userRequest.couponRate, 0, 'COMMA')}"></td>
-                                        <td style="width: 10%" th:text="${#strings.substring(userRequest.startDate, 0, 10)}"></td>
-                                        <td style="width: 10%" th:text="${#strings.substring(userRequest.endDate, 0, 10)}"></td>
-                                    </tr>
-                                </th:block>
-                            </th:block>
-                            </tbody>
-                        </table>
+                        <div id="get-request-coupon-table-div"></div>
                     </div>
 
                     <!-- Modal footer -->
@@ -193,6 +84,9 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
+        let couponTable = new Table("coupon-table-div")
+        let requestUserTable = new Table("request-user-table-div")
+        let getRequestCouponTable = new Table("get-request-coupon-table-div")
     </script>
     <script th:src="@{'/assets/js/page/user/coupon.js'}"></script>
 </th:block>
