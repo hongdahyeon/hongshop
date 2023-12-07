@@ -16,7 +16,7 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-11-14
-* @summary  사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+* @summary  사용자 id를 통해 주문 정보 & 배송 정보 불러오기
 **/
 
 @Getter @Setter
@@ -26,7 +26,6 @@ public class HongOrderDeliverVO {
     private String orderStatStr;                    // 주문 상태값 -> 설명값
     private String orderDate;                       // 주문 날짜
     private String userId;                          // 사용자 ID
-    private List<HongOrderDetailVO> orderDetails;   // 주문 상세 리스트
     private String deliverStatus;                   // 배달 상태값
     private String deliverStatStr;                  // 배달 상태값 -> 설명값
     private Address address;                        // 주소
@@ -34,13 +33,12 @@ public class HongOrderDeliverVO {
     private boolean useCoupon;                      // 주문시, 쿠폰 사용여부
     private Integer couponRate;                     // 주문시, 쿠폰 사용 금액
 
-    public HongOrderDeliverVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails, HongDeliverVO hongDeliverVO) {
+    public HongOrderDeliverVO(HongOrder hongOrder, HongDeliverVO hongDeliverVO) {
         this.orderId =  hongOrder.getId();
         this.orderStatStr = OrderStatus.getText(hongOrder.getOrderStatus().toString());
         this.orderStatus = hongOrder.getOrderStatus().toString();
         this.orderDate = hongOrder.getOrderDate();
         this.userId = hongOrder.getHongUser().getUserId();
-        this.orderDetails = orderDetails;
         this.deliverStatStr = DeliverStatus.getText(hongDeliverVO.getDeliverStatus());
         this.deliverStatus = hongDeliverVO.getDeliverStatus();
         this.address = hongDeliverVO.getAddress();

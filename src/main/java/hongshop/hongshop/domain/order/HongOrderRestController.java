@@ -4,6 +4,7 @@ import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -104,6 +105,14 @@ public class HongOrderRestController {
     @ApiDocumentResponse
     public Response orderWithReviewChk(){
         List<HongOrderVO> list = hongOrderService.listWithChkReview();
+        return Response.ok(list);
+    }
+
+    @GetMapping("/order-with-deliver")
+    @Operation(summary = "로그인한 사용자의 주문 정보 & 배송 정보 조회", description = "로그인한 사용자의 주문 정보 & 배송 정보 조회")
+    @ApiDocumentResponse
+    public Response orderWithDetailAndDeliver(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        List<HongOrderDeliverVO> list = hongOrderService.getOrderAndDeliverByUserId(principalDetails.getUser().getId());
         return Response.ok(list);
     }
 }

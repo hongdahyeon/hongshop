@@ -1,34 +1,61 @@
-/* 주소 수정 모달창 닫기 */
-$("#close-addressChangeModal, #close-change-address-modal-btn").on("click", function(e) {
-    $("#city").val('')
-    $("#street").val('')
-    $("#zipcode").val('')
-    const form = document.getElementById("change-address-form")
-    form.classList.remove("was-validated")      // validation 지우기
-    $("#change-address-modal").modal('hide')
+$(document).ready(function(){
+    table
+        .get('/api/order-with-deliver')
+        .headerBottom()
+        .add(new Column("index").title("#").width("5%").center())
+        .add(new Column("orderStatStr").title("주문 상태").width("10%").left())
+        .add(new Column("orderDate").title("주문 날짜").width("10%").left().formatter(function(cell) { return Util.DateSubString(cell.getValue()) }))
+        .add(new Column("useCoupon").title("쿠폰 사용 <br/> 여부").width("5%").left().formatter(function(cell){
+            const rowData = cell.getData()
+            return (rowData['useCoupon']) ? `사용 <br/> ${Util.priceString(rowData['couponRate'])}` : '미사용'
+        }))
+        .add(new Column("orderId").title("주문 상세 정보 보기").width("10%").center().formatter(function(cell) {
+            const rowData = cell.getData()
+            return `<button type="button" class="btn btn-sm btn-outline-success" data-num="${rowData['orderId']}" onclick="getOrderDetail(this)">보기</button>`
+        }))
+        .add(new Column("").width("2%"))
+        .add(new Column("deliverStatStr").title("배송상태").width("5%").left())
+        .add(new Column().title("주소").center().width("30%")
+            .add(new Column("address").title("시/도").center().width("10%").formatter(function(cell) { return cell.getValue()['city'] }))
+            .add(new Column("address").title("시군구 <br/> 읍면동").center().width("10%").formatter(function(cell) { return cell.getValue()['street'] }))
+            .add(new Column("address").title("우편번호").center().width("10%").formatter(function(cell) { return cell.getValue()['zipcode'] }))
+        )
+        .add(new Column("deliverId").title("배송지 <br/> 변경하기").center().width("10%").formatter(function(cell) {
+            const rowData = cell.getData()
+            return ` <button type="button" class="btn btn-outline-primary chg-address" data-deliver="${rowData['deliverId']}" data-order="${rowData['orderId']}" data-city="${rowData['address']['city']}" data-status="${rowData['deliverStatus']}"
+                               data-street="${rowData['address']['street']}" data-zipcode="${rowData['address']['zipcode']}" onclick="changeAddress(this)"> ${(rowData['deliverStatus'] === 'DELIVERED') ? '리뷰작성' : '변경'} </button>`
+        }))
+        .init()
+
+    orderDetailTable
+        .add(new Column("productName").title("상품명").left().width("20%"))
+        .add(new Column("orderCnt").title("주문개수").center().width("20%").formatter(function(cell){ return `${cell.getValue()} 개` }))
+        .add(new Column("orderPrice").title("총 가격").left().width("20%").formatter(function(cell){ return Util.priceString(cell.getValue()) }))
+
 })
 
-/* 상품구매 모달창 닫힐때 -> validation 초기화 및 주문개수 초기화 */
-$("#change-address-modal").on('hidden.bs.modal', function (e) {
-    $("#city").val('')
-    $("#street").val('')
-    $("#zipcode").val('')
-    const form = document.getElementById("change-address-form")
-    form.classList.remove("was-validated")      // validation 지우기
-});
+/* 주문 상세 정보 보기 버튼 클릭 이벤트 */
+function getOrderDetail(This) {
+    const orderId = This.getAttribute("data-num")
+
+    orderDetailTable
+        .get(`/api/order-detail/${orderId}`)
+        .init()
+    $("#order-detail-modal").modal('show')
+}
 
 /* 주소변경 버튼 클릭 이벤트 , 리뷰작성 버튼 클릭 이벤트 */
-$(".chg-address").on("click", function(e) {
-    const deliverId = $(this).attr("data-deliver")
-    const orderId = $(this).attr("data-order")
-    const city = $(this).attr("data-city")
-    const street = $(this).attr("data-street")
-    const zipcode = $(this).attr("data-zipcode")
-    const deliverStatus = $(this).attr("data-status")
+function changeAddress(This) {
+    const deliverId = This.getAttribute("data-deliver")
+    const orderId = This.getAttribute("data-order")
+    const city = This.getAttribute("data-city")
+    const street = This.getAttribute("data-street")
+    const zipcode = This.getAttribute("data-zipcode")
+    const deliverStatus = This.getAttribute("data-status")
 
     // 만일 배송완료된 주문건이라면 -> 해당 주문에 대해 리뷰작성이 가능하다.
     // 이때 이미 그 주문건에 대해 리뷰가 작성됐다면 더이상 리뷰 작성이 불가능하다.
-    if(deliverStatus == 'DELIVERED') {
+    if(deliverStatus === 'DELIVERED') {
         Http.get(`/api/user-order-review/${orderId}`).then((res) => {
             if(!res.message) Util.alert("이미 작성된 리뷰가 있습니다.", 'w', 'w')
             else {
@@ -36,7 +63,7 @@ $(".chg-address").on("click", function(e) {
                 $("#review-write-modal").modal('show')
             }
         })
-    } else if(deliverStatus != 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w', 'w')
+    } else if(deliverStatus !== 'AWAIT') Util.alert("배송지의 경우 대기 상태의 경우에만 변경이 가능합니다.", 'w', 'w')
     else {
         $("#city").val(city)
         $("#street").val(street)
@@ -44,7 +71,22 @@ $(".chg-address").on("click", function(e) {
         $("#deliverId").val(deliverId)
         $("#change-address-modal").modal('show')
     }
+}
+
+/* 주소 수정 모달창 닫기 */
+$("#close-addressChangeModal, #close-change-address-modal-btn").on("click", function(e) {
+    addressForm.val('')
+    const form = document.getElementById("change-address-form")
+    form.classList.remove("was-validated")      // validation 지우기
+    $("#change-address-modal").modal('hide')
 })
+
+/* 상품구매 모달창 닫힐때 -> validation 초기화 및 주문개수 초기화 */
+$("#change-address-modal").on('hidden.bs.modal', function (e) {
+    addressForm.val('')
+    const form = document.getElementById("change-address-form")
+    form.classList.remove("was-validated")      // validation 지우기
+});
 
 /* 리뷰 작성폼 -> 주문상품 건 라디오 버튼 div 만들기
 *  > 이때 이미 리뷰가 작성된 상품건에 대해선 선택 불가

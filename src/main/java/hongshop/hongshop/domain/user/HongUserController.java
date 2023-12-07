@@ -2,9 +2,6 @@ package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.cart.vo.HongCartVO;
-import hongshop.hongshop.domain.order.HongOrderService;
-import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
-import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.review.HongReviewService;
 import hongshop.hongshop.domain.review.vo.HongReviewVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -16,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,7 +21,6 @@ import java.util.List;
 public class HongUserController {
 
     private final HongUserService hongUserService;
-    private final HongOrderService hongOrderService;
     private final HongCartService hongCartService;
     private final HongReviewService hongReviewService;
 
@@ -46,24 +41,7 @@ public class HongUserController {
     }
 
     @GetMapping("/order")   // 회원 - 배송 및 주문 정보 페이지
-    public String orderUser(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        Long id = principalDetails.getUser().getId();
-        List<HongOrderDeliverVO> orders = hongOrderService.getOrderAndDeliverByUserId(id);
-
-        if(orders.size() > 0) {
-            List<Integer> totalPrice = new ArrayList<>();
-            for (HongOrderDeliverVO orderDeliver : orders) {
-                Integer total = 0;
-                for (HongOrderDetailVO detail : orderDeliver.getOrderDetails()) {
-                    total += detail.getOrderPrice();
-                }
-                totalPrice.add(total);
-            }
-            model.addAttribute("totalPrice", totalPrice);
-        }
-
-        model.addAttribute("orders", orders);
-        model.addAttribute("id", id);
+    public String orderUser() {
         return "user/order";
     }
 

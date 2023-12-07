@@ -46,7 +46,7 @@ import java.util.List;
  *          (5) listOfUserOrder : 현재 로그인한 user의 주문 정보를 불러온다.
  *          (6) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
  *          (7) list: 전체 주문 조회 with 주문 상세
- *          (8) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 주문 상세 정보 & 배송 정보 불러오기
+ *          (8) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 배송 정보 불러오기
  *          (9) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
  *          (10) getOrderDetailReviews : 주문건 상세 주문건 상품들에 대한 정보와 그 주문상품의 리뷰가 달렸는지 여부 가져오기
 **/
@@ -298,9 +298,8 @@ public class HongOrderServiceImpl implements HongOrderService {
     public List<HongOrderDeliverVO> getOrderAndDeliverByUserId(Long id) {
         List<HongOrder> hongOrders = hongOrderRepository.findAllByHongUserId(id);
         return hongOrders.stream().map(order -> {
-            List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
             HongDeliverVO byOrderId = hongDeliverService.getByOrderId(order.getId());
-            return new HongOrderDeliverVO(order, orderDetails, byOrderId);
+            return new HongOrderDeliverVO(order, byOrderId);
         }).toList();
     }
 

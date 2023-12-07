@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.orderDetail;
 
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
+import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,14 @@ public class HongOrderDetailRestController {
     @ApiDocumentResponse
     public Response orderUser(@PathVariable Long id){
         List<HongOrderDetailUserVO> list = hongOrderDetailService.listByProductId(id);
+        return Response.ok(list);
+    }
+
+    @GetMapping("/order-detail/{id}")
+    @Operation(summary = "order detail list by orderId", description = "주문Id로 상세 주문 정보 불러오기")
+    @ApiDocumentResponse
+    public Response orderDetail(@PathVariable Long id){
+        List<HongOrderDetailVO> list = hongOrderDetailService.listOfDetailOrders(id);
         return Response.ok(list);
     }
 }
