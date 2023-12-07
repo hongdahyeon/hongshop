@@ -8,8 +8,8 @@
     <style>
 
         .nav-pills .nav-link.category.active {
-            background-color: #0dcaf0; /* Change the background color to red when "root" is active */
-            color: black; /* Change the text color to black */
+            background-color: #0dcaf0;
+            color: black;
         }
 
         .nav-pills .nav-link.product {
@@ -18,10 +18,6 @@
 
         .margin-10 {
             margin-top: 10px
-        }
-
-        th, tr,td {
-            text-align: center;
         }
 
     </style>
@@ -347,19 +343,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <table class="table table-hover table-bordered" id="product-user-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 10%;">번호</th>
-                                    <th style="width: 20%">주문자</th>
-                                    <th style="width: 10%">주문상태</th>
-                                    <th style="width: 10%">주문개수</th>
-                                    <th style="width: 10%">주문가격</th>
-                                    <th style="width: 20%">주문날짜</th>
-                                </tr>
-                            </thead>
-                            <tbody id="product-user-tbody"></tbody>
-                        </table>
+                        <div id="product-user-table-div"></div>
                     </div>
 
                     <!-- Modal footer -->
@@ -382,6 +366,10 @@
         const nav = new navTab("navTab")
         const uploadFile = new File("upload-container-product")
         const newUploadFile = new File("upload-container-new-product")
+        let productUserTable = new Table("product-user-table-div")
+
+        const categoryForm = $("#new-categoryName, #new-description, #new-orderNum")
+        const productForm = $("#new-productName, #new-productCnt, #new-productPrice")
     </script>
     <script th:src="@{'/assets/js/page/manager/category.js'}"></script>
 </th:block>

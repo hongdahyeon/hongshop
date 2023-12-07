@@ -35,8 +35,7 @@ import java.util.List;
  *              (6) update : 상품 정보 업데이트 -> 상품 개수 변경에 따른 상품 재고값 변경
  *              (7) updateStockCnt : 주문 정보에 따른 상품 재고값 변경
  *              (8) delete : 상품 삭제 (deleteYn)
- *              (9) productUser : 상품ID를 통한 주문자 리스트 조회
- *              (10) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
+ *              (9) getNewProducts : 최산 상품 가져오기 (newProduct 컬럼을 통해)
 **/
 
 @Service
@@ -142,13 +141,6 @@ public class HongProductServiceImpl implements HongProductService {
     public void delete(Long id) {
         HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         product.deleteProduct();
-    }
-
-    @Override
-    public HongPrdouctUserVO productUser(Long id) {
-        HongProduct product = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
-        List<HongOrderDetailUserVO> orderDetails = hongOrderDetailService.listByProductId(id);  // 상품Id를 통해 주문 사용자 정보 리스트를 가져온다.
-        return new HongPrdouctUserVO(product, orderDetails);
     }
 
     @Override

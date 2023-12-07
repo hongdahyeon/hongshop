@@ -2,6 +2,13 @@ $(document).ready(function() {
 
     getCategoryWithProduct()
 
+    productUserTable
+        .add(new Column("index").title("#").center().width("10%"))
+        .add(new Column("userId").title("주문자").left().width("20%"))
+        .add(new Column("orderStatus").title("주문상태").left().width("20%"))
+        .add(new Column("orderCnt").title("주문개수").left().width("20%").formatter(function(cell) { return `${cell.getValue()} 개` }))
+        .add(new Column("orderDate").title("주문날짜").left().width("20%").formatter(function(cell){ return Util.DateSubString(cell.getValue()) }))
+
     /* [왼쪽] 상품 nav-tab 클릭 */
     $("#navTab").on("click", ".product", function(e) {
         const hongProductId = $(this).attr("data-num")
@@ -118,66 +125,30 @@ $(document).ready(function() {
         })
     })
 
-    /* [오른쪽] "주문자" 버튼 클릭 */
+    /* [오른쪽] "주문자" 버튼 클릭 -> 상품에 대한 주문 정보 조회 (모달) */
     $("#show-product-order").on("click", function(e) {
         const productId = $("#hongProductId").val()
-        Http.get(`/api/product-user/${productId}`).then((res) => {
-            if(res['httpStatus'] === 200) {
-                const productUser = res.message['orderDetails']
-                if(!productUser.length) Util.alert("해당 상품을 구매한 사용자가 없습니다.", 'w', 'w')
-                else {
-                    drawModalTable(productUser)
-                    $("#product-user-modal").modal('show')
-                }
-            }
-        })
+        productUserTable
+            .get(`/api/order-user/${productId}`)
+            .init()
+        $("#product-user-modal").modal('show')
     })
 })
 
 /* 카테고리 추가 및 수정 모달 비우기 */
 function categoryModalEmpty(){
-    $("#new-categoryName").val('')
-    $("#new-description").val('')
-    $("#new-orderNum").val('')
-
-    // validation 지우기
+    categoryForm.val('')
     const form = document.getElementById("new-category-form")
     form.classList.remove("was-validated")
 }
 
 /* 상품 추가 및 수정 모달 비우기 */
 function productModalEmpty(){
-    $("#new-productName").val('')
-    $("#new-productCnt").val('')
-    $("#new-productPrice").val('')
+    productForm.val('')
     $("#new-newProductYn-N").prop('checked', true)
     newUploadFile.domEmptyAndFileGroupIdNull()  // product modal file dom.empty()
-
-    // validation 지우기
     const form = document.getElementById("new-product-form")
     form.classList.remove("was-validated")
-}
-
-/* [주문자] -> 상품에 대한 주문 정보 조회 (모달) */
-function drawModalTable(productUser) {
-    const dom = $("#product-user-tbody")
-    dom.empty();
-
-    productUser.forEach((data, i) => {
-        const price = Util.priceString(data['orderPrice'])
-        const body =
-            `
-                    <tr>
-                        <td style="width: 10%">${i+1}</td>
-                        <td style="width: 20%">${data['userId']}</td>
-                        <td style="width: 10%">${data['orderStatus']}</td>
-                        <td style="width: 10%">${data['orderCnt']}</td>
-                        <td style="width: 10%">${price}</td>
-                        <td style="width: 10%">${data['orderDate'].toString().substring(0, 10)}</td>
-                    </tr>
-                    `
-        dom.append(body)
-    })
 }
 
 /* [왼쪽] 카테고리->상품 리스트 조회 */
