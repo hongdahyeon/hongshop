@@ -3,9 +3,9 @@ $(document).ready(function(e){
     table
         .get("/api/users")
         .headerBottom()
-        .add(new Column("index").title("#").width("10%").center())
+        .add(new Column("index").title("#").width("5%").center())
         .add(new Column("userId").title("사용자Id").width("10%").left())
-        .add(new Column("userNonLocked").title("계정정지 여부").width("10%").center().formatter(function(cell) {
+        .add(new Column("userNonLocked").title(`계정정지<br/> 여부`).width("5%").center().formatter(function(cell) {
             const rowData = cell.getData()
             if(!rowData['userNonLocked']) return `<a href="#" class="user-is-unlocked" data-num="${rowData.userId}" onclick="userLocked(this)">정지</a>`
             else return `<a>-</a>`
@@ -18,7 +18,7 @@ $(document).ready(function(e){
             .add(new Column("street").title("시군구/읍면동").width("10%").center())
             .add(new Column("zipcode").title("우편번호").width("10%").center())
         )
-        .add(new Column("id").title("권한 변경").width("20%").center().formatter(function(cell) {
+        .add(new Column("id").title("권한 변경").width("10%").center().formatter(function(cell) {
             const rowData = cell.getData();
             return `<select id="userRole-${rowData.id}" class="form-select-sm select" style="width: 150px" data-num="${rowData.id}" data-userId="${rowData.userId}" data-role="${rowData.role}" onChange="changeSelect(this)">
                         <option value="ROLE_ADMIN" ${(rowData.role === 'ROLE_ADMIN' ? 'selected' : '')}>ROLE_ADMIN</option>

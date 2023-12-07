@@ -18,6 +18,7 @@ class Table {
         this._columns = []
         this._url = ''
         this._data = []
+        this._selectedRows = []
         this._table = null
     }
 
@@ -112,6 +113,10 @@ class Table {
         return this
     }
 
+    getSelectedRows() {
+        return this._selectedRows
+    }
+
     /*
     * @param: column
     * - table column add
@@ -197,6 +202,8 @@ class Table {
         if(this._afterComplete) {
             table.on("renderComplete", () => this._afterComplete())
         }
+
+        table.on("rowSelectionChanged", (data, rows) => this._selectedRows = data )
 
         this._table = table
     }

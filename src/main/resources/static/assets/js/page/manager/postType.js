@@ -5,7 +5,7 @@ $(document).ready(function() {
         .add(new Column("postType").title("게시판 유형").left().width("10%"))
         .add(new Column("postName").title("게시판 이름").left().width("10%"))
         .add(new Column("orderNum").title("정렬 순서").center().width("10%"))
-        .add(new Column("useAt").title("사용여부").center().width("10%").formatter(function(cell) { return (cell.getValue() === 'Y') ? '사용' : '미사용' }))
+        .add(new Column("useAt").title("사용여부").center().width("10%").formatter(function(cell) { return Util.strYN(cell.getValue(), "사용", "미사용") }))
         .add(new Column("hongPost").title("게시글 개수").center().width("10%").formatter(function(cell) {
             return `${cell.getValue().length} 개`
         }))

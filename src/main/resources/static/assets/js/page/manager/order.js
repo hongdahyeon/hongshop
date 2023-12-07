@@ -1,9 +1,3 @@
-userOrderListLogTable
-    .add(new Column("index").title("#").width("5%").center())
-    .add(new Column("productName").title("주문상품").left().width("20%"))
-    .add(new Column("orderCnt").title("주문개수").left().width("20%").formatter(function(cell) { return `${cell.getValue()} 개`}))
-    .add(new Column("orderPrice").title("주문가격").left().width("20%").formatter(function(cell) { return `${Util.priceString(cell.getValue())} 원`}))
-
 $(document).ready(function(e){
 
     table
@@ -23,6 +17,13 @@ $(document).ready(function(e){
                             </select>`
         }))
         .init()
+
+    userOrderListLogTable
+        .add(new Column("index").title("#").width("5%").center())
+        .add(new Column("productName").title("주문상품").left().width("20%"))
+        .add(new Column("orderCnt").title("주문개수").left().width("20%").formatter(function(cell) { return `${cell.getValue()} 개`}))
+        .add(new Column("orderPrice").title("주문가격").left().width("20%").formatter(function(cell) { return `${Util.priceString(cell.getValue())} 원`}))
+
 
     table.rowClick((data, row) => {
         userOrderListLogTable

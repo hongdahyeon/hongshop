@@ -39,6 +39,14 @@ class Util {
             cancelButtonText: cancelButtonText,
         }).then((res) => res.isConfirmed)
     }
+
+    static strYN(value, yes = "가능", no = "불가능") {
+        return (value === 'Y') ? yes : no;
+    }
+
+    static DateSubString(value, s= 0, e = 10) {
+        return value.toString().substring(s, e)
+    }
 }
 
 class Http {
