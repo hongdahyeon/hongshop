@@ -5,7 +5,7 @@ $(document).ready(function(){
         .add(new Column("index").title("#").width("5%").center())
         .add(new Column("orderStatStr").title("주문 상태").width("10%").left())
         .add(new Column("orderDate").title("주문 날짜").width("10%").left().formatter(function(cell) { return Util.DateSubString(cell.getValue()) }))
-        .add(new Column("useCoupon").title("쿠폰 사용 <br/> 여부").width("5%").left().formatter(function(cell){
+        .add(new Column("useCoupon").title("쿠폰 사용 여부").width("10%").left().formatter(function(cell){
             const rowData = cell.getData()
             return (rowData['useCoupon']) ? `사용 <br/> ${Util.priceString(rowData['couponRate'])}` : '미사용'
         }))
@@ -28,9 +28,10 @@ $(document).ready(function(){
         .init()
 
     orderDetailTable
+        .add(new Column("index").title("#").center().width("10%"))
         .add(new Column("productName").title("상품명").left().width("20%"))
         .add(new Column("orderCnt").title("주문개수").center().width("20%").formatter(function(cell){ return `${cell.getValue()} 개` }))
-        .add(new Column("orderPrice").title("총 가격").left().width("20%").formatter(function(cell){ return Util.priceString(cell.getValue()) }))
+        .add(new Column("orderPrice").title("총 가격").left().width("20%").formatter(function(cell){ return `${Util.priceString(cell.getValue())} 원` }))
 
 })
 
