@@ -245,3 +245,4 @@
 * commit154 : bbs 하위 html -> js와 분리 (23/12/06)
 * commit155 : html & js 분리 (23/12/06)
 * commit156 : 사용자 관리, 게시판 관리 테뷸레이터 적용 (23/12/06)
+* commit157 : margin-10 style 다시 추가 (23/12/07)
