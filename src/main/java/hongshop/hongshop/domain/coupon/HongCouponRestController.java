@@ -78,5 +78,12 @@ public class HongCouponRestController {
         return Response.ok(couponHist);
     }
 
+    @GetMapping("/coupon-chk-deleteAble")
+    @Operation(summary = "쿠폰 리스트 조회 - 삭제 가능 여부 체킹", description = "쿠폰 리스트 조회 - 삭제 가능 여부 체킹")
+    @ApiDocumentResponse
+    public Response couponChkWithUser(){
+        List<HongCouponVO> list = hongCouponService.listWithChkUser();
+        return Response.ok(list);
+    }
 
 }
