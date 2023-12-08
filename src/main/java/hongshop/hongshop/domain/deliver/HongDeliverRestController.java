@@ -30,7 +30,7 @@ public class HongDeliverRestController {
     private final HongDeliverService hongDeliverService;
 
     @GetMapping("/deliver/{id}")
-    @Operation(summary = "get deliver view", description = "배송 리스트 가져오기")
+    @Operation(summary = "get deliver view", description = "배송 단건 조회")
     @ApiDocumentResponse
     public Response view(@PathVariable Long id){
         HongDeliverVO view = hongDeliverService.view(id);

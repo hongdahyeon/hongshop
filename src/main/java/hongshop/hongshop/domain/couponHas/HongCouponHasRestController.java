@@ -71,14 +71,6 @@ public class HongCouponHasRestController {
         return Response.ok("해당 사용자의 쿠폰을 삭제했습니다.");
     }
 
-    @GetMapping("/use-coupon-has/{id}")
-    @Operation(summary = "coupon-has view", description = "사용자의 쿠폰 리스트 단건 조회")
-    @ApiDocumentResponse
-    public Response useCopon(@PathVariable Long id){
-        Integer couponRate = hongCouponHasService.useCoupon(id);
-        return Response.ok("해당 쿠폰을 사용했습니다. 할인가격: " + couponRate);
-    }
-
     @GetMapping("/coupon-has-chk")
     @Operation(summary = "사용자가 갖고 있는(사용가능한) 쿠폰 리스트 조회 -> 쿠폰 삭제 가능 여부 체킹", description = "사용자가 갖고 있는(사용가능한) 쿠폰 리스트 조회 -> 쿠폰 삭제 가능 여부 체킹")
     @ApiDocumentResponse
