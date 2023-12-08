@@ -1,6 +1,6 @@
 $(document).ready(function() {
     table
-        .get(`/api/postsWithFileByPostType/${id}`)
+        .get(`/api/postsWithFileAnswerByPostType/${id}`)
         .add(new Column("index").title("#").width("15%").center())
         .add(new Column("title").title("제목").width("30%").left())
         .add(new Column("readCnt").title("조회수").width("20%").center())

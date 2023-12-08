@@ -4,7 +4,7 @@ import hongshop.hongshop.domain.answer.HongAnswerService;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.domain.post.html.BbsType;
 import hongshop.hongshop.domain.post.html.CRUD;
-import hongshop.hongshop.domain.post.vo.HongPostVO;
+import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
 import hongshop.hongshop.domain.postType.HongPostTypeService;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -42,7 +42,7 @@ public class HongPostController {
 
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model, HttpServletResponse res, HttpServletRequest req, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        HongPostVO post = hongPostService.postWithFileAndAnswer(id);
+        HongPostFileAnswerVO post = hongPostService.postWithFileAndAnswer(id);
         HongPostTypeVO type = hongPostTypeService.view(post.getTypeId());
         List<HongAnswerVO> answers = hongAnswerService.listByHongPostId(id);
 
@@ -59,7 +59,7 @@ public class HongPostController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model){
-        HongPostVO post = hongPostService.postWithFileAndAnswer(id);
+        HongPostFileAnswerVO post = hongPostService.postWithFileAndAnswer(id);
         HongPostTypeVO type = hongPostTypeService.view(post.getTypeId());
 
         post.setContent(StringEscapeUtils.unescapeHtml4(post.getContent()));

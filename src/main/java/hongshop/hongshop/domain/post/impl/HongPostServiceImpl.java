@@ -8,6 +8,9 @@ import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.post.*;
 import hongshop.hongshop.domain.post.dto.HongPostDTO;
+import hongshop.hongshop.domain.post.vo.HongPostAnswerVO;
+import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
+import hongshop.hongshop.domain.post.vo.HongPostFileVO;
 import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.HongPostType;
 import hongshop.hongshop.domain.postType.HongPostTypeRepository;
@@ -32,7 +35,7 @@ import java.util.List;
  *   (3) postWithAnswer : 게시글 단건 조회 with 답변
  *   (4) postWithFile : 게시글 단건 조회 with 파일
  *   (5) postWithFileAndAnswer : 게시글 단건 조회 with 파일 and 답변
- *   (6) postsWithFileByPostType : 게시판 ID에 따른 게시글 전체 리스트 조회 with 파일
+ *   (6) postsWithFileAnswerByPostType : 게시판 ID에 따른 게시글 전체 리스트 조회 with 파일 and 답변
  *   (7) show : 게시글 단건 조회
  *   (8) update : 게시글 단건 update
  *   (9) delete : 게시글 삭제 -> delete_Yn 변경
@@ -94,39 +97,39 @@ public class HongPostServiceImpl implements HongPostService {
     }
 
     @Override
-    public HongPostVO postWithAnswer(Long id) {
+    public HongPostAnswerVO postWithAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
-        return new HongPostVO(hongPost, listOfAnswer);
+        return new HongPostAnswerVO(hongPost, listOfAnswer);
     }
 
     @Override
-    public HongPostVO postWithFile(Long id) {
+    public HongPostFileVO postWithFile(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
-        return new HongPostVO(hongPost, list);
+        return new HongPostFileVO(hongPost, list);
     }
 
     @Override
-    public HongPostVO postWithFileAndAnswer(Long id) {
+    public HongPostFileAnswerVO postWithFileAndAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         HongFileGroupVO list = null;
         if(hongPost.getFileGroupId() != null){
              list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
         }
-        return new HongPostVO(hongPost, list, listOfAnswer);
+        return new HongPostFileAnswerVO(hongPost, list, listOfAnswer);
     }
 
 
     @Override
-    public List<HongPostVO> postsWithFileByPostType(Long postTypeId) {
+    public List<HongPostFileAnswerVO> postsWithFileAnswerByPostType(Long postTypeId) {
         List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(postTypeId, "N");
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
             if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId(), "N", FileState.SAVED);
             List<HongAnswerVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
-            return new HongPostVO(post, list, hongAnswerVOS);
+            return new HongPostFileAnswerVO(post, list, hongAnswerVOS);
         }).toList();
     }
 

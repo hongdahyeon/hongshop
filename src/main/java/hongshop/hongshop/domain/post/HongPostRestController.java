@@ -1,6 +1,9 @@
 package hongshop.hongshop.domain.post;
 
 import hongshop.hongshop.domain.post.dto.HongPostDTO;
+import hongshop.hongshop.domain.post.vo.HongPostAnswerVO;
+import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
+import hongshop.hongshop.domain.post.vo.HongPostFileVO;
 import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -57,23 +60,23 @@ public class HongPostRestController {
     @Operation(summary = "get post view with answer list", description = "단건 게시글 조회 & 댓글 리스트")
     @ApiDocumentResponse
     public Response showWithAnswer(@PathVariable Long id){
-        HongPostVO hongPostVO = hongPostService.postWithAnswer(id);
-        return Response.ok(hongPostVO);
+        HongPostAnswerVO hongPostAnswerVO = hongPostService.postWithAnswer(id);
+        return Response.ok(hongPostAnswerVO);
     }
 
     @GetMapping("/postWithFile/{id}")
     @Operation(summary = "get post view with file list", description = "단건 게시글 조회 & 파일 리스트")
     @ApiDocumentResponse
     public Response showWithFile(@PathVariable Long id){
-        HongPostVO hongPostVO = hongPostService.postWithFile(id);
-        return Response.ok(hongPostVO);
+        HongPostFileVO hongPostFileVO = hongPostService.postWithFile(id);
+        return Response.ok(hongPostFileVO);
     }
 
-    @GetMapping("/postsWithFileByPostType/{id}")
+    @GetMapping("/postsWithFileAnswerByPostType/{id}")
     @Operation(summary = "get posts with file list by post type", description = "게시글 타입을 통해 게시글들 & 파일 리스트")
     @ApiDocumentResponse
-    public Response postsWithFileByPostType(@PathVariable Long id){
-        List<HongPostVO> hongPostVOS = hongPostService.postsWithFileByPostType(id);
+    public Response postsWithFileAnswerByPostType(@PathVariable Long id){
+        List<HongPostFileAnswerVO> hongPostVOS = hongPostService.postsWithFileAnswerByPostType(id);
         hongPostVOS.forEach(hongPostVO -> {
             hongPostVO.setContent(StringEscapeUtils.unescapeHtml4(hongPostVO.getContent()));
         });

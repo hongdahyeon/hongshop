@@ -9,16 +9,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @fileName HongPostVO
- * @author dahyeon
- * @version 1.0.0
- * @date 2023-07-17
- * @summary
- **/
-
-@Getter @Setter
-public class HongPostVO {
+@Getter
+@Setter
+public class HongPostFileAnswerVO {
 
     private Long id;
     private String type;
@@ -31,7 +24,7 @@ public class HongPostVO {
     private HongFileGroupVO file;
     private Long regId;
 
-    public HongPostVO(HongPost hongPost){
+    public HongPostFileAnswerVO(HongPost hongPost, HongFileGroupVO file, List<HongAnswerVO> answerVOList){
         this.id = hongPost.getId();
         this.type = hongPost.getHongPostType().getPostType().toString();
         this.typeId = hongPost.getHongPostType().getId();
@@ -39,6 +32,8 @@ public class HongPostVO {
         this.content = hongPost.getContent();
         this.deleteYn = hongPost.getDeleteYn();
         this.readCnt = hongPost.getReadCnt();
+        this.file = file;
+        this.answerList = answerVOList;
         this.regId = hongPost.getRegId();
     }
 }

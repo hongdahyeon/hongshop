@@ -1,6 +1,6 @@
 $(document).ready(function() {
     table
-        .get(`/api/postsWithFileByPostType/${id}`)
+        .get(`/api/postsWithFileAnswerByPostType/${id}`)
         .add(new Column("regId").title("").width("5%").center().formatter(function(cell) {
             const cellData = cell.getValue()
             const classNm = (cellData == user.id) ? 'front-medium-2' : 'front-medium-2 lock'

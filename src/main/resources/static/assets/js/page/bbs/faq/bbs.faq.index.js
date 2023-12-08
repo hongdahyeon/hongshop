@@ -1,5 +1,5 @@
 $(document).ready(function(e) {
-    Http.get(`/api/postsWithFileByPostType/${id}`).then((res) => {
+    Http.get(`/api/postsWithFileAnswerByPostType/${id}`).then((res) => {
         if(res['httpStatus'] === 200) {
             faq.setData(res.message).draw()
         }
