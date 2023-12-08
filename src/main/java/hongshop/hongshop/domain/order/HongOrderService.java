@@ -4,8 +4,9 @@ import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
-import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
+import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.user.HongUser;
 
@@ -29,7 +30,7 @@ public interface HongOrderService {
 
     List<HongOrderVO> list();
 
-    List<HongOrderVO> listWithChkReview();
+    List<HongManagerOrderReviewVO> listWithChkReview();
 
     HongOrderVO view(Long id);
 
@@ -39,5 +40,5 @@ public interface HongOrderService {
 
     List<HongOrderDeliverVO> getOrderAndDeliverByUserId(Long id);
 
-    List<HongOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser);
+    List<HongUserOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser);
 }

@@ -4,8 +4,9 @@ import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
+import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
-import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
+import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
@@ -75,15 +76,6 @@ public class HongOrderRestController {
         return Response.ok(view);
     }
 
-    @GetMapping("/user-order")
-    @Operation(summary = "get view of user order with details", description = "로그인한 사용자의 주문 & 상세 주문 정보 단건 조회")
-    @ApiDocumentResponse
-    public Response listOfUserOrder(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        if(principalDetails == null) throw new IllegalArgumentException("you need to login first");
-        List<HongOrderVO> hongOrderVOS = hongOrderService.listOfUserOrder(principalDetails.getUser().getId());
-        return Response.ok(hongOrderVOS);
-    }
-
     @PutMapping("/order-status/{id}")
     @Operation(summary = "update status of order", description = "주문정보에서 주문 상태값 변경")
     @ApiDocumentResponse
@@ -96,7 +88,7 @@ public class HongOrderRestController {
     @Operation(summary = "orderId 하위에 있는 orderDetail들에 대해 리뷰달렸는지 찾기", description = "orderId 하위에 있는 orderDetail들에 대해 리뷰달렸는지 찾기")
     @ApiDocumentResponse
     public Response orderReview(@PathVariable Long id, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<HongOrderReviewVO> orderDetailReviews = hongOrderService.getOrderDetailReviews(id, principalDetails.getUser());
+        List<HongUserOrderReviewVO> orderDetailReviews = hongOrderService.getOrderDetailReviews(id, principalDetails.getUser());
         return Response.ok(orderDetailReviews);
     }
 
@@ -104,7 +96,7 @@ public class HongOrderRestController {
     @Operation(summary = "orderId 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크", description = "orderId 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크")
     @ApiDocumentResponse
     public Response orderWithReviewChk(){
-        List<HongOrderVO> list = hongOrderService.listWithChkReview();
+        List<HongManagerOrderReviewVO> list = hongOrderService.listWithChkReview();
         return Response.ok(list);
     }
 

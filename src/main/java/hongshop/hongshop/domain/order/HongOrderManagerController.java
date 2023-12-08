@@ -16,9 +16,7 @@ public class HongOrderManagerController {
 
     private final HongOrderService hongOrderService;
     @GetMapping({"/", ""})
-    public String index(Model model){
-        List<HongOrderVO> list = hongOrderService.listWithChkReview();
-        model.addAttribute("orderList", list);
+    public String index(){
         return "manager/order";
     }
 }

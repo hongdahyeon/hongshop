@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
-* @fileName HongOrderReviewVO
+* @fileName HongUserOrderReviewVO
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-11-11
@@ -14,14 +14,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HongOrderReviewVO {
-
+public class HongUserOrderReviewVO {
 
     private String productName;
     private Long orderDetailId;
     private boolean reviewChkEmpty;
 
-    public HongOrderReviewVO(String productName, Long orderDetailId, boolean reviewChkEmpty) {
+    public HongUserOrderReviewVO(String productName, Long orderDetailId, boolean reviewChkEmpty) {
         this.productName = productName;
         this.orderDetailId = orderDetailId;
         this.reviewChkEmpty = reviewChkEmpty;

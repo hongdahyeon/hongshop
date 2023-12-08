@@ -7,28 +7,23 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
-* @fileName HongOrderVO
-* @author dahyeon
-* @version 1.0.0
-* @date 2023-07-18
-* @summary
-**/
-
-@Getter @Setter
-public class HongOrderVO {
+@Getter
+@Setter
+public class HongManagerOrderReviewVO {
 
     private Long orderId;
     private String orderStatus;
     private String orderDate;
     private String userId;
     private List<HongOrderDetailVO> orderDetails;
+    private boolean writeReviewEmpty;
 
-    public HongOrderVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails) {
+    public HongManagerOrderReviewVO(HongOrder hongOrder, List<HongOrderDetailVO> orderDetails, boolean writeReviewEmpty) {
         this.orderId = hongOrder.getId();
         this.orderStatus = hongOrder.getOrderStatus().toString();
         this.orderDate = hongOrder.getOrderDate();
         this.userId = hongOrder.getHongUser().getUserId();
         this.orderDetails = orderDetails;
+        this.writeReviewEmpty = writeReviewEmpty;
     }
 }

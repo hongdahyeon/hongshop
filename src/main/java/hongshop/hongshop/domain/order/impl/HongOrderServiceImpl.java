@@ -13,8 +13,9 @@ import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.OrderStatus;
 import hongshop.hongshop.domain.order.dto.*;
+import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
-import hongshop.hongshop.domain.order.vo.HongOrderReviewVO;
+import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
@@ -243,7 +244,7 @@ public class HongOrderServiceImpl implements HongOrderService {
     }
 
     @Override
-    public List<HongOrderVO> listWithChkReview() {
+    public List<HongManagerOrderReviewVO> listWithChkReview() {
         List<HongOrder> orders = hongOrderRepository.findAll();
         return orders.stream().map(order -> {
             List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
@@ -257,7 +258,7 @@ public class HongOrderServiceImpl implements HongOrderService {
                     break;
                 }
             }
-            return new HongOrderVO(order, orderDetails, reviewEmpty);
+            return new HongManagerOrderReviewVO(order, orderDetails, reviewEmpty);
         }).toList();
     }
 
@@ -304,13 +305,13 @@ public class HongOrderServiceImpl implements HongOrderService {
     }
 
     @Override
-    public List<HongOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser) {
+    public List<HongUserOrderReviewVO> getOrderDetailReviews(Long orderId, HongUser hongUser) {
         List<HongOrderDetailVO> orderDetailVOS = hongOrderDetailService.listOfDetailOrders(orderId);
         return orderDetailVOS.stream().map(orderDevailVO -> {
             boolean isEmpty = true;
             HongReview hongReview = hongReviewRepository.findByHongUserIdAndHongOrderDetailIdAndDeleteYnIs(hongUser.getId(), orderDevailVO.getOrderDetailId(), "N");
             if(hongReview != null) isEmpty = false;
-            return new HongOrderReviewVO(orderDevailVO.getProductName(), orderDevailVO.getOrderDetailId(), isEmpty);
+            return new HongUserOrderReviewVO(orderDevailVO.getProductName(), orderDevailVO.getOrderDetailId(), isEmpty);
         }).toList();
     }
 }
