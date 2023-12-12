@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.user.HongUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
@@ -37,7 +38,7 @@ import java.util.Optional;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class CustomFailuerHandler implements AuthenticationFailureHandler {
+public class CustomFailureHandler implements AuthenticationFailureHandler {
     
     private final HongUserRepository hongUserRepository;
     @Override
@@ -60,7 +61,11 @@ public class CustomFailuerHandler implements AuthenticationFailureHandler {
                     sendMssgAndRedirect("비밀번호 " + failCnt + "/5 회 오류", response);
                 }
             }
-        }else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect("내부 시스템 문제로 로그인 요청을 처리할 수 없습니다. \n 관리자에게 문의해주세요.", response);
+        } else if(exception instanceof DisabledException) {
+
+            sendMssgEnableAndRedirect("비밀번호가 비활성화 되었습니다. \n 관리자에게 문의 바랍니다.", userId, response);
+
+        } else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect("내부 시스템 문제로 로그인 요청을 처리할 수 없습니다. \n 관리자에게 문의해주세요.", response);
         else if(exception instanceof LockedException)sendMssgAndRedirect("비밀번호 5회 오류로 계정이 잠겼습니다. \n 관리자에게 문의해주세요.", response);
 
     }
@@ -68,5 +73,10 @@ public class CustomFailuerHandler implements AuthenticationFailureHandler {
     public void sendMssgAndRedirect(String message, HttpServletResponse response) throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("/login?error="+sendMessage);
+    }
+
+    public void sendMssgEnableAndRedirect(String message, String userId, HttpServletResponse response) throws IOException {
+        String sendMessage = URLEncoder.encode(message, "UTF-8");
+        response.sendRedirect("/login?enable="+sendMessage+"&userId="+userId);
     }
 }

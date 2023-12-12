@@ -59,6 +59,9 @@ public class HongUser {
     @Column(name = "user_non_locked")
     public Boolean userNonLocked;
 
+    @Column(name = "user_enable")
+    public Boolean userEnable;
+
     @Builder(builderMethodName = "hongUserInsertBuilder")
     public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail, HongSocialUser hongSocialUser){
         this.userId = userId;
@@ -70,6 +73,7 @@ public class HongUser {
         this.userEmail = userEmail;
         this.pwdFailCnt = 0;
         this.userNonLocked = true;
+        this.userEnable = true;
     }
 
     public void updateHongUser(HongUserDTO hongUserDTO){
@@ -99,5 +103,13 @@ public class HongUser {
     public void resetPwdFailCntAndUserNonLocked(){
         this.pwdFailCnt = 0;
         this.userNonLocked = true;
+    }
+
+    public void changeEnableToDisable(){
+        this.userEnable = false;
+    }
+
+    public void changeDisableToEnable(){
+        this.userEnable = true;
     }
 }

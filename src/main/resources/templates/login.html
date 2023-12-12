@@ -25,7 +25,7 @@
                     <div class="mb-3 mt-3">
                         <label for="password">비밀번호</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" value="1234"/>
+                            <input type="password" class="form-control" id="password" name="password" value="1234" />
                             <button class="btn btn-outline-dark" type="button" id="show-pwd">show</button>
                         </div>
                         <p class="error-message" style="color: red" id="pwdError"></p>
@@ -180,9 +180,23 @@
 
             const params = new URLSearchParams(location.search);
             if (params.has("error")) {
+
                 const errorMessage = decodeURIComponent(params.get("error"));
                 $("#pwdError").html(errorMessage.replace("\n", "<br>"));
                 history.replaceState({}, null, '/login');
+
+            } else if(params.has("enable")) {
+
+                const userId = decodeURIComponent(params.get("userId"));
+                const errorMessage = decodeURIComponent(params.get("enable"));
+                $("#pwdError").html(errorMessage.replace("\n", "<br>"));
+                history.replaceState({}, null, '/login');
+
+                Http.get(`/front/api/user-enable/${userId}`).then((res) => {
+                    const data = res.message
+                    Util.alert(`사유: ${data['enableMsg']}`, 'w')
+                })
+
             }
 
             const idItemKey = 'HONG_SHOP_ID'

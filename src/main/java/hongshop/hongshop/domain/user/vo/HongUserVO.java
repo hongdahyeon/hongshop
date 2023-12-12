@@ -28,6 +28,7 @@ public class HongUserVO {
     private String zipcode;
     private boolean userNonLocked;
     private Long hongSocialUserId;
+    private boolean userEnable;
 
     public HongUserVO(HongUser hongUser){
         this.id = hongUser.getId();
@@ -39,7 +40,9 @@ public class HongUserVO {
         this.street = hongUser.getAddress().getStreet();
         this.zipcode = hongUser.getAddress().getZipcode();
         this.userNonLocked = hongUser.getUserNonLocked();
+        this.userEnable = hongUser.getUserEnable();
         if(hongUser.getHongSocialUser() != null) this.hongSocialUserId = hongUser.getHongSocialUser().getId();
         else this.hongSocialUserId = 0L;
+
     }
 }

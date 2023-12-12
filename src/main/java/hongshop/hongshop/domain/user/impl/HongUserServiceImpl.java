@@ -43,6 +43,8 @@ import java.util.Optional;
  *           (13) getAddress : id를 통해 유저 주소 정보 가져오기
  *           (14) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
  *           (15) getMessageCanUser : 'ROLE_SUPER' 권한을 갖는 유저 리스트 가져오기 -> 이때 내 자신이 있다면 나는 빼고
+ *           (16) getUserAndEnable : return entity and change enable to disable
+ *           (17) changeDisableToEnable : change disable to enable
  **/
 
 @Service
@@ -178,5 +180,20 @@ public class HongUserServiceImpl implements HongUserService {
         List<HongUser> allByRoleIn = hongUserRepository.findAllByRoleIn(roleTypeList);
         return allByRoleIn.stream().filter(user -> !user.getId().equals(itsMe.getId()))
                 .map(HongUserMessageVO::new).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public HongUser getUserAndChangeEnable(Long id) {
+        HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        hongUser.changeEnableToDisable();
+        return hongUser;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void changeDisableToEnable(Long id) {
+        HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        hongUser.changeDisableToEnable();
     }
 }

@@ -2,7 +2,7 @@ package hongshop.hongshop.global.config;
 
 
 import hongshop.hongshop.global.auth.oauth.PrincipalOAuth2UserService;
-import hongshop.hongshop.global.handler.CustomFailuerHandler;
+import hongshop.hongshop.global.handler.CustomFailureHandler;
 import hongshop.hongshop.global.handler.CustomLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +31,7 @@ public class SecurityConfig  {
     }
 
     private final PrincipalOAuth2UserService principalOAuth2UserService;
-    private final CustomFailuerHandler customFailuerHandler;
+    private final CustomFailureHandler customFailureHandler;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
     @Bean
@@ -50,7 +50,7 @@ public class SecurityConfig  {
                 .formLogin(formLoginConfigurer ->
                         formLoginConfigurer
                                 .loginPage("/login")                    // 로그인 페이지가 있는 url 지정
-                                .failureHandler(customFailuerHandler)
+                                .failureHandler(customFailureHandler)
                                 .successHandler(customLoginSuccessHandler)
                                 .usernameParameter("userId")            // 사용자 이름 필드에 사용되는 매개변수 이름의 기본값인 "username" 대신 "userId" 사용하도록 설정
                                 .loginProcessingUrl("/loginProc")       // 처리를 위해 로그인 양식을 제출할 url을 지정

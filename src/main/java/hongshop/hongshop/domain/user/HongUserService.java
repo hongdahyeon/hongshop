@@ -49,4 +49,8 @@ public interface HongUserService {
     List<HongUserCouponVO> getUserListForCoupon();
 
     List<HongUserMessageVO> getMessageCanUser(HongUser itsMe);
+
+    HongUser getUserAndChangeEnable(Long id);
+
+    void changeDisableToEnable(Long id);
 }

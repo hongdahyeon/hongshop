@@ -26,8 +26,14 @@ $(document).ready(function(e){
                         <option value="ROLE_SUPER" ${(rowData.role === 'ROLE_SUPER' ? 'selected' : '')}>ROLE_SUPER</option>
                     </select>`
         }))
+        .add(new Column("userEnable").title("계정 <br/> 비활성화하기").width("10%").center().formatter(function(cell){
+            const rowData = cell.getData()
+            const txt = (!rowData['userEnable']) ? '비활성화 해제' : '비활성화'
+            return `<button type="button" class="btn btn-sm btn-outline-success" data-num="${rowData.id}" data-enable="${rowData['userEnable']}" onclick="userEnable(this)">${txt}</button>`
+        }))
         .init()
 
+    /* 사용자 계정 정지 풀기 */
     $("#change-userNonLocked").on("click", function(e) {
         const userId = $("#locked-userId").val();
         Http.put(`/api/reset/userNonLocked/${userId}`).then((res) => {
@@ -42,12 +48,56 @@ $(document).ready(function(e){
         })
     })
 
-    /* alertModal 모달창 닫기 */
-    $("#close-alertModal").on("click", function(e){
-        $("#alertModal").modal('hide')
+    /* [계정 비활성화] 활성화 -> 비활성화 변경 */
+    $("#change-userEnableToDisableModal").on('click', function(e) {
+        const form = document.getElementById("save-userEnableToDisableModal-form");
+        if (form.checkValidity() === false) {
+            form.classList.add("was-validated");
+        } else {
+            const userId = $("#user-id").val()
+            const enableMsg = $("#userEnableToDisableModal-enableMsg").val()
+            const obj = {'userId': userId, 'enableMsg': enableMsg}
+            Http.post(`/api/user-enable`, obj).then((res) => {
+                if(res['httpStatus'] === 200) {
+                    Util.alert("해당 사용자의 계정이 비활성화 되었습니다.").then(() => {
+                        window.location.href = '/manager/user'
+                    })
+                }
+            })
+        }
+    })
+
+    /* [계정 활성화] 비활성화 -> 활성화 변경 */
+    $("#change-userDisableToEnableModal").on('click', function(e) {
+        const enableId = $("#enable-id").val()
+        Http.put(`/api/user-enable/${enableId}`).then((res) => {
+            if(res['httpStatus'] === 200) {
+                Util.alert("해당 사용자의 계정이 활성화 되었습니다.").then(() => {
+                    window.location.href = '/manager/user'
+                })
+            }
+        })
     })
 })
 
+/* 사용자 계정 활성화 및 비활성화 */
+function userEnable(This) {
+    const userId = This.getAttribute("data-num")
+    const enable = This.getAttribute("data-enable")
+
+    if(enable === 'true') {
+        $("#user-id").val(userId)
+        $("#userEnableToDisableModal").modal('show')
+    }else {
+        Http.get(`/api/user-enable/${userId}`).then((res) => {
+            if(res['httpStatus'] === 200) {
+                $("#enable-id").val(res.message['enableId'])
+                $("#enableMsgRead").val(res.message['enableMsg'])
+                $("#userDisableToEnableModal").modal('show')
+            }
+        })
+    }
+}
 
 /* 사용자 권한 바꾸기 이벤트 */
 function changeSelect(selectElement) {

@@ -40,6 +40,59 @@
         </div>
         <!-- e: Alert Modal -->
 
+        <!-- s: User Disable To Enable Modal -->
+        <div class="modal fade" id="userDisableToEnableModal" tabindex="-1" aria-labelledby="userDisableToEnableModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <input type="hidden" id="enable-id" />
+                            <p>* 해당 사용자의 경우 비활성화 되었습니다.</p>
+                            <div class="col-md-12 col-12">
+                                <div class="mb-1 margin-10">
+                                    <label class="form-label" for="enableMsgRead">비활성화 사유<span class="text-primary ms-50">*</span></label>
+                                    <textarea class="form-control" id="enableMsgRead" name="enableMsgRead" readonly></textarea>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px" class="text-end">
+                                <button type="button" class="btn btn-outline-secondary" id="close-userDisableToEnableModal" data-bs-dismiss="modal">닫기</button>
+                                <button type="button" class="btn btn-outline-primary" id="change-userDisableToEnableModal">비활성화 풀기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- e: User Disable To Enable Modal -->
+
+        <!-- s: User Enable To Disable Modal -->
+        <div class="modal fade" id="userEnableToDisableModal" tabindex="-1" aria-labelledby="userEnableToDisableModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <form id="save-userEnableToDisableModal-form">
+                                <input type="hidden" id="user-id" />
+                                <p>* 해당 사용자의 계정을 비활성화합니다.</p>
+                                <div class="col-md-12 col-12">
+                                    <div class="mb-1 margin-10">
+                                        <label class="form-label" for="userEnableToDisableModal-enableMsg">비활성화 사유<span class="text-primary ms-50">*</span></label>
+                                        <textarea class="form-control" id="userEnableToDisableModal-enableMsg" name="enableMsg" required></textarea>
+                                        <div class="invalid-feedback">계정 비활성화에 대한 사유를 입력해주세요.</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px" class="text-end">
+                                    <button type="button" class="btn btn-outline-secondary" id="close-userEnableToDisableModal" data-bs-dismiss="modal">닫기</button>
+                                    <button type="button" class="btn btn-outline-primary" id="change-userEnableToDisableModal">계정 비활성화</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- e: User Enable To Disable Modal -->
+
     </div>
 </th:block>
 

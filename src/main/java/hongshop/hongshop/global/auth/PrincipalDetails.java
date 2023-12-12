@@ -50,24 +50,24 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return hongUser.getUserId();
     }
 
-    @Override
+    @Override   // 계정 만료 여부
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    @Override
+    @Override   // 계정 잠김 여부
     public boolean isAccountNonLocked() {
         return hongUser.getUserNonLocked();
     }
 
-    @Override
+    @Override   // 비밀번호 만료 여부
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    @Override
+    @Override   // 계정 활성화 여부
     public boolean isEnabled() {
-        return true;
+        return hongUser.getUserEnable();
     }
 
     @Override
