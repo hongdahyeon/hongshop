@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
 * @fileName HongUserFrontRestController
@@ -29,6 +31,13 @@ import java.util.Map;
 public class HongUserFrontRestController {
 
     private final HongUserService hongUserService;
+
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
     @PostMapping("/user")
     @Operation(summary = "insert user", description = "회원가입")
@@ -50,8 +59,9 @@ public class HongUserFrontRestController {
     @Operation(summary = "check userEmail if duplicated", description = "회원가입시, 회원 이메일 중복 여부 체크")
     @ApiDocumentResponse
     public Response checkEmail(String userEmail){
-        Boolean bool = hongUserService.checkUserEmail(userEmail);
-        return Response.ok(bool);
+        // 0: empty, 1: not empty, 2: not valid email
+        int checkIt = isValidEmail(userEmail) ? hongUserService.checkUserEmail(userEmail) : 2;
+        return Response.ok(checkIt);
     }
 
     @GetMapping("/initialPassword")

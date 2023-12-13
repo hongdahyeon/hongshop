@@ -98,8 +98,11 @@ public class HongUserServiceImpl implements HongUserService {
     }
 
     @Override
-    public Boolean checkUserEmail(String userEmail) {
-        return hongUserRepository.findByUserEmail(userEmail).isEmpty();
+    public int checkUserEmail(String userEmail) {
+        int checkIt = 0;
+        Optional<HongUser> byUserEmail = hongUserRepository.findByUserEmail(userEmail);
+        if(byUserEmail.isPresent()) checkIt = 1;
+        return checkIt;
     }
 
     @Override

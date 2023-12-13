@@ -43,7 +43,8 @@ $("#check-Email").on("click", function(e){
             // check duplicate email
 
             Http.get(`/front/api/checkEmail?userEmail=${userEmail}`).then((res) => {
-                if (!res.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
+                if(res.message === 1) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
+                else if(res.message === 2) $("#EmailChkMessage").css('color', 'red').html("유효한 이메일 형식이 아닙니다.")
                 else {
                     $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
                     $("#userEmail").prop('disabled', true)
