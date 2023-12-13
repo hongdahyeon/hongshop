@@ -1,6 +1,7 @@
 package hongshop.hongshop.global.auth;
 
 import hongshop.hongshop.domain.user.HongUser;
+import hongshop.hongshop.global.util.TimeUtil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,7 +63,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override   // 비밀번호 만료 여부
     public boolean isCredentialsNonExpired() {
-        return true;
+        return TimeUtil.dateCompare(hongUser.getPwdEndDate());
     }
 
     @Override   // 계정 활성화 여부

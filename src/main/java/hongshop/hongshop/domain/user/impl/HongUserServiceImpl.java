@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.user.HongRoleType;
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserRepository;
 import hongshop.hongshop.domain.user.HongUserService;
+import hongshop.hongshop.domain.user.dto.HongUserPwdDateDTO;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
@@ -45,6 +46,7 @@ import java.util.Optional;
  *           (15) getMessageCanUser : 'ROLE_SUPER' 권한을 갖는 유저 리스트 가져오기 -> 이때 내 자신이 있다면 나는 빼고
  *           (16) getUserAndEnable : return entity and change enable to disable
  *           (17) changeDisableToEnable : change disable to enable
+ *           (18) changePwdEndDate : 비밀번호 변경 및 비밀번호 만료일 90일 연장하기
  **/
 
 @Service
@@ -195,5 +197,17 @@ public class HongUserServiceImpl implements HongUserService {
     public void changeDisableToEnable(Long id) {
         HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         hongUser.changeDisableToEnable();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO) {
+        HongUser hongUser = hongUserRepository.findByUserId(hongUserPwdDateDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        hongUser.add90Days();
+
+        if(hongUserPwdDateDTO.getPassword().length() != 0) {
+            String encodePassword = passwordEncoder.encode(hongUserPwdDateDTO.getPassword());
+            hongUser.changePwd(encodePassword);
+        }
     }
 }

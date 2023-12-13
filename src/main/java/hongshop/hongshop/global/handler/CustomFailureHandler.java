@@ -4,10 +4,7 @@ import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.domain.user.HongUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -45,6 +42,7 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
     @Transactional(readOnly = false)
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String userId = request.getParameter("userId");
+        log.info("exception : {} ", exception.getClass().getName());
 
         if(exception instanceof BadCredentialsException) {
             Optional<HongUser> userFind = hongUserRepository.findByUserId(userId);
@@ -65,6 +63,10 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
 
             sendMssgEnableAndRedirect("비밀번호가 비활성화 되었습니다. \n 관리자에게 문의 바랍니다.", userId, response);
 
+        } else if(exception instanceof CredentialsExpiredException) {
+
+            sendmssgExpiredAndRedirect("비밀번호가 만료되었습니다. \n 비밀번호를 변경해주세요.", userId, response);
+
         } else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect("내부 시스템 문제로 로그인 요청을 처리할 수 없습니다. \n 관리자에게 문의해주세요.", response);
         else if(exception instanceof LockedException)sendMssgAndRedirect("비밀번호 5회 오류로 계정이 잠겼습니다. \n 관리자에게 문의해주세요.", response);
 
@@ -78,5 +80,10 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
     public void sendMssgEnableAndRedirect(String message, String userId, HttpServletResponse response) throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("/login?enable="+sendMessage+"&userId="+userId);
+    }
+
+    public void sendmssgExpiredAndRedirect(String message, String userId, HttpServletResponse response)throws IOException {
+        String sendMessage = URLEncoder.encode(message, "UTF-8");
+        response.sendRedirect("/login?expired="+sendMessage+"&userId="+userId);
     }
 }

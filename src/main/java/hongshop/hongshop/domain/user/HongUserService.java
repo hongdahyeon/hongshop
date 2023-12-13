@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.base.Address;
+import hongshop.hongshop.domain.user.dto.HongUserPwdDateDTO;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
@@ -53,4 +54,6 @@ public interface HongUserService {
     HongUser getUserAndChangeEnable(Long id);
 
     void changeDisableToEnable(Long id);
+
+    void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO);
 }

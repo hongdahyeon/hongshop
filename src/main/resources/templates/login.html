@@ -64,10 +64,61 @@
             </form>
             <!-- end : Login Form  -->
 
+            <!-- Start : change pwd form -->
+            <form id="change-pwd-form" class="needs-validation" novalidate>
+                <div class="modal" id="changePwdModal" tabindex="-1" aria-labelledby="reviewUpdateModalLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">비밀번호 변경하기</h4>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+
+                                <div class="mb-3 mt-3">
+                                    <p class="error-message" style="color: red">* 비밀번호가 만료되었습니다.</p>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="loginUserId">아이디</label>
+                                    <input type="text" class="form-control" id="loginUserId" name="userId" readonly/>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="changePwd">비밀번호</label>
+                                    <input type="password" class="form-control" id="changePwd" name="password" required />
+                                    <div class="invalid-feedback">비밀번호를 입력하세요.</div>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="changePwdChk">비밀번호 확인</label>
+                                    <input type="password" class="form-control" id="changePwdChk" required />
+                                    <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
+                                </div>
+
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-primary" id="more-days">90일더 연장하기</button>
+                                <button type="button" class="btn btn-primary" id="change-pwd">비밀번호 변경하기</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- End : change pwd form -->
+
         </div>
     </div>
     <th:block th:replace="fragments/script :: script"></th:block>
     <script>
+        const changePwd = $("#changePwd")
+        const changePwdChk = $("#changePwdChk")
 
         $(document).ready(function(){
 
@@ -90,6 +141,17 @@
                     Util.alert(`사유: ${data['enableMsg']}`, 'w')
                 })
 
+            } else if(params.has("expired")) {
+
+                const userId = decodeURIComponent(params.get("userId"));
+                const errorMessage = decodeURIComponent(params.get("expired"));
+                $("#pwdError").html(errorMessage.replace("\n", "<br>"));
+                history.replaceState({}, null, '/login');
+
+                Util.alert("비밀번호 변경이로부터 90일이 지나 비밀번호가 만료되었습니다. \n 비밀번호를 변경해주세요.", 'w').then(() => {
+                    $("#loginUserId").val(userId)
+                    $("#changePwdModal").modal('show')
+                })
             }
 
             const idItemKey = 'HONG_SHOP_ID'
@@ -142,9 +204,42 @@
                 $("#show-pwd").text(text)
             })
 
-            newPassword.on('input', chckValidate)
-            newPasswordChk.on('input', chckValidate)
+            /* [비밀번호 만료] 90일더 연장하기 */
+            $("#more-days").on('click', function(e) {
+                const userId = $("#loginUserId").val()
+                Http.put('/front/api/changePwdEndDate', {'userId': userId}).then(() => {
+                    Util.alert("비밀번호 만료일을 90일 연장하였습니다.").then(() => window.location.href = '/login')
+                })
+            })
+
+            /* [비밀번호 만료] 비밀번호 변경하기 */
+            $("#change-pwd").on('click', function(e) {
+                const userId = $("#loginUserId").val()
+                const password = $("#changePwd").val()
+
+                const form = document.getElementById("change-pwd-form");
+                if (form.checkValidity() === false) form.classList.add("was-validated");
+                else {
+                    Http.put('/front/api/changePwdEndDate', {'userId': userId, 'password': password}).then(() => {
+                        Util.alert("비밀번호가 변경되었습니다.").then(() => window.location.href = '/login')
+                    })
+                }
+            })
+
+            changePwd.on('input', chckValidate)
+            changePwdChk.on('input', chckValidate)
         })
+
+        /* [비밀번호 만료] -> 비번,비번확인 일치 validation */
+        function chckValidate(){
+            const changePwdVal = changePwd.val()
+            const changePwdChkVal = changePwdChk.val()
+
+            if(changePwdVal && changePwdChkVal) {
+                if(changePwdVal === changePwdChkVal) changePwdChk.removeClass('is-invalid')
+                else changePwdChk.addClass('is-invalid')
+            }
+        }
 
     </script>
 </body>

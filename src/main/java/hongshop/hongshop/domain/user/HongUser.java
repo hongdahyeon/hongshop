@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.user;
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.social.HongSocialUser;
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
+import hongshop.hongshop.global.util.TimeUtil;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,6 +62,9 @@ public class HongUser {
 
     @Column(name = "user_enable")
     public Boolean userEnable;
+    
+    @Column(name = "pwd_end_date")
+    public String pwdEndDate;
 
     @Builder(builderMethodName = "hongUserInsertBuilder")
     public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail, HongSocialUser hongSocialUser){
@@ -74,6 +78,7 @@ public class HongUser {
         this.pwdFailCnt = 0;
         this.userNonLocked = true;
         this.userEnable = true;
+        this.pwdEndDate = TimeUtil.daysAfter(90);   // 회원가입일로부터 90일
     }
 
     public void updateHongUser(HongUserDTO hongUserDTO){
@@ -111,5 +116,13 @@ public class HongUser {
 
     public void changeDisableToEnable(){
         this.userEnable = true;
+    }
+
+    public void add90Days() {
+        this.pwdEndDate =  TimeUtil.daysAfter(90);   // 오늘로부터 90일
+    }
+
+    public void changePwd(String password){
+        this.password = password;
     }
 }

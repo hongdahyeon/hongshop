@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.user.dto.HongUserDTO;
+import hongshop.hongshop.domain.user.dto.HongUserPwdDateDTO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,5 +72,11 @@ public class HongUserFrontRestController {
 
         if(bool) return Response.ok(message);
         else return Response.badRequest(message);
+    }
+
+    @PutMapping("/changePwdEndDate")
+    public Response changePwdEndDate(@RequestBody HongUserPwdDateDTO hongUserPwdDateDTO) {
+        hongUserService.changePwdEndDate(hongUserPwdDateDTO);
+        return Response.ok("비밀번호 만료일을 변경하였습니다.");
     }
 }
