@@ -21,4 +21,9 @@ public class HomeController {
     public String initialPassword(){
         return "initialPassword";
     }
+
+    @GetMapping("/front/newLogin")
+    public String newLogin(){
+        return "newLogin";
+    }
 }

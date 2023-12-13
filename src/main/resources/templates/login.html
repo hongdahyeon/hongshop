@@ -45,7 +45,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">로그인</button>
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">회원가입</button>
+                    <button type="button" class="btn btn-secondary" id="goto-new-login">회원가입</button>
 
                     <hr class="hr" />
 
@@ -65,116 +65,9 @@
             <!-- end : Login Form  -->
 
         </div>
-
-        <!-- Start : new login form -->
-        <form id="new-login-form" class="needs-validation" novalidate>
-            <div class="modal" id="myModal">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">회원가입</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <div class="mb-3 mt-3">
-                                <label for="newUserId">아이디</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="newUserId" name="userId" required/>
-                                    <button class="btn btn-outline-dark" type="button" id="check-Id">중복확인</button>
-                                    <div class="invalid-feedback">아이디를 입력하세요.</div>
-                                </div>
-                                <p class="error-message" id="IdChkMessage"></p>
-                            </div>
-
-                            <div class="mb-3 mt-3">
-                                <label for="newPassword">비밀번호</label>
-                                <input type="password" class="form-control" id="newPassword" name="password" required />
-                                <div class="invalid-feedback">비밀번호를 입력하세요.</div>
-                            </div>
-
-                            <div class="mb-3 mt-3">
-                                <label for="newPassword">비밀번호 확인</label>
-                                <input type="password" class="form-control" id="newPasswordChk" required />
-                                <div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>
-                            </div>
-
-                            <div class="mb-3 mt-3">
-                                <label for="userName">이름</label>
-                                <input type="text" class="form-control" id="userName" name="userName" required />
-                                <div class="invalid-feedback">이름을 입력하세요.</div>
-                            </div>
-
-                            <div class="mb-3 mt-3">
-                                <label for="userEmail">이메일</label>
-                                <div class="input-group">
-                                    <input type="email" class="form-control" id="userEmail" name="userEmail" required/>
-                                    <button class="btn btn-outline-dark" type="button" id="check-Email">중복확인</button>
-                                    <div class="invalid-feedback">이메일을 입력하세요.</div>
-                                </div>
-                                <p class="error-message" id="EmailChkMessage"></p>
-                            </div>
-
-                            <div class="mb-3 mt-3">
-                                <label>유저 권한</label>
-                                <div class="input-group">
-                                    <div class="form-check" style="margin-right: 20px;">
-                                        <input type="radio" class="form-check-input" id="ROLE_ADMIN" name="role" value="ROLE_ADMIN" checked>
-                                        <label class="form-check-label" for="ROLE_ADMIN">admin</label>
-                                    </div>
-                                    <div class="form-check" style="margin-right: 20px;">
-                                        <input type="radio" class="form-check-input" id="ROLE_USER" name="role" value="ROLE_USER">
-                                        <label class="form-check-label" for="ROLE_USER">user</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="radio" class="form-check-input" id="ROLE_SUPER" name="role" value="ROLE_SUPER">
-                                        <label class="form-check-label" for="ROLE_SUPER">SUPER</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <label>주소</label>
-                                <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="city" placeholder="city" required>
-                                    <div class="invalid-feedback">지역을 입력하세요.</div>
-                                </div>
-                                <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="street" placeholder="street" required>
-                                    <div class="invalid-feedback">거리를 입력하세요.</div>
-                                </div>
-                                <div class="col-sm">
-                                    <input type="text" class="form-control mb-1" name="zipcode" placeholder="zipcode" required>
-                                    <div class="invalid-feedback">우편번호를 입력하세요.</div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- Modal footer -->
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="new-login">회원가입</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </form>
-        <!-- End : new login form -->
-
     </div>
     <th:block th:replace="fragments/script :: script"></th:block>
     <script>
-
-        let IdChk = false;
-        let EmailChk = false;
-
-        const newPassword = $("#newPassword")
-        const newPasswordChk = $("#newPasswordChk")
 
         $(document).ready(function(){
 
@@ -215,123 +108,43 @@
                 $('#userId').val(rememberId)
             }
 
+            /* 회원가입 */
+            $("#goto-new-login").on('click', function(e) {
+                window.location.href = '/front/newLogin'
+            })
+
+            /* 카카오 로그인 */
+            $("#kakao-login-btn").on("click", function(e){
+                window.location.href = '/oauth2/authorization/kakao'
+            })
+
+            /* 네이버 로그인 */
+            $("#naver-login-btn").on("click", function(e){
+                window.location.href = '/oauth2/authorization/naver'
+            })
+
+            /* 구글 로그인 */
+            $("#google-login-btn").on("click", function(e){
+                window.location.href = '/oauth2/authorization/google'
+            })
+
+            /* 아이디/비번 찾기 */
+            $("#find-user-password-userId").on("click", function(e){
+                window.location.href = '/front/initialPassword'
+            })
+
+            /* 로그인 -> 비번 보이기/숨기기 */
+            $("#show-pwd").click(() => {
+                const passwordInput = $('#password');
+                const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+                const text = passwordInput.attr('type') === 'password' ? 'hide' : 'show';
+                passwordInput.attr('type', type);
+                $("#show-pwd").text(text)
+            })
+
             newPassword.on('input', chckValidate)
             newPasswordChk.on('input', chckValidate)
         })
-
-        /* 회원가입 -> 비번,비번확인 일치 validation */
-        function chckValidate(){
-            const passwordVal = newPassword.val()
-            const passwordChkVal = newPasswordChk.val()
-
-            if(passwordVal && passwordChkVal) {
-                if(passwordVal === passwordChkVal) newPasswordChk.removeClass('is-invalid')
-                else newPasswordChk.addClass('is-invalid')
-            }
-        }
-
-        /* 카카오 로그인 */
-        $("#kakao-login-btn").on("click", function(e){
-            window.location.href = '/oauth2/authorization/kakao'
-        })
-
-        /* 네이버 로그인 */
-        $("#naver-login-btn").on("click", function(e){
-            window.location.href = '/oauth2/authorization/naver'
-        })
-
-        /* 구글 로그인 */
-        $("#google-login-btn").on("click", function(e){
-            window.location.href = '/oauth2/authorization/google'
-        })
-
-        /* 아이디/비번 찾기 */
-        $("#find-user-password-userId").on("click", function(e){
-            window.location.href = '/front/initialPassword'
-        })
-
-        /* 회원가입 -> 이메일 중복 확인 */
-        $("#check-Email").click(() => {
-            const newUserEmail = $("#userEmail").val()
-
-            if(!newUserEmail.length) Util.alert("이메일은 빈값일 수 없습니다.", 'w', 'w')
-            else {
-
-                Http.get(`/front/api/checkEmail?userEmail=${newUserEmail}`).then((res) => {
-                    if(!res.message) $("#EmailChkMessage").css('color', 'red').html("중복되는 이메일입니다.")
-                    else {
-                        $("#EmailChkMessage").css('color', 'green').html("사용 가능한 이메일입니다.")
-                        $("#userEmail").prop('disabled', true)
-                        $("#check-Email").prop('disabled', true)
-                        EmailChk = true
-                    }
-                })
-            }
-        })
-
-        /* 로그인 -> 비번 보이기/숨기기 */
-        $("#show-pwd").click(() => {
-            const passwordInput = $('#password');
-            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
-            const text = passwordInput.attr('type') === 'password' ? 'hide' : 'show';
-            passwordInput.attr('type', type);
-            $("#show-pwd").text(text)
-        })
-
-        /* 회원가입 -> 아이디 중복 확인 */
-        $("#check-Id").click(() => {
-            const newUserId = $("#newUserId").val();
-
-            if(!newUserId.length) Util.alert("아이디는 빈값일 수 없습니다.", 'w', 'w')
-            else {
-
-                Http.get(`/front/api/checkId?userId=${newUserId}`).then((res) => {
-                    if (!res.message) $("#IdChkMessage").css('color', 'red').html("중복되는 아이디입니다.")
-                    else {
-                        $("#IdChkMessage").css('color', 'green').html("사용 가능한 아이디입니다.")
-                        $("#newUserId").prop('disabled', true)
-                        $("#check-Id").prop('disabled', true)
-                        IdChk = true
-                    }
-                })
-            }
-        })
-
-        /* 회원가입 */
-        window.addEventListener("load", function(event) {
-            event.preventDefault(); event.stopPropagation();
-            const form = document.getElementById("new-login-form");
-            form.addEventListener("submit", function(e){
-                if(form.checkValidity() === false){
-                    e.preventDefault(); e.stopPropagation();
-                    form.classList.add("was-validated")
-                }else{
-                    e.preventDefault(); e.stopPropagation();
-                    const pwd = newPassword.val()
-                    const pwdChk = newPasswordChk.val()
-
-                    if(!IdChk || !EmailChk) Util.alert("아이디 및 이메일 중복 여부를 확인해주세요.", 'w', 'w')
-                    else if(pwd.length === 0 || pwd !== pwdChk) Util.alert("입력하신 비밀번호가 다릅니다.", 'w', 'w')
-                    else {
-                        FormDataToObj.getParameter("new-login-form").then(obj => {
-                            obj['userId'] = $("#newUserId").val()
-                            obj['userEmail'] = $("#userEmail").val()
-
-                            Http.post(`/front/api/user`, obj).then((res) => {
-                                if(res['httpStatus'] === 200) {
-                                    Util.alert("회원가입을 성공했습니다.").then(() => {
-                                        $('#myModal').modal('hide');
-                                    })
-                                }else {
-                                    Util.alert("회원가입을 실패했습니다.", 'w', 'w')
-                                }
-                            })
-                        })
-                    }
-                }
-            })
-        })
-
 
     </script>
 </body>

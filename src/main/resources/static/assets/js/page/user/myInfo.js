@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    if(user.city.length == 0 || user.street.length == 0 || user.zipcode.length == 0) Util.alert("주소 정보를 입력해주세요.", 'w', 'w')
+    if(user.city.length === 0 || user.street.length === 0 || user.zipcode.length === 0) Util.alert("주소 정보를 입력해주세요.", 'w', 'w')
 
     newPassword.on('input', chckValidate)
     newPasswordChk.on('input', chckValidate)
