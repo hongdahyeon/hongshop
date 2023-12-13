@@ -298,7 +298,7 @@
                         else {                                                                                  // 이메일 전송 성공
                             Util.alert(`${res.message.message}`).then(() => {
                                 $("#email-validate-chk").prop('disabled', false)
-                                $("#chkEmail").prop('disabled', true)
+                                $("#email-validate").prop('disabled', true)
                             })
                         }
                     })
@@ -313,11 +313,10 @@
 
                 if(!validateNum.length) Util.alert("이메일로 받으신 인증번호를 입력해주세요.", 'w')
                 else {
-                    console.log("userId : ", userId)
-                    console.log("userEmail : ", userEmail)
-                    console.log("validateNum : ", validateNum)
-
-                    // TODO: 이메일 인증코드로 확인
+                    Http.get(`/front/api/check-verify?verifyCode=${validateNum}&userEmail=${userEmail}`).then((res) => {
+                        if(res.message.result === 0) Util.alert(`${res.message.message}`, 'w')
+                        else Util.alert(`${res.message.message}`).then(() => window.location.href = '/login')
+                    })
                 }
             })
 

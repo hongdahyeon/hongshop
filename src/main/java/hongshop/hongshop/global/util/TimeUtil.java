@@ -18,6 +18,10 @@ public class TimeUtil {
         return futureDate.format(DATE_TIME_FORMATTER);
     }
 
+    public static LocalDateTime daysAfter_Date(int after) {
+        return TODAY.plusDays(after);
+    }
+
     public static boolean dateCompare(String futureDateString) {
         LocalDateTime futureDate = LocalDateTime.parse(futureDateString, DATE_TIME_FORMATTER);
         return futureDate.isAfter(TODAY);
