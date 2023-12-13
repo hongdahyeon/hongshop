@@ -1,6 +1,7 @@
 package hongshop.hongshop.global.mail.impl;
 
 import hongshop.hongshop.global.mail.EmailService;
+import hongshop.hongshop.global.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -52,6 +53,25 @@ public class EmailServiceImpl implements EmailService {
                 "</body>\n" +
                 "</html>";
 
+        this.sendEmail(to, subject, text);
+    }
+
+    @Override
+    public void sendVerification(String to) {
+        // TODO: 이메일 인증코드 저장하는 테이블 생성후, 이메일 전송 시 코드값 저장
+        String subject = "이메일 인증번호입니다.";
+        String verifiCode = StringUtil.random(6);
+        String text = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"form-group\">\n" +
+                "            <label for=\"telephone\">인증번호입니다.</label>\n" +
+                "            <input type=\"text\" class=\"form-control\" value=\"" + verifiCode + "\" readonly>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
         this.sendEmail(to, subject, text);
     }
 

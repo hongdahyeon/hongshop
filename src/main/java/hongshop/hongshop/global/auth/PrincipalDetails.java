@@ -53,7 +53,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override   // 계정 만료 여부
     public boolean isAccountNonExpired() {
-        return true;
+        return TimeUtil.isXYearAfter(hongUser.getLastLoginDate(), 1);
     }
 
     @Override   // 계정 잠김 여부

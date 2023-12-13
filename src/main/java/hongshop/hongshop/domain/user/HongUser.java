@@ -66,6 +66,9 @@ public class HongUser {
     @Column(name = "pwd_end_date")
     public String pwdEndDate;
 
+    @Column(name = "last_login_date")
+    public String lastLoginDate;
+
     @Builder(builderMethodName = "hongUserInsertBuilder")
     public HongUser(String userId, String password, HongRoleType role, Address address, String userName, String userEmail, HongSocialUser hongSocialUser){
         this.userId = userId;
@@ -79,6 +82,7 @@ public class HongUser {
         this.userNonLocked = true;
         this.userEnable = true;
         this.pwdEndDate = TimeUtil.daysAfter(90);   // 회원가입일로부터 90일
+        this.lastLoginDate = TimeUtil.nowDate();
     }
 
     public void updateHongUser(HongUserDTO hongUserDTO){
@@ -108,6 +112,10 @@ public class HongUser {
     public void resetPwdFailCntAndUserNonLocked(){
         this.pwdFailCnt = 0;
         this.userNonLocked = true;
+    }
+
+    public void updateLastLoginDate(){
+        this.lastLoginDate = TimeUtil.nowDate();
     }
 
     public void changeEnableToDisable(){

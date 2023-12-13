@@ -56,4 +56,6 @@ public interface HongUserService {
     void changeDisableToEnable(Long id);
 
     void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO);
+
+    int sendEmail(String userId, String userEmail);
 }

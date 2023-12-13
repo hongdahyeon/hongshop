@@ -27,9 +27,12 @@ import java.util.Optional;
  *                  - 인증 실패 시, 사용자를 오류 페이지로 리디렉션하거나 실패 시도를 기록하는 등의 작업을 구현 가능하다.
  *
  *            ** BadCredentialsException : 아이디 혹은 비번이 틀린 경우 타게 됨
- *              -> UsernameNotFoundException : 사용자를 찾을 수 없음
+ *               -> UsernameNotFoundException : 사용자를 찾을 수 없음
  *            ** InternalAuthenticationServiceException : 내부 시스템 오류
- *            ** LockedException : 계정이 잠긴 경우
+ *            ** LockedException : 계정이 잠긴 경우 (isAccountNonLocked)
+ *            ** DisabledException : 계정 비활성화 (isEnabled)
+ *            ** CredentialsExpiredException : 비밀번호 만료 (isCredentialsNonExpired)
+ *            ** AccountExpiredException : 계정 만료 (isAccountNonExpired)
 **/
 
 @Component
@@ -46,10 +49,10 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
 
         if(exception instanceof BadCredentialsException) {
             Optional<HongUser> userFind = hongUserRepository.findByUserId(userId);
-            if(userFind.isEmpty()) sendMssgAndRedirect("등록되지 않은 사용자입니다. \n 회원가입을 먼저 해주시기 바랍니다.", response);
+            if(userFind.isEmpty()) sendMssgAndRedirect(FailureException.UsernameNotFoundException.message, response);
             else {
                 HongUser user = userFind.get();
-                Integer failCnt = user.getPwdFailCnt() + 1;
+                int failCnt = user.getPwdFailCnt() + 1;
 
                 if(failCnt == 5) {
                     user.updatePwdFailCntAndUserNonLocked();
@@ -59,31 +62,35 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
                     sendMssgAndRedirect("비밀번호 " + failCnt + "/5 회 오류", response);
                 }
             }
-        } else if(exception instanceof DisabledException) {
-
-            sendMssgEnableAndRedirect("비밀번호가 비활성화 되었습니다. \n 관리자에게 문의 바랍니다.", userId, response);
-
-        } else if(exception instanceof CredentialsExpiredException) {
-
-            sendmssgExpiredAndRedirect("비밀번호가 만료되었습니다. \n 비밀번호를 변경해주세요.", userId, response);
-
-        } else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect("내부 시스템 문제로 로그인 요청을 처리할 수 없습니다. \n 관리자에게 문의해주세요.", response);
-        else if(exception instanceof LockedException)sendMssgAndRedirect("비밀번호 5회 오류로 계정이 잠겼습니다. \n 관리자에게 문의해주세요.", response);
-
+        }
+        else if(exception instanceof DisabledException) sendMssgEnableAndRedirect(FailureException.DisabledException.message, userId, response);
+        else if(exception instanceof CredentialsExpiredException) sendMssgExpiredAndRedirect(FailureException.CredentialsExpiredException.message, userId, response);
+        else if(exception instanceof  AccountExpiredException) sendMssgAccountExpiredAndRedirect(FailureException.AccountExpiredException.message, userId, response);
+        else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect(FailureException.InternalAuthenticationServiceException.message, response);
+        else if(exception instanceof LockedException) sendMssgAndRedirect(FailureException.LockedException.message, response);
     }
 
+    /* pwd input 하단에 msg 출력 */
     public void sendMssgAndRedirect(String message, HttpServletResponse response) throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("/login?error="+sendMessage);
     }
 
+    /* 계정 비활성화 -> 비활성화 사유 alert */
     public void sendMssgEnableAndRedirect(String message, String userId, HttpServletResponse response) throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("/login?enable="+sendMessage+"&userId="+userId);
     }
 
-    public void sendmssgExpiredAndRedirect(String message, String userId, HttpServletResponse response)throws IOException {
+    /* 비밀번호 만료 -> 비번 변경 혹은 90일 연장  */
+    public void sendMssgExpiredAndRedirect(String message, String userId, HttpServletResponse response)throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
         response.sendRedirect("/login?expired="+sendMessage+"&userId="+userId);
+    }
+
+    /* 계정 만료 -> 이메일 인증  */
+    public void sendMssgAccountExpiredAndRedirect(String message, String userId, HttpServletResponse response)throws IOException {
+        String sendMessage = URLEncoder.encode(message, "UTF-8");
+        response.sendRedirect("/login?account="+sendMessage+"&userId="+userId);
     }
 }

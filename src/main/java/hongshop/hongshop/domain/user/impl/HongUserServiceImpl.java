@@ -47,6 +47,7 @@ import java.util.Optional;
  *           (16) getUserAndEnable : return entity and change enable to disable
  *           (17) changeDisableToEnable : change disable to enable
  *           (18) changePwdEndDate : 비밀번호 변경 및 비밀번호 만료일 90일 연장하기
+ *           (19) sendEmail : userId & userEmail로 사용자 찾아서, 이메일로 인증번호 발송하기
  **/
 
 @Service
@@ -205,9 +206,19 @@ public class HongUserServiceImpl implements HongUserService {
         HongUser hongUser = hongUserRepository.findByUserId(hongUserPwdDateDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         hongUser.add90Days();
 
-        if(hongUserPwdDateDTO.getPassword().length() != 0) {
+        if(hongUserPwdDateDTO.getPassword() != null) {
             String encodePassword = passwordEncoder.encode(hongUserPwdDateDTO.getPassword());
             hongUser.changePwd(encodePassword);
+        }
+    }
+
+    @Override
+    public int sendEmail(String userId, String userEmail) {
+        Optional<HongUser> findUser = hongUserRepository.findByUserIdAndUserEmail(userId, userEmail);
+        if(findUser.isEmpty()) return 1;
+        else {
+            emailService.sendVerification(userEmail);
+            return 2;
         }
     }
 }

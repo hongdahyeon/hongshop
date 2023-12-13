@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 * @fileName HongUserFrontRestController
@@ -75,8 +77,21 @@ public class HongUserFrontRestController {
     }
 
     @PutMapping("/changePwdEndDate")
+    @Operation(summary = "비밀번호 만료일 변경", description = "비밀번호 만료일 변경")
+    @ApiDocumentResponse
     public Response changePwdEndDate(@RequestBody HongUserPwdDateDTO hongUserPwdDateDTO) {
         hongUserService.changePwdEndDate(hongUserPwdDateDTO);
         return Response.ok("비밀번호 만료일을 변경하였습니다.");
+    }
+
+    @GetMapping("/sendEmail")
+    @Operation(summary = "userId, userEmail로 해당 사용자에게 인증번호 발송", description = "userId, userEmail로 해당 사용자에게 인증번호 발송")
+    @ApiDocumentResponse
+    public Response sendEmail(String userId, String userEmail) {
+        Map<String, Object> rtn = new HashMap<>();
+        int result = hongUserService.sendEmail(userId, userEmail);
+        String message = (result == 1) ? "해당되는 사용자가 없습니다. 이메일 및 아이디를 확인해주세요." : "해당 이메일로 인증번호를 전송했습니다.";
+        rtn.put("result", result); rtn.put("message", message);
+        return Response.ok(rtn);
     }
 }

@@ -66,7 +66,7 @@
 
             <!-- Start : change pwd form -->
             <form id="change-pwd-form" class="needs-validation" novalidate>
-                <div class="modal" id="changePwdModal" tabindex="-1" aria-labelledby="reviewUpdateModalLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                <div class="modal" id="changePwdModal" tabindex="-1" aria-labelledby="changePwdModalLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
 
@@ -83,8 +83,8 @@
                                 </div>
 
                                 <div class="mb-3 mt-3">
-                                    <label for="loginUserId">아이디</label>
-                                    <input type="text" class="form-control" id="loginUserId" name="userId" readonly/>
+                                    <label for="changePwdModal-loginUserId">아이디</label>
+                                    <input type="text" class="form-control" id="changePwdModal-loginUserId" name="userId" readonly/>
                                 </div>
 
                                 <div class="mb-3 mt-3">
@@ -103,8 +103,56 @@
 
                             <!-- Modal footer -->
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-primary" id="more-days">90일더 연장하기</button>
+                                <button type="button" class="btn btn-outline-primary" id="more-days">90일 더 연장하기</button>
                                 <button type="button" class="btn btn-primary" id="change-pwd">비밀번호 변경하기</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- End : change pwd form -->
+
+            <!-- Start : validate email form -->
+            <form id="validate-email-form" class="needs-validation" novalidate>
+                <div class="modal" id="validateEmailModal" tabindex="-1" aria-labelledby="validateEmailModalLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">이메일 인증하기</h4>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+
+                                <div class="mb-3 mt-3">
+                                    <p class="error-message" style="color: red">* 최근 로그인일로부터 1년이 지나 휴먼 계정이 되었습니다. </p>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="validateEmailModal-loginUserId">아이디</label>
+                                    <input type="text" class="form-control" id="validateEmailModal-loginUserId" name="userId" readonly/>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="chkEmail">이메일</label>
+                                    <input type="text" class="form-control" id="chkEmail" name="userEmail" required />
+                                    <div class="invalid-feedback">이메일을 입력하세요.</div>
+                                </div>
+
+                                <div class="mb-3 mt-3">
+                                    <label for="validate-num">인증번호</label>
+                                    <input type="text" class="form-control" id="validate-num" name="userEmail" />
+                                </div>
+
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="email-validate">인증번호 발송</button>
+                                <button type="button" class="btn btn-outline-secondary" id="email-validate-chk" disabled>인증하기</button>
                             </div>
 
                         </div>
@@ -138,7 +186,7 @@
 
                 Http.get(`/front/api/user-enable/${userId}`).then((res) => {
                     const data = res.message
-                    Util.alert(`사유: ${data['enableMsg']}`, 'w')
+                    Util.alert(`현자 사용자의 계정은 비활성화 되었습니다. <br/> 사유: ${data['enableMsg']} <br/> 관리자에게 문의 바랍니다.`, 'w')
                 })
 
             } else if(params.has("expired")) {
@@ -148,10 +196,22 @@
                 $("#pwdError").html(errorMessage.replace("\n", "<br>"));
                 history.replaceState({}, null, '/login');
 
-                Util.alert("비밀번호 변경이로부터 90일이 지나 비밀번호가 만료되었습니다. \n 비밀번호를 변경해주세요.", 'w').then(() => {
-                    $("#loginUserId").val(userId)
+                Util.alert("비밀번호 변경일로부터 90일이 지나 비밀번호가 만료되었습니다. \n 비밀번호를 변경해주세요.", 'w').then(() => {
+                    $("#changePwdModal-loginUserId").val(userId)
                     $("#changePwdModal").modal('show')
                 })
+
+            } else if(params.has("account")) {
+
+                const userId = decodeURIComponent(params.get("userId"));
+                const errorMessage = decodeURIComponent(params.get("account"));
+                $("#pwdError").html(errorMessage.replace("\n", "<br>"));
+                history.replaceState({}, null, '/login');
+
+                Util.alert("최근 로그인일로부터 1년이 지나 휴먼 계정이 되었습니다. \n 이메일 인증을 해주세요.", 'w').then(() => {
+                    $("#validateEmailModal-loginUserId").val(userId)
+                    $("#validateEmailModal").modal('show')
+                });
             }
 
             const idItemKey = 'HONG_SHOP_ID'
@@ -206,7 +266,7 @@
 
             /* [비밀번호 만료] 90일더 연장하기 */
             $("#more-days").on('click', function(e) {
-                const userId = $("#loginUserId").val()
+                const userId = $("#changePwdModal-loginUserId").val()
                 Http.put('/front/api/changePwdEndDate', {'userId': userId}).then(() => {
                     Util.alert("비밀번호 만료일을 90일 연장하였습니다.").then(() => window.location.href = '/login')
                 })
@@ -214,7 +274,7 @@
 
             /* [비밀번호 만료] 비밀번호 변경하기 */
             $("#change-pwd").on('click', function(e) {
-                const userId = $("#loginUserId").val()
+                const userId = $("#changePwdModal-loginUserId").val()
                 const password = $("#changePwd").val()
 
                 const form = document.getElementById("change-pwd-form");
@@ -223,6 +283,41 @@
                     Http.put('/front/api/changePwdEndDate', {'userId': userId, 'password': password}).then(() => {
                         Util.alert("비밀번호가 변경되었습니다.").then(() => window.location.href = '/login')
                     })
+                }
+            })
+
+            /* [계정 만료] 이메일로 인증번호 발송 */
+            $("#email-validate").on('click', function(e) {
+                const form = document.getElementById("validate-email-form");
+                if (form.checkValidity() === false) form.classList.add("was-validated");
+                else {
+                    const userId = $("#validateEmailModal-loginUserId").val()
+                    const userEmail = $("#chkEmail").val()
+                    Http.get(`/front/api/sendEmail?userId=${userId}&userEmail=${userEmail}`).then((res) => {
+                        if(res.message.result === 1) Util.alert(`${res.message.message}`, 'w')                  // 해당 사용자 찾기 실패
+                        else {                                                                                  // 이메일 전송 성공
+                            Util.alert(`${res.message.message}`).then(() => {
+                                $("#email-validate-chk").prop('disabled', false)
+                                $("#chkEmail").prop('disabled', true)
+                            })
+                        }
+                    })
+                }
+            })
+
+            /* [계정 만료] 이메일로 인증번호 발송 */
+            $("#email-validate-chk").on('click', function(e) {
+                const userId = $("#validateEmailModal-loginUserId").val()
+                const userEmail = $("#chkEmail").val()
+                const validateNum = $("#validate-num").val()
+
+                if(!validateNum.length) Util.alert("이메일로 받으신 인증번호를 입력해주세요.", 'w')
+                else {
+                    console.log("userId : ", userId)
+                    console.log("userEmail : ", userEmail)
+                    console.log("validateNum : ", validateNum)
+
+                    // TODO: 이메일 인증코드로 확인
                 }
             })
 
