@@ -109,7 +109,10 @@ public class HongUserServiceImpl implements HongUserService {
     @Transactional(readOnly = false)
     public void updateHongUser(HongUserDTO hongUserDTO) {
         HongUser hongUser = hongUserRepository.findByUserId(hongUserDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        if(hongUserDTO.getPassword() != null) hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
+        if(hongUserDTO.getPassword() != null) {
+            hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
+            hongUser.add90Days();                                                           // 비번 변경 -> 비번만료일 90연장 (오늘부터)
+        }
         hongUser.updateHongUser(hongUserDTO);
     }
 
@@ -211,7 +214,7 @@ public class HongUserServiceImpl implements HongUserService {
 
         if(hongUserPwdDateDTO.getPassword() != null) {
             String encodePassword = passwordEncoder.encode(hongUserPwdDateDTO.getPassword());
-            hongUser.changePwd(encodePassword);
+            hongUser.updatePassword(encodePassword);
         }
     }
 

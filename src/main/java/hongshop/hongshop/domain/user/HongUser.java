@@ -92,45 +92,51 @@ public class HongUser {
         if(hongUserDTO.getUserEmail() != null) this.userEmail = hongUserDTO.getUserEmail();
     }
 
+    // 사용자 권한 수정
     public void updateUserRole(HongRoleType hongRoleType){
         this.role = hongRoleType;
     }
 
+    // 사용자 비번 수정
     public void updatePassword(String password) {
         this.password = password;
     }
 
+    // 사용자 비번 실패 카운팅 1 증가
     public void updatePwdFailCnt(){
         this.pwdFailCnt = this.pwdFailCnt + 1;
     }
 
+    // 사용자 실패 카운팅 1증가 (최종 5됨) -> (그로인해) 사용자 계정 잠김
     public void updatePwdFailCntAndUserNonLocked(){
         this.pwdFailCnt = this.pwdFailCnt + 1;
         this.userNonLocked = false;
     }
 
+    // (로그인 성공) OR (관리자의 사용자 관리) : 비번 실패 횟수 및 잠김 풀기
     public void resetPwdFailCntAndUserNonLocked(){
         this.pwdFailCnt = 0;
         this.userNonLocked = true;
     }
 
+    // 최근 로그인 일자 '오늘'로 변경
+    // -> 로그인 성공 시 OR 이메일 인증번호를 통한 휴먼 계정 풀리는 경우
     public void updateLastLoginDate(){
         this.lastLoginDate = TimeUtil.nowDate();
     }
 
+    // 계정 활성화 -> 비활성화 (관리자의 사용자 관리에서)
     public void changeEnableToDisable(){
         this.userEnable = false;
     }
 
+    // 계정 비활성화 -> 활성화 (관리자의 사용자 관리에서)
     public void changeDisableToEnable(){
         this.userEnable = true;
     }
 
+    // 비번 만료일 90일 오늘로부터 추가하기 (비번 변경된 시점인 오늘부터 90일)
     public void add90Days() {
         this.pwdEndDate =  TimeUtil.daysAfter(90);   // 오늘로부터 90일
-    }
-
-    public void changePwd(String password){
-        this.password = password;
     }
 }
