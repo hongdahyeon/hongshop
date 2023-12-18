@@ -3,6 +3,7 @@ $(document).ready(function(e){
     table
         .get("/api/users")
         .headerBottom()
+        .usePagination()
         .add(new Column("index").title("#").width("5%").center())
         .add(new Column("userId").title("사용자Id").width("10%").left())
         .add(new Column("userNonLocked").title(`계정정지<br/> 여부`).width("5%").center().formatter(function(cell) {

@@ -2,6 +2,7 @@ $(document).ready(function(e){
 
     table
         .get('/api/order-with-reviewChk')
+        .usePagination()
         .add(new Column("index").title("#").width("5%").center())
         .add(new Column("userId").title("주문자").width("20%").left())
         .add(new Column("orderStatus").title("주문상태").width("10%").left())

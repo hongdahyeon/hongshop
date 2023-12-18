@@ -15,6 +15,14 @@ class Table {
         this._selectable = false                            // 테이블 row select 가능 여부
         this._afterComplete = null                          // 테이블 draw after
         this._checkbox = false
+
+        this._pagination = false
+        this._paging = 'local'
+        this._paginationSize = 6
+        this._paginationSizeSelector = [3, 6, 8, 10]
+        this._movableColumns = true
+        this._paginationCounter = "rows"
+
         this._columns = []
         this._url = ''
         this._data = []
@@ -32,6 +40,14 @@ class Table {
                 this._table.replaceData(data)
             }
         })
+    }
+
+    /*
+    * use pagination
+    */
+    usePagination() {
+        this._pagination = true
+        return this
     }
 
    /*
@@ -203,6 +219,14 @@ class Table {
                 resizable: this._resizeable
             },
             columns:this._columns
+        }
+
+        if(this._pagination) {
+            option['pagination'] = this._paging
+            option['paginationSize'] = this._paginationSize
+            option['paginationSizeSelector'] = this._paginationSizeSelector
+            option['movableColumns'] = this._movableColumns
+            option['paginationCounter'] = this._paginationCounter
         }
 
         if(this._rowFormatter) {

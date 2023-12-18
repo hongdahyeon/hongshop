@@ -1,6 +1,7 @@
 $(document).ready(function(e) {
     table
         .get('/api/file-list')
+        .usePagination()
         .add(new Column("index").title("#").width("5%").center())
         .add(new Column("originalFileName").title("파일 이름").width("20%").left())
         .add(new Column("fileSize").title("파일 크기").width("10%").left())

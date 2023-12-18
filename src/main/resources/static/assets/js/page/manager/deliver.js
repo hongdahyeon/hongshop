@@ -2,6 +2,7 @@ $(document).ready(function(e) {
     table
         .get(`/api/deliver-with-reviewChk`)
         .headerBottom()
+        .usePagination()
         .add(new Column("index").title("#").width("5%").center())
         .add(new Column("orderUser").title("주문자Id").width("20%").left())
         .add(new Column("orderDate").title("주문날짜").width("10%").center().formatter(function(cell) { return Util.DateSubString(cell.getValue()) }))
