@@ -278,3 +278,4 @@
 * commit176 : title default, error html에 뺴두기 (23/12/18)
 * commit177 : tabulator paging 적용 (23/12/18)
     - 우선, 리스트 사이즈가 큰 곳에만 적용 (default: 페이징 미적용)
+* commit178 : swal alert 수정 (23/12/27)
