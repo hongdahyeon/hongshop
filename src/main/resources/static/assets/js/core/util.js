@@ -24,7 +24,9 @@ class Util {
         return Swal.fire({
             html,
             icon: (icon === 's') ? 'success' : 'warning',
-            confirmButtonColor: (btn === 's') ? '#3085d6' : '#d33'
+            confirmButtonColor: (btn === 's') ? '#3085d6' : '#d33',
+            focusConfirm: false,
+            confirmButtonText: "확인"
         });
     }
 
@@ -32,6 +34,7 @@ class Util {
         return Swal.fire({
             html,
             icon: (icon === 'w') ? 'warning' : 'success',
+            focusConfirm: false,
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
