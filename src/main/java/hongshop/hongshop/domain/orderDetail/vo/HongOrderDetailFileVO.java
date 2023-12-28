@@ -13,6 +13,14 @@ import lombok.Setter;
 * @summary 주문 상세건 -> 해당 상품들 file 이미지 vo
 **/
 
+/**
+* @fileName HongOrderDetailFileVO
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-12-28
+* @summary  주문 상세 정보 조회 with 해당 상품 정보 조회 VO
+**/
+
 @Getter
 @Setter
 public class HongOrderDetailFileVO {

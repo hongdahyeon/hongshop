@@ -4,6 +4,15 @@ import hongshop.hongshop.domain.orderDetail.HongOrderDetail;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+* @fileName HongOrderDetailVO
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-12-28
+* @summary 주문 상세 정보 조회 VO
+**/
+
+
 @Getter @Setter
 public class HongOrderDetailVO {
 

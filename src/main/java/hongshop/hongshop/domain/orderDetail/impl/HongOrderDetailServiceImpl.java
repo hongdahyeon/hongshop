@@ -27,7 +27,7 @@ import java.util.List;
  *          (2) listOfDetailOrders : 주문Id를 통한 주문 상세 정보 리스트를 가져온다.
  *          (3) listByProductId : 상품Id를 통해 주문 사용자 정보 리스트를 가져온다.
  *          (4) emptyChkByProductId : 상품Id를 통해 주문 사용자가 있는지를 체크한다.
- *              -> 주문 상태 : CHARTGED, DELIVER_ING
+ *              -> 주문 상태 : CHARGED, DELIVER_ING
  *              -> 해당 주문 상태인 주문건이 있다면 상품 삭제를 못하도록 처리
  *              -> 해당 주문 상태인 주문건이 있다면 empty is false -> if(!empty) delete button is disabeld
  *          (5) getHongOrderDetail : return HongOrderDetail entity
