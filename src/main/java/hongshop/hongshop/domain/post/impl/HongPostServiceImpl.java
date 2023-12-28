@@ -10,9 +10,7 @@ import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.domain.post.HongPostRepository;
 import hongshop.hongshop.domain.post.HongPostService;
 import hongshop.hongshop.domain.post.dto.HongPostDTO;
-import hongshop.hongshop.domain.post.vo.HongPostAnswerVO;
 import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
-import hongshop.hongshop.domain.post.vo.HongPostFileVO;
 import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.HongPostType;
 import hongshop.hongshop.domain.postType.HongPostTypeRepository;
@@ -33,16 +31,12 @@ import java.util.List;
  * @date 2023-07-17
  * @summary
  *   (1) join : 파일그룹ID의 유무에 따라 저장
- *   (2) list : 게시글 전체 리스트 조회
- *   (3) postWithAnswer : 게시글 단건 조회 with 답변
- *   (4) postWithFile : 게시글 단건 조회 with 파일
- *   (5) postWithFileAndAnswer : 게시글 단건 조회 with 파일 and 답변
- *   (6) postsWithFileAnswerByPostType : 게시판 ID에 따른 게시글 전체 리스트 조회 with 파일 and 답변
- *   (7) show : 게시글 단건 조회
- *   (8) update : 게시글 단건 update
- *   (9) delete : 게시글 삭제 -> delete_Yn 변경
- *   (10) updateReadCnt : 조회수 증가
- *   (11) listByHongPostTypeId : 게시판ID에 따른 게시글 전체 리스트 조회
+ *   (2) postWithFileAndAnswer : 게시글 단건 조회 with 파일 and 답변
+ *   (3) postsWithFileAnswerByPostType : 게시판 ID에 따른 게시글 전체 리스트 조회 with 파일 and 답변
+ *   (4) update : 게시글 단건 update
+ *   (5) delete : 게시글 삭제 -> delete_Yn 변경
+ *   (6) updateReadCnt : 조회수 증가
+ *   (7) listByHongPostTypeId : 게시판ID에 따른 게시글 전체 리스트 조회
  **/
 
 @Service
@@ -93,26 +87,6 @@ public class HongPostServiceImpl implements HongPostService {
     }
 
     @Override
-    public List<HongPostVO> list() {
-        List<HongPost> all = hongPostRepository.findAll();
-        return all.stream().map(HongPostVO::new).toList();
-    }
-
-    @Override
-    public HongPostAnswerVO postWithAnswer(Long id) {
-        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        List<HongAnswerUserVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
-        return new HongPostAnswerVO(hongPost, listOfAnswer);
-    }
-
-    @Override
-    public HongPostFileVO postWithFile(Long id) {
-        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
-        return new HongPostFileVO(hongPost, list);
-    }
-
-    @Override
     public HongPostFileAnswerVO postWithFileAndAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         List<HongAnswerUserVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
@@ -133,12 +107,6 @@ public class HongPostServiceImpl implements HongPostService {
             List<HongAnswerUserVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
             return new HongPostFileAnswerVO(post, list, hongAnswerVOS);
         }).toList();
-    }
-
-    @Override
-    public HongPostVO show(Long id) {
-        HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        return new HongPostVO(hongPost);
     }
 
     @Override

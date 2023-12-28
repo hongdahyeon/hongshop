@@ -1,9 +1,7 @@
 package hongshop.hongshop.domain.post;
 
 import hongshop.hongshop.domain.post.dto.HongPostDTO;
-import hongshop.hongshop.domain.post.vo.HongPostAnswerVO;
 import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
-import hongshop.hongshop.domain.post.vo.HongPostFileVO;
 import hongshop.hongshop.domain.post.vo.HongPostVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,17 +20,9 @@ public interface HongPostService {
 
     Long join(HongPostDTO hongPostDTO);
 
-    List<HongPostVO> list();
-
-    HongPostAnswerVO postWithAnswer(Long id);
-
-    HongPostFileVO postWithFile(Long id);
-
     HongPostFileAnswerVO postWithFileAndAnswer(Long id);
 
     List<HongPostFileAnswerVO> postsWithFileAnswerByPostType(Long postTypeId);
-
-    HongPostVO show(Long id);
 
     void update(HongPostDTO hongPostDTO, Long id);
 
