@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.postType;
 
 import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeWithHongPost;
 
 import java.util.List;
 
@@ -15,11 +16,9 @@ import java.util.List;
 
 public interface HongPostTypeService {
 
-    List<HongPostTypeVO> list();
-
     List<HongPostTypeVO> listForHeader();
 
-    List<HongPostTypeVO> listWithPost();
+    List<HongPostTypeWithHongPost> listWithPost();
 
     Long join(HongPostTypeDTO hongPostTypeDTO);
 

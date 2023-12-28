@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.postType;
 
 import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeWithHongPost;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,14 +28,6 @@ public class HongPostTypeRestController {
 
     private final HongPostTypeService hongPostTypeService;
 
-    @GetMapping("/type")
-    @Operation(summary = "get post type list", description = "게시글 타입 리스트 가져오기")
-    @ApiDocumentResponse
-    public Response list(){
-        List<HongPostTypeVO> list = hongPostTypeService.list();
-        return Response.ok(list);
-    }
-
     @GetMapping("/type/header")
     @Operation(summary = "get post type list for header", description = "게시글 타입 리스트 가져오기 - 헤더용")
     @ApiDocumentResponse
@@ -55,7 +48,7 @@ public class HongPostTypeRestController {
     @Operation(summary = "get post type list with post", description = "게시글 타입 리스트 with 게시글들 가져오기")
     @ApiDocumentResponse
     public Response listWithPost(){
-        List<HongPostTypeVO> hongPostTypeVOS = hongPostTypeService.listWithPost();
+        List<HongPostTypeWithHongPost> hongPostTypeVOS = hongPostTypeService.listWithPost();
         return Response.ok(hongPostTypeVOS);
     }
 

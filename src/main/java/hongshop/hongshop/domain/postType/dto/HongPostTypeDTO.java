@@ -9,7 +9,7 @@ import lombok.Setter;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-08-08
-* @summary
+* @summary 게시글 타입 dto (POST, PUT용)
 **/
 
 @Getter @Setter

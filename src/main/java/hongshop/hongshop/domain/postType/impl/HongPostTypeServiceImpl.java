@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.post.vo.HongPostVO;
 import hongshop.hongshop.domain.postType.*;
 import hongshop.hongshop.domain.postType.dto.HongPostTypeDTO;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
+import hongshop.hongshop.domain.postType.vo.HongPostTypeWithHongPost;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +18,13 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-08-08
 * @summary
- *  (1) list : 전체 게시글 타입 리스트 -> 삭제여부 / 정렬
- *  (2) listForHeader : 전체 게시글 타입 리스트 FOR 헤더 -> 사용여부, 삭제여부 / 정렬
- *  (3) listWithPost : 전체 게시글 타입 리스트 with 게시글
- *  (4) join : 게시글 타입 저장
- *  (5) view : 게시글 타입 단건 조회
- *  (6) update : 게시글 타입 수정
- *  (7) delete : 게시글 타입 삭제
- *  (8) getQnaPost : 질의응답 게시글 타입 가져오기
+ *  (1) listForHeader : 전체 게시글 타입 리스트 FOR 헤더 -> 사용여부, 삭제여부 / 정렬
+ *  (2) listWithPost : 전체 게시글 타입 리스트 with 게시글
+ *  (3) join : 게시글 타입 저장
+ *  (4) view : 게시글 타입 단건 조회
+ *  (5) update : 게시글 타입 수정
+ *  (6) delete : 게시글 타입 삭제
+ *  (7) getQnaPost : 질의응답 게시글 타입 가져오기
 **/
 
 @Transactional(readOnly = true)
@@ -36,23 +36,17 @@ public class HongPostTypeServiceImpl implements HongPostTypeService {
     private final HongPostService hongPostService;
 
     @Override
-    public List<HongPostTypeVO> list() {
-        List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnOrderByOrderNum("N");
-        return all.stream().map(HongPostTypeVO::new).toList();
-    }
-
-    @Override
     public List<HongPostTypeVO> listForHeader() {
         List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnAndUseAtOrderByOrderNum("N", "Y");
         return all.stream().map(HongPostTypeVO::new).toList();
     }
 
     @Override
-    public List<HongPostTypeVO> listWithPost() {
+    public List<HongPostTypeWithHongPost> listWithPost() {
         List<HongPostType> all = hongPostTypeRepository.findAllByDeleteYnOrderByOrderNum("N");
         return all.stream().map(type -> {
             List<HongPostVO> hongPostVOS = hongPostService.listByHongPostTypeId(type.getId());
-            return new HongPostTypeVO(type, hongPostVOS);
+            return new HongPostTypeWithHongPost(type, hongPostVOS);
         }).toList();
     }
 
