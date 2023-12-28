@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.answer.impl;
 
 import hongshop.hongshop.domain.answer.*;
 import hongshop.hongshop.domain.answer.dto.HongAnswerDTO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.domain.post.HongPost;
 import hongshop.hongshop.domain.post.HongPostRepository;
@@ -57,19 +58,19 @@ public class HongAnswerServiceImpl implements HongAnswerService {
     }
 
     @Override
-    public List<HongAnswerVO> listByHongPostId(Long hongPostId) {
+    public List<HongAnswerUserVO> listByHongPostId(Long hongPostId) {
         List<HongAnswer> allByHongPostId = hongAnswerRepository.findAllByHongPostIdAndDeleteYnIs(hongPostId, "N");
         return allByHongPostId.stream().map(hongAnswer -> {
             HongUserVO userVO = hongUserService.getHongUserById(hongAnswer.getRegId());
-            return new HongAnswerVO(hongAnswer, userVO.getUserId());
+            return new HongAnswerUserVO(hongAnswer, userVO.getUserId());
         }).toList();
     }
 
     @Override
-    public HongAnswerVO show(Long id) {
+    public HongAnswerUserVO show(Long id) {
         HongAnswer hongAnswer = hongAnswerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
         HongUserVO userVO = hongUserService.getHongUserById(hongAnswer.getRegId());
-        return new HongAnswerVO(hongAnswer, userVO.getUserId());
+        return new HongAnswerUserVO(hongAnswer, userVO.getUserId());
     }
 
     @Override

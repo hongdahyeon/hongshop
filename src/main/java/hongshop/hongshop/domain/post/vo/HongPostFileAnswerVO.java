@@ -1,6 +1,6 @@
 package hongshop.hongshop.domain.post.vo;
 
-import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.post.HongPost;
 import lombok.Getter;
@@ -20,11 +20,11 @@ public class HongPostFileAnswerVO {
     private String content;
     private String deleteYn;
     private Integer readCnt;
-    private List<HongAnswerVO> answerList = new ArrayList<>();
+    private List<HongAnswerUserVO> answerList = new ArrayList<>();
     private HongFileGroupVO file;
     private Long regId;
 
-    public HongPostFileAnswerVO(HongPost hongPost, HongFileGroupVO file, List<HongAnswerVO> answerVOList){
+    public HongPostFileAnswerVO(HongPost hongPost, HongFileGroupVO file, List<HongAnswerUserVO> answerVOList){
         this.id = hongPost.getId();
         this.type = hongPost.getHongPostType().getPostType().toString();
         this.typeId = hongPost.getHongPostType().getId();

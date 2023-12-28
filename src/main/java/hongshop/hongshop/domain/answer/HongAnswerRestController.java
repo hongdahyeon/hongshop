@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.answer;
 
 import hongshop.hongshop.domain.answer.dto.HongAnswerDTO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -40,7 +41,7 @@ public class HongAnswerRestController {
     @Operation(summary = "get answer list by PostId", description = "게시글의 답변 리스트 가져오기")
     @ApiDocumentResponse
     public Response list(@PathVariable Long id){
-        List<HongAnswerVO> list = hongAnswerService.listByHongPostId(id);
+        List<HongAnswerUserVO> list = hongAnswerService.listByHongPostId(id);
         return Response.ok(list);
     }
 
@@ -56,7 +57,7 @@ public class HongAnswerRestController {
     @Operation(summary = "get answer view", description = "단건 답변 조회")
     @ApiDocumentResponse
     public Response show(@PathVariable Long id){
-        HongAnswerVO show = hongAnswerService.show(id);
+        HongAnswerUserVO show = hongAnswerService.show(id);
         return Response.ok(show);
     }
 

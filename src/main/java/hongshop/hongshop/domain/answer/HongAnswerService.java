@@ -1,6 +1,7 @@
 package hongshop.hongshop.domain.answer;
 
 import hongshop.hongshop.domain.answer.dto.HongAnswerDTO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
 
 import java.util.List;
@@ -19,9 +20,9 @@ public interface HongAnswerService {
 
     List<HongAnswerVO> list();
 
-    List<HongAnswerVO> listByHongPostId(Long hongPostId);
+    List<HongAnswerUserVO> listByHongPostId(Long hongPostId);
 
-    HongAnswerVO show(Long id);
+    HongAnswerUserVO show(Long id);
 
     void update(HongAnswerDTO hongAnswerDTO, Long id);
 

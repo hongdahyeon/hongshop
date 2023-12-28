@@ -1,12 +1,14 @@
 package hongshop.hongshop.domain.post.impl;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
-import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
-import hongshop.hongshop.domain.post.*;
+import hongshop.hongshop.domain.post.HongPost;
+import hongshop.hongshop.domain.post.HongPostRepository;
+import hongshop.hongshop.domain.post.HongPostService;
 import hongshop.hongshop.domain.post.dto.HongPostDTO;
 import hongshop.hongshop.domain.post.vo.HongPostAnswerVO;
 import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
@@ -99,7 +101,7 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostAnswerVO postWithAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
+        List<HongAnswerUserVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         return new HongPostAnswerVO(hongPost, listOfAnswer);
     }
 
@@ -113,7 +115,7 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostFileAnswerVO postWithFileAndAnswer(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        List<HongAnswerVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
+        List<HongAnswerUserVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         HongFileGroupVO list = null;
         if(hongPost.getFileGroupId() != null){
              list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
@@ -128,7 +130,7 @@ public class HongPostServiceImpl implements HongPostService {
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
             if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId(), "N", FileState.SAVED);
-            List<HongAnswerVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
+            List<HongAnswerUserVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
             return new HongPostFileAnswerVO(post, list, hongAnswerVOS);
         }).toList();
     }

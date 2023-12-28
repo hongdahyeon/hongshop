@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.post;
 
 import hongshop.hongshop.domain.answer.HongAnswerService;
-import hongshop.hongshop.domain.answer.vo.HongAnswerVO;
+import hongshop.hongshop.domain.answer.vo.HongAnswerUserVO;
 import hongshop.hongshop.domain.post.html.BbsType;
 import hongshop.hongshop.domain.post.html.CRUD;
 import hongshop.hongshop.domain.post.vo.HongPostFileAnswerVO;
@@ -44,7 +44,7 @@ public class HongPostController {
     public String view(@PathVariable Long id, Model model, HttpServletResponse res, HttpServletRequest req, @AuthenticationPrincipal PrincipalDetails principalDetails){
         HongPostFileAnswerVO post = hongPostService.postWithFileAndAnswer(id);
         HongPostTypeVO type = hongPostTypeService.view(post.getTypeId());
-        List<HongAnswerVO> answers = hongAnswerService.listByHongPostId(id);
+        List<HongAnswerUserVO> answers = hongAnswerService.listByHongPostId(id);
 
         post.setContent(StringEscapeUtils.unescapeHtml4(post.getContent()));
         hongPostService.updateReadCnt(post.getId(), req, res);
