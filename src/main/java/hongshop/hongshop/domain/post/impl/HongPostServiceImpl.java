@@ -108,7 +108,7 @@ public class HongPostServiceImpl implements HongPostService {
     @Override
     public HongPostFileVO postWithFile(Long id) {
         HongPost hongPost = hongPostRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no post"));
-        HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
+        HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
         return new HongPostFileVO(hongPost, list);
     }
 
@@ -118,7 +118,7 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongAnswerUserVO> listOfAnswer = hongAnswerService.listByHongPostId(id);
         HongFileGroupVO list = null;
         if(hongPost.getFileGroupId() != null){
-             list = hongFileGroupService.listwithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
+             list = hongFileGroupService.listWithDeleteYnAndFileState(hongPost.getFileGroupId(), "N", FileState.SAVED);
         }
         return new HongPostFileAnswerVO(hongPost, list, listOfAnswer);
     }
@@ -129,7 +129,7 @@ public class HongPostServiceImpl implements HongPostService {
         List<HongPost> hongPosts = hongPostRepository.findAllByHongPostTypeIdAndDeleteYnIs(postTypeId, "N");
         return hongPosts.stream().map(post -> {
             HongFileGroupVO list = null;
-            if(post.getFileGroupId() != null) list = hongFileGroupService.listwithDeleteYnAndFileState(post.getFileGroupId(), "N", FileState.SAVED);
+            if(post.getFileGroupId() != null) list = hongFileGroupService.listWithDeleteYnAndFileState(post.getFileGroupId(), "N", FileState.SAVED);
             List<HongAnswerUserVO> hongAnswerVOS = hongAnswerService.listByHongPostId(post.getId());
             return new HongPostFileAnswerVO(post, list, hongAnswerVOS);
         }).toList();

@@ -90,7 +90,7 @@ public class HongReivewServiceImpl implements HongReviewService {
             Long orderDetailId = hongReview.getHongOrderDetail().getId();
             HongOrderDetailFileVO hongOrderDetailFileVO = hongOrderDetailService.view(orderDetailId);
             if(hongReview.getFileGroupId() != null) {
-                HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
+                HongFileGroupVO fileGroupVO = hongFileGroupService.listWithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
                 return new HongReviewVO(hongReview, hongOrderDetailFileVO, fileGroupVO);
             }else return new HongReviewVO(hongReview, hongOrderDetailFileVO);
         }).toList();
@@ -130,7 +130,7 @@ public class HongReivewServiceImpl implements HongReviewService {
         HongOrderDetailFileVO hongOrderDetailFileVO = hongOrderDetailService.view(orderDetailId);
 
         if(hongReview.getFileGroupId() != null) {
-            HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
+            HongFileGroupVO fileGroupVO = hongFileGroupService.listWithDeleteYnAndFileState(hongReview.getFileGroupId(), "N", FileState.SAVED);     // file-group list
             return new HongReviewVO(hongReview, hongOrderDetailFileVO, fileGroupVO);
         }else return new HongReviewVO(hongReview, hongOrderDetailFileVO);
     }

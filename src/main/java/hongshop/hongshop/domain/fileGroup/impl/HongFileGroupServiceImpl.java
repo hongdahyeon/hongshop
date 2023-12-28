@@ -19,10 +19,9 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary      (1) all : 파일 그룹 with 파일 리스트 전체 조회 -> 삭제여부(N), 파일 상태(SAVED)
- *              (2) listwithDeleteYnAndFileState : 파일 그룹 with 파일 리스트 조회 by fileGroupid -> 삭제 여부, 파일 상태
- *              (3) saveFileGroup : 파일 그룹 저장
- *              (4) findFileGroup : 파일 그룹 단건 조회 -> return entity
+* @summary      (1) listWithDeleteYnAndFileState : 파일 그룹 with 파일 리스트 조회 by fileGroup-uid -> 삭제 여부, 파일 상태
+ *              (2) saveFileGroup : 파일 그룹 저장
+ *              (3) findFileGroup : 파일 그룹 단건 조회 -> return entity
  **/
 
 @Service
@@ -34,17 +33,7 @@ public class HongFileGroupServiceImpl implements HongFileGroupService {
     private final HongFileRepository fileRepository;
 
     @Override
-    public List<HongFileGroupVO> all() {
-        List<HongFileGroup> all = fileGroupRepository.findAll();
-        return all.stream().map(group -> {
-            List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(group.getId(), "N", FileState.SAVED);
-            List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();
-            return new HongFileGroupVO(group, listOfFileVO);
-        }).filter(hongFileGroupVO -> !hongFileGroupVO.getFileList().isEmpty()).toList();
-    }
-
-    @Override
-    public HongFileGroupVO listwithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState) {
+    public HongFileGroupVO listWithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState) {
         HongFileGroup fileGroup = fileGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no file gorup"));
         List<HongFile> fileList = fileRepository.findAllByHongFileGroupIdAndDeleteYnAndFileState(id, deleteYn, fileState);
         List<HongFileVO> listOfFileVO = fileList.stream().map(HongFileVO::new).toList();

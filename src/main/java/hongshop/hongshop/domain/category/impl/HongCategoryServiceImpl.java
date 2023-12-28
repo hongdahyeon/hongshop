@@ -71,7 +71,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
             List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(category.getId(), "N");
             List<HongProductVO> productVOList = productList.stream().map(hongProduct -> {
                 if (hongProduct.getFileGroupId() != null) {
-                    HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+                    HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
                     return new HongProductVO(hongProduct, list);
                 } else return new HongProductVO(hongProduct);
             }).toList();

@@ -7,12 +7,10 @@ import hongshop.hongshop.domain.file.HongFileService;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
-import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailUserVO;
 import hongshop.hongshop.domain.product.HongProduct;
 import hongshop.hongshop.domain.product.HongProductRepository;
 import hongshop.hongshop.domain.product.HongProductService;
 import hongshop.hongshop.domain.product.dto.HongProductDTO;
-import hongshop.hongshop.domain.product.vo.HongPrdouctUserVO;
 import hongshop.hongshop.domain.product.vo.HongProductManagerVO;
 import hongshop.hongshop.domain.product.vo.HongProductVO;
 import lombok.RequiredArgsConstructor;
@@ -99,7 +97,7 @@ public class HongProductServiceImpl implements HongProductService {
     public HongProductVO view(Long id) {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         if(hongProduct.getFileGroupId() != null) {
-            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+            HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
             return new HongProductVO(hongProduct, list);
         }else return new HongProductVO(hongProduct);
     }
@@ -109,7 +107,7 @@ public class HongProductServiceImpl implements HongProductService {
         HongProduct hongProduct = hongProductRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no product"));
         boolean empty = hongOrderDetailService.emptyChkByProductId(id);
         if(hongProduct.getFileGroupId() != null) {
-            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+            HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
             return new HongProductManagerVO(hongProduct, list, empty);
         }else return new HongProductManagerVO(hongProduct, empty);
     }
@@ -148,7 +146,7 @@ public class HongProductServiceImpl implements HongProductService {
         List<HongProduct> products = hongProductRepository.findAllByDeleteYnAndNewProductYn("N", "Y");// deleteYn: N , newProductYn: Y
         return products.stream().map(hongProduct -> {
             if(hongProduct.getFileGroupId() != null) {
-                HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
+                HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(hongProduct.getFileGroupId(), "N", FileState.SAVED);         // if has file-group-id, show together
                 return new HongProductVO(hongProduct, list);
             }else return new HongProductVO(hongProduct);
         }).toList();

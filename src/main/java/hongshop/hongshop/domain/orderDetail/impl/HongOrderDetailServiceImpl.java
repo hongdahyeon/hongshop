@@ -89,7 +89,7 @@ public class HongOrderDetailServiceImpl implements HongOrderDetailService {
         HongOrderDetail hongOrderDetail = hongOrderDetailRepository.findById(hongOrderDetailId).orElseThrow(() -> new IllegalArgumentException("there is no order detail"));
         Long fileGroupId = hongOrderDetail.getHongProduct().getFileGroupId();
         if(fileGroupId != null) {
-            HongFileGroupVO fileGroupVO = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);
+            HongFileGroupVO fileGroupVO = hongFileGroupService.listWithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);
             return new HongOrderDetailFileVO(hongOrderDetail, fileGroupVO);
         }else return new HongOrderDetailFileVO(hongOrderDetail);
     }

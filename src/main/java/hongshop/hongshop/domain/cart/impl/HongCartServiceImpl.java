@@ -67,7 +67,7 @@ public class HongCartServiceImpl implements HongCartService {
         List<HongCart> listOfCart = hongCartRepository.findAllByHongUserIdAndDeleteYn(id, "N");
         return listOfCart.stream().map(hongCart -> {
             Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
-            HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
+            HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
             return new HongCartWithProductVO(hongCart, list);
         }).toList();
     }
@@ -95,7 +95,7 @@ public class HongCartServiceImpl implements HongCartService {
             for (Long id : ids) {
                 HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
                 Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
-                HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
+                HongFileGroupVO list = hongFileGroupService.listWithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
                 hongCarts.add(new HongCartWithProductVO(hongCart, list));
             }
         }

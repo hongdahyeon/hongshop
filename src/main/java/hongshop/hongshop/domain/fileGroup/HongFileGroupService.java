@@ -3,8 +3,6 @@ package hongshop.hongshop.domain.fileGroup;
 import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 
-import java.util.List;
-
 /**
 * @fileName HongFileGroupService
 * @author dahyeon
@@ -15,8 +13,7 @@ import java.util.List;
 
 public interface HongFileGroupService {
 
-    List<HongFileGroupVO> all();
-    HongFileGroupVO listwithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState);
+    HongFileGroupVO listWithDeleteYnAndFileState(Long id, String deleteYn, FileState fileState);
 
     HongFileGroup saveFileGroup();
 
