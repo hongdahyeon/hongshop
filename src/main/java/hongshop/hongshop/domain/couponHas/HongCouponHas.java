@@ -2,7 +2,6 @@ package hongshop.hongshop.domain.couponHas;
 
 
 import hongshop.hongshop.domain.coupon.HongCoupon;
-import hongshop.hongshop.domain.couponHas.dto.HongCouponHasDTO;
 import hongshop.hongshop.domain.user.HongUser;
 import lombok.AccessLevel;
 import lombok.Builder;

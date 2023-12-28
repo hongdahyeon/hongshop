@@ -1,6 +1,5 @@
 package hongshop.hongshop.domain.couponHas;
 
-import hongshop.hongshop.domain.couponHas.dto.HongCouponHasDTO;
 import hongshop.hongshop.domain.couponHas.dto.HongCouponHasLstDTO;
 import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -22,37 +21,12 @@ public class HongCouponHasRestController {
 
     private final HongCouponHasService hongCouponHasService;
 
-    @PostMapping("/coupon-has")
-    @Operation(summary = "insert coupon-has", description = "사용자가 갖는 쿠폰 저장하기")
-    @ApiDocumentResponse
-    public Response save(@RequestBody HongCouponHasDTO hongCouponHasDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long joinId = hongCouponHasService.join(principalDetails.getUser(), hongCouponHasDTO);
-        return Response.ok(joinId);
-    }
-
     @PostMapping("/coupon-has-user")
     @Operation(summary = "insert coupon-has by userLst", description = "사용자가 갖는 쿠폰 저장하기 - 사용자 리스트로 해당 사용자들 전부 발급")
     @ApiDocumentResponse
     public Response saveByUser(@RequestBody HongCouponHasLstDTO hongCouponHasLstDTO) {
         Integer saveUser = hongCouponHasService.joinAll(hongCouponHasLstDTO);
         return Response.ok(saveUser);
-    }
-
-    @GetMapping("/coupon-has")
-    @Operation(summary = "list coupon-has", description = "사용자의 쿠폰 리스트 전체 조회")
-    @ApiDocumentResponse
-    public Response list(){
-        List<HongCouponHasVO> list = hongCouponHasService.list();
-        return Response.ok(list);
-    }
-
-
-    @GetMapping("/coupon-has/{id}")
-    @Operation(summary = "coupon-has view", description = "사용자의 쿠폰 리스트 단건 조회")
-    @ApiDocumentResponse
-    public Response view(@PathVariable Long id){
-        HongCouponHasVO view = hongCouponHasService.view(id);
-        return Response.ok(view);
     }
 
     @GetMapping("/coupon-user-has")
