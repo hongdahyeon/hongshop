@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -29,15 +27,6 @@ public class HongReviewRestController {
         HongUser user = principalDetails.getUser();
         Long joinId = hongReviewService.join(hongReviewDTO, user);
         return Response.ok(joinId);
-    }
-
-    @GetMapping("/user-review")
-    @Operation(summary = "현재 로그인한 자기 자신의 리뷰 리스트 보기", description = "현재 로그인한 자기 자신의 리뷰 리스트 보기")
-    @ApiDocumentResponse
-    public Response userReview(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        HongUser user = principalDetails.getUser();
-        List<HongReviewVO> hongReviewVOS = hongReviewService.userReview(user);
-        return Response.ok(hongReviewVOS);
     }
 
     @GetMapping("/user-order-review/{id}")
