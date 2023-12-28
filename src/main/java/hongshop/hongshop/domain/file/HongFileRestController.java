@@ -78,7 +78,6 @@ public class HongFileRestController {
     @Operation(summary = "upload ckImage", description = "ckeditor로 이미지 업로드")
     @ApiDocumentResponse
     public Map<String, Object> uploadCKImageFile(@RequestParam("file") MultipartFile multipartFile){
-        System.out.println("multipartFile = " + multipartFile);
         Map<String, Object> params = hongFileService.uploadCKImageFile(multipartFile);
         return params;
     }

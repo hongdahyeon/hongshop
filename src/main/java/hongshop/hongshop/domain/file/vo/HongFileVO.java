@@ -4,18 +4,16 @@ import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.file.HongFile;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
 * @fileName HongFileVO
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary 파일 정보 조회 VO
 **/
 
 @Getter @Setter
-@ToString
 public class HongFileVO {
 
     private Long id;

@@ -10,11 +10,12 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-07-18
 * @summary
- *  (1) findAllByHongFileGroupIdAndDeleteYn : find file list by file-group-id and delete-yn is ?
- *          -> for update file state
- *  (2) findAllByHongFileGroupIdAndDeleteYnAndFileState : find file list by file-group-id and delete-yn is ? and file-state is ?
- *          -> for list of files by file-group-id
- *  (3) findAllByDeleteYnAndFileState : find file list by delete-yn and file-state
+ *  (1) findAllByHongFileGroupIdAndDeleteYn : 파일 리스트 조회
+ *          -> 파일 그룹 Id, 파일 삭제여부
+ *  (2) findAllByHongFileGroupIdAndDeleteYnAndFileState : 파일 리스트 조회
+ *          -> 파일 그룹 Id , 파일 상태값,  파일 삭제여부
+ *  (3) findAllByDeleteYnAndFileState : 파일 리스트 조회
+ *          -> 삭제여부 , 파일 상태값
 **/
 
 public interface HongFileRepository extends JpaRepository<HongFile, Long> {
