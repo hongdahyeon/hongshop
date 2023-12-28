@@ -20,7 +20,7 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-07-18
 * @summary      (1) save ; 파일 로그 저장
- *              (2) list : 파일Id를 통한 파일로그 리스트 조회
+ *              (2) list : 파일Id를 통한 파일로그 리스트 조회 with 사용자 정보
 **/
 
 @Service
@@ -31,6 +31,7 @@ public class HongFileLogServiceImpl implements HongFileLogService {
     private final HongFileLogRepository hongFileLogRepository;
     private final HongFileRepository hongFileRepository;
     private final HongUserService hongUserService;
+
     @Override
     @Transactional(readOnly = false)
     public Long save(Long fileId) {
