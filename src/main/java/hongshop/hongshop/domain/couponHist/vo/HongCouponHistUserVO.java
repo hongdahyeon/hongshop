@@ -9,7 +9,7 @@ import lombok.Setter;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-11-14
-* @summary  쿠폰Id를 통해 이력 조회 VO
+* @summary  쿠폰Id를 통해 이력 조회 with 사용자Id VO
 **/
 
 @Getter @Setter

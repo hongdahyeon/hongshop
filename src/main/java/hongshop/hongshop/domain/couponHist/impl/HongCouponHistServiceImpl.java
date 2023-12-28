@@ -21,7 +21,7 @@ import java.util.List;
 * @date 2023-11-13
 * @summary  (1) join : 사용자 쿠폰 이용 이력 저장
  *          (2) list : 사용자들 쿠폰 이용 이력 전체 조회
- *          (3) listByCouponId : 쿠폰 Id로 이력 조회
+ *          (3) listByCouponId : 쿠폰 Id로 이력 조회 with 사용자-Id
 **/
 
 
