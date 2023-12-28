@@ -33,6 +33,8 @@ public class SecurityConfig  {
     private final PrincipalOAuth2UserService principalOAuth2UserService;
     private final CustomFailureHandler customFailureHandler;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
+    private static final String LOGIN = "/login";
+    private static final String LOGOUT = "/logout";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,7 +43,7 @@ public class SecurityConfig  {
         http
                 .authorizeRequests(authorize ->                         // url 기반 보안을 구성하는 http 객체의 메서드 -> 다양한 유형의 사용자가 액세스할 수 있는 url 정의
                         authorize
-                                .antMatchers("/login", "/assets/**", "/front/**").permitAll()                                  // 로그인 페이지 및 해당 url의 경우 모두 접근 가능
+                                .antMatchers(LOGIN, "/assets/**", "/front/**").permitAll()                                  // 로그인 페이지 및 해당 url의 경우 모두 접근 가능
                                 .antMatchers("/manager/**").access("hasRole('ROLE_ADMIN') or hasAnyRole('ROLE_SUPER')")
 //                                .antMatchers("/user/**").access("hasRole('ROLE_USER')")     // "/user/"로 시작하는 모든 url은 "ROLE_USER"의 역할을 갖은 사용자만 액세스 가능
 //                                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")   // "/admin/"로 시작하는 모든 url은 "ROLE_ADMIN"의 역할을 갖은 사용자만 액세스 가능
@@ -49,7 +51,7 @@ public class SecurityConfig  {
                         )
                 .formLogin(formLoginConfigurer ->
                         formLoginConfigurer
-                                .loginPage("/login")                    // 로그인 페이지가 있는 url 지정
+                                .loginPage(LOGIN)                    // 로그인 페이지가 있는 url 지정
                                 .failureHandler(customFailureHandler)
                                 .successHandler(customLoginSuccessHandler)
                                 .usernameParameter("userId")            // 사용자 이름 필드에 사용되는 매개변수 이름의 기본값인 "username" 대신 "userId" 사용하도록 설정
@@ -58,7 +60,7 @@ public class SecurityConfig  {
                 )
                 .oauth2Login(httpSecurityOAuth2LoginConfigurer ->
                     httpSecurityOAuth2LoginConfigurer
-                            .loginPage("/login")
+                            .loginPage(LOGIN)
                             .userInfoEndpoint()
                             .userService(principalOAuth2UserService)
                             .and()
@@ -66,8 +68,8 @@ public class SecurityConfig  {
                 )
                 .logout(logoutConfigurer ->
                    logoutConfigurer
-                           .logoutUrl("/logout")
-                           .logoutSuccessUrl("/login")
+                           .logoutUrl(LOGOUT)
+                           .logoutSuccessUrl(LOGIN)
                            .invalidateHttpSession(true)
                            .clearAuthentication(true)       // 로그 아웃시, 인증정부를 지우고 세션을 무효화
                 );

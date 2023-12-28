@@ -35,3 +35,10 @@ logging.level:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+
+hong:
+  img:
+    path: 'D:\hongFile\'
+  ckImg:
+    pattern: '/ckImage/**'
+    path: 'D:/hongFile/ckImage/'

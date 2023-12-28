@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ImageController {
 
-    @Value("${hong.img-url}")
+    @Value("${hong.img.path}")
     private String rootPath;
     @CrossOrigin
     @GetMapping("/image")
