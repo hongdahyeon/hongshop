@@ -11,7 +11,7 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary  상품 DTO (POST, PUT용)
 **/
 
 @Getter @Setter

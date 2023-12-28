@@ -1,17 +1,13 @@
 package hongshop.hongshop.domain.product;
 
 import hongshop.hongshop.domain.product.dto.HongProductDTO;
-import hongshop.hongshop.domain.product.vo.HongPrdouctUserVO;
 import hongshop.hongshop.domain.product.vo.HongProductManagerVO;
-import hongshop.hongshop.domain.product.vo.HongProductVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
 * @fileName HongProductRestController
@@ -29,28 +25,12 @@ public class HongProductRestController {
 
     private final HongProductService hongProductService;
 
-    @GetMapping("/product")
-    @Operation(summary = "get product list", description = "물품 리스트 가져오기")
-    @ApiDocumentResponse
-    public Response list(){
-        List<HongProductVO> list = hongProductService.list();
-        return Response.ok(list);
-    }
-
     @PostMapping("/product")
     @Operation(summary = "insert product", description = "물품 저장")
     @ApiDocumentResponse
     public Response save(@RequestBody HongProductDTO hongProductDTO){
         Long saveId = hongProductService.save(hongProductDTO);
         return Response.ok(saveId);
-    }
-
-    @GetMapping("/product/{id}")
-    @Operation(summary = "get product view", description = "물품 단건 조회")
-    @ApiDocumentResponse
-    public Response view(@PathVariable Long id){
-        HongProductVO view = hongProductService.view(id);
-        return Response.ok(view);
     }
 
     @GetMapping("/product-check-user/{id}")
