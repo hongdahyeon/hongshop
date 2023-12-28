@@ -22,7 +22,7 @@ import java.util.List;
 
 
 /**
-* @fileName HongReivewServiceImpl
+* @fileName HongReviewServiceImpl
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-11-10
@@ -32,8 +32,8 @@ import java.util.List;
  *                  -> 1개의 주문건 상세 주문상품들에 대해 리뷰가 달린 개수를 확인한다.
  *                  -> 이때 모든 상세 주문상품들에 대해 리뷰가 달렸다면 : FALSE -> 리뷰 작성폼이 안열린다.
  *                  -> 이때 모든 상세 주문상품들에 대해 리뷰가 달리지 않았다면 : TRUE -> 리뷰 작성폼이 열린다.
- *
-*               (4) delete : 리뷰 단건 삭제
+
+ *              (4) delete : 리뷰 단건 삭제
  *              (5) view : 리뷰 단건 조회
  *              (6) update : 단건 리뷰 수정
 **/
@@ -43,7 +43,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class HongReivewServiceImpl implements HongReviewService {
+public class HongReviewServiceImpl implements HongReviewService {
 
     private final HongReviewRepository hongReviewRepository;
     private final HongOrderDetailService hongOrderDetailService;
