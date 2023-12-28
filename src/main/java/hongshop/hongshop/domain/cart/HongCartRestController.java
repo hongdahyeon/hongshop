@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.cart;
 
 import hongshop.hongshop.domain.cart.dto.HongCartDTO;
-import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.cart.vo.HongCartWithProductVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -33,16 +33,8 @@ public class HongCartRestController {
     @Operation(summary = "get login user's cart list", description = "로그인한 사용자의 장바구니 리스트 가져오기")
     @ApiDocumentResponse
     public Response listOfCartById(@PathVariable Long id){
-        List<HongCartVO> usersListOfCartById = hongCartService.getUsersListOfCartById(id);
+        List<HongCartWithProductVO> usersListOfCartById = hongCartService.getUsersListOfCartById(id);
         return Response.ok(usersListOfCartById);
-    }
-
-    @PostMapping("/cart-list")
-    @Operation(summary = "insert cart", description = "장바구니 저장")
-    @ApiDocumentResponse
-    public Response saveLst(@RequestBody List<HongCartDTO> hongCartDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        Integer savedCart = hongCartService.saveLst(hongCartDTO, principalDetails.getUser());
-        return Response.ok(savedCart);
     }
 
     @PostMapping("/cart")
@@ -85,5 +77,4 @@ public class HongCartRestController {
         boolean ifEmpty = hongCartService.findIfEmpty(userId, id);
         return Response.ok(ifEmpty);
     }
-
 }

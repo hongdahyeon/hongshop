@@ -8,7 +8,7 @@ import lombok.Setter;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary
+* @summary 장바구니 DTO (POST, PUT용)
 **/
 
 @Getter @Setter

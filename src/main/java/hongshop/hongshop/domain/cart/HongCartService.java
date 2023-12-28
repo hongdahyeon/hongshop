@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.cart;
 
 import hongshop.hongshop.domain.cart.dto.HongCartDTO;
-import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.cart.vo.HongCartWithProductVO;
 import hongshop.hongshop.domain.user.HongUser;
 
 import java.util.List;
@@ -15,17 +15,16 @@ import java.util.List;
 **/
 
 public interface HongCartService {
-    Integer saveLst(List<HongCartDTO> cartDTOList, HongUser hongUser);
 
     Long save(HongCartDTO cartDTO, HongUser hongUser);
 
-    List<HongCartVO> getUsersListOfCartById(Long id);
+    List<HongCartWithProductVO> getUsersListOfCartById(Long id);
 
     void delete(Long id);
 
     void deleteSeveral(Long[] ids);
 
-    List<HongCartVO> listOfChoose(List<Long> ids);
+    List<HongCartWithProductVO> listOfChoose(List<Long> ids);
 
     void updateCnt(Long id, HongCartDTO hongCartDTO);
 

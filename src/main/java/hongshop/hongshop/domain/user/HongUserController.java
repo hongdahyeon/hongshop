@@ -1,7 +1,7 @@
 package hongshop.hongshop.domain.user;
 
 import hongshop.hongshop.domain.cart.HongCartService;
-import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.cart.vo.HongCartWithProductVO;
 import hongshop.hongshop.domain.review.HongReviewService;
 import hongshop.hongshop.domain.review.vo.HongReviewVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
@@ -34,7 +34,7 @@ public class HongUserController {
     @GetMapping("/cart")    // 회원 - 장바구니 페이지
     public String index(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model){
         Long id = principalDetails.getUser().getId();
-        List<HongCartVO> cart = hongCartService.getUsersListOfCartById(id);
+        List<HongCartWithProductVO> cart = hongCartService.getUsersListOfCartById(id);
         model.addAttribute("cart", cart);
         model.addAttribute("id", id);
         return "user/cart";

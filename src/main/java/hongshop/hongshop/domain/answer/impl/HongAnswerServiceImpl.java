@@ -23,7 +23,7 @@ import java.util.List;
  *              (2) list : 답변 리스트 조회
  *              (3) listByHongPostId : 게시글 Id를 통한 답변 리스트 조회 (삭제여부 N)
  *                  -> 답변 리스트 조회 with 사용자-Id
- *              (4) show : 답변 단건 조회
+ *              (4) show : 답변 단건 조회 with 사용자-Id
  *              (5) update : 답변 수정
  *              (6) delete : 답변 삭제
  **/

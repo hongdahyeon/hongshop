@@ -1,8 +1,10 @@
 package hongshop.hongshop.domain.cart.impl;
 
-import hongshop.hongshop.domain.cart.*;
+import hongshop.hongshop.domain.cart.HongCart;
+import hongshop.hongshop.domain.cart.HongCartRepository;
+import hongshop.hongshop.domain.cart.HongCartService;
 import hongshop.hongshop.domain.cart.dto.HongCartDTO;
-import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.cart.vo.HongCartWithProductVO;
 import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
@@ -21,14 +23,17 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary      (1) saveLst : 장바구니 저장 (여러개)
- *              (2) save : 장바구니 저장 (단건)
- *              (3) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기
- *              (4) delete : 장바구니 삭제
- *              (5) deleteSeveral : 장바구니 여러개 삭제
- *              (6) listOfChoose : 장바구니에서 선택한 값들 조회 -> 해당 정보 및 해당상품의 file 정보
- *              (7) updateCnt : 장바구니 담기는 개수 변경
- *              (8) findIfEmpty : user-id와 product-id로 해당 사용자가 해당 상품을 장바구니에 담았는지 확인하기
+* @summary      (1) save : 로그인한 사용자의 장바구니 저장 (단건)
+ *              (2) getUsersListOfCartById : user의 id로 장바구니 리스트 가져오기 (삭제여부 N)
+ *                  -> 상품 정보 함께 조회 (상품 사진 정보도 함께 조회 : 삭제여부 N, 저장여부 SAVED)
+ *              (3) delete : 장바구니 삭제
+ *              (4) deleteSeveral : 장바구니 여러개 삭제
+ *              (5) listOfChoose : 장바구니에서 선택한 값들 조회
+ *                  -> 상품 정보 함께 조회 (상품 사진 정보도 함께 조회 : 삭제여부 N, 저장여부 SAVED)
+ *              (6) updateCnt : 장바구니 담기는 개수 변경
+ *                  -> 이에 따른 가격 변경
+ *              (7) findIfEmpty : user-id와 product-id로 해당 사용자가 해당 상품을 장바구니에 담았는지 확인하기
+ *                  -> 만일 담겼더라도, 장바구니에서 삭제된 상품인지 체크 (삭제여부 N)
 **/
 
 @Service
@@ -39,32 +44,6 @@ public class HongCartServiceImpl implements HongCartService {
     private final HongCartRepository hongCartRepository;
     private final HongProductService hongProductService;
     private final HongFileGroupService hongFileGroupService;
-
-    @Override
-    @Transactional(readOnly = false)
-    public Integer saveLst(List<HongCartDTO> cartDTOList, HongUser hongUser) {
-
-        int savedCart = 0;
-
-        for (HongCartDTO hongCartDTO : cartDTOList) {
-
-            // 1. find product by productId first
-            HongProduct product = hongProductService.productInfo(hongCartDTO.getHongProductId());
-            Integer orderPrice = hongCartDTO.getCartCnt() * product.getProductPrice();
-
-            HongCart hongCart = HongCart.hongCartInsertBuilder()
-                    .hongUser(hongUser)
-                    .hongProduct(product)
-                    .cartCnt(hongCartDTO.getCartCnt())
-                    .cartPrice(orderPrice)
-                    .build();
-
-            hongCartRepository.save(hongCart);
-            savedCart = savedCart + 1;
-
-        }
-        return savedCart;
-    }
 
     @Override
     @Transactional(readOnly = false)
@@ -84,12 +63,12 @@ public class HongCartServiceImpl implements HongCartService {
     }
 
     @Override
-    public List<HongCartVO> getUsersListOfCartById(Long id) {
+    public List<HongCartWithProductVO> getUsersListOfCartById(Long id) {
         List<HongCart> listOfCart = hongCartRepository.findAllByHongUserIdAndDeleteYn(id, "N");
         return listOfCart.stream().map(hongCart -> {
             Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
             HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
-            return new HongCartVO(hongCart, list);
+            return new HongCartWithProductVO(hongCart, list);
         }).toList();
     }
 
@@ -110,14 +89,14 @@ public class HongCartServiceImpl implements HongCartService {
     }
 
     @Override
-    public List<HongCartVO> listOfChoose(List<Long> ids) {
-        List<HongCartVO> hongCarts = new ArrayList<>();
+    public List<HongCartWithProductVO> listOfChoose(List<Long> ids) {
+        List<HongCartWithProductVO> hongCarts = new ArrayList<>();
         if(ids != null && ids.size() > 0 ) {
             for (Long id : ids) {
                 HongCart hongCart = hongCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no cart"));
                 Long fileGroupId = hongCart.getHongProduct().getFileGroupId();
                 HongFileGroupVO list = hongFileGroupService.listwithDeleteYnAndFileState(fileGroupId, "N", FileState.SAVED);         // if has file-group-id, show together
-                hongCarts.add(new HongCartVO(hongCart, list));
+                hongCarts.add(new HongCartWithProductVO(hongCart, list));
             }
         }
         return hongCarts;
@@ -135,7 +114,7 @@ public class HongCartServiceImpl implements HongCartService {
 
     @Override
     public boolean findIfEmpty(Long userId, Long productId) {
-        List<HongCart> hongcarts = hongCartRepository.findAllByHongUserIdAndHongProductIdAndDeleteYn(userId, productId, "N");
-        return hongcarts.isEmpty();
+        List<HongCart> hongCarts = hongCartRepository.findAllByHongUserIdAndHongProductIdAndDeleteYn(userId, productId, "N");
+        return hongCarts.isEmpty();
     }
 }

@@ -2,7 +2,7 @@ package hongshop.hongshop.domain.order;
 
 import hongshop.hongshop.domain.base.Address;
 import hongshop.hongshop.domain.cart.HongCartService;
-import hongshop.hongshop.domain.cart.vo.HongCartVO;
+import hongshop.hongshop.domain.cart.vo.HongCartWithProductVO;
 import hongshop.hongshop.domain.couponHas.HongCouponHasService;
 import hongshop.hongshop.domain.couponHas.vo.HongCouponHasVO;
 import hongshop.hongshop.domain.product.HongProductService;
@@ -35,12 +35,12 @@ public class HongOrderController {
         Long id = principalDetails.getUser().getId();
         String userId = principalDetails.getUser().getUserId();
         Address address = hongUserService.getAddress(id);
-        List<HongCartVO> chooseLst = hongCartService.listOfChoose(ids);
+        List<HongCartWithProductVO> chooseLst = hongCartService.listOfChoose(ids);
         List<HongCouponHasVO> hongCoupons = hongCouponHasService.listByHongUser(principalDetails.getUser());
 
         Integer totalPrice = 0;
         if(chooseLst.size() > 0) {
-            for (HongCartVO cart : chooseLst) {
+            for (HongCartWithProductVO cart : chooseLst) {
                 totalPrice += cart.getCartPrice();
             }
         }

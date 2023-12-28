@@ -11,8 +11,9 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary  (1) findAllByHongUserIdAndDeleteYn : 로그인한 사용자의 장바구니 정보 리스트로 불러오기 (장바구니 delteYn, 상품 deleteYn -> 'N')
+* @summary  (1) findAllByHongUserIdAndDeleteYn : 로그인한 사용자의 장바구니 정보 리스트로 불러오기 (장바구니 delteYn & 상품 deleteYn -> 'N')
  *          (2) findAllByHongUserIdAndHongProductIdAndDeleteYn : 로그인한 사용자의 장바구니에서 'product'가 있는지 체크
+ *          -> 이때 장바구니, 상품 삭제여부 체크 (삭제여부 N)
 **/
 
 public interface HongCartRepository extends JpaRepository<HongCart, Long> {

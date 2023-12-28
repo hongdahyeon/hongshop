@@ -5,37 +5,36 @@ import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+* @fileName HongCartWithProductVO
+* @author dahyeon
+* @version 1.0.0
+* @date 2023-12-28
+* @summary  장바구니 with 상품 정보 VO
+ *          -> 상품 정보의 경우 파일 정보도 함께 조회 (파일 정보: 삭제여부 N, 상태 SAVED)
+ *          -> 이유: 단독으로 장바구니만 조회해올 일이 없음
+**/
+
 @Getter @Setter
-public class HongCartVO {
+public class HongCartWithProductVO {
 
     private Long id;
+    private Integer cartCnt;
+    private Integer cartPrice;
     private Long productId;
     private String productName;
     private Integer productStock;
     private Integer productPrice;
-    private Integer cartCnt;
-    private Integer cartPrice;
     private HongFileGroupVO fileGroup;
 
-    public HongCartVO(HongCart hongCart) {
+    public HongCartWithProductVO(HongCart hongCart, HongFileGroupVO fileGroupVO) {
         this.id = hongCart.getId();
-        this.productId = hongCart.getHongProduct().getId();
-        this.productStock = hongCart.getHongProduct().getProductStock();
-        this.productName = hongCart.getHongProduct().getProductName();
-        this.productPrice = hongCart.getHongProduct().getProductPrice();
         this.cartCnt = hongCart.getCartCnt();
         this.cartPrice = hongCart.getCartPrice();
-    }
-
-    public HongCartVO(HongCart hongCart, HongFileGroupVO fileGroupVO) {
-        this.id = hongCart.getId();
         this.productId = hongCart.getHongProduct().getId();
-        this.productStock = hongCart.getHongProduct().getProductStock();
         this.productName = hongCart.getHongProduct().getProductName();
+        this.productStock = hongCart.getHongProduct().getProductStock();
         this.productPrice = hongCart.getHongProduct().getProductPrice();
-        this.cartCnt = hongCart.getCartCnt();
-        this.cartPrice = hongCart.getCartPrice();
         this.fileGroup = fileGroupVO;
     }
-
 }
