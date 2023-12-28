@@ -1,8 +1,8 @@
 package hongshop.hongshop.domain.coupon;
 
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponChkUserVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
-import hongshop.hongshop.domain.coupon.vo.HongCouponGroupRequestVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface HongCouponService {
 
     List<HongCouponVO> listForUserRequest();
 
-    List<HongCouponVO> listWithChkUser();
+    List<HongCouponChkUserVO> listWithChkUser();
 
     HongCouponVO view(Long id);
 
@@ -26,6 +26,4 @@ public interface HongCouponService {
     HongCoupon getHongCoupon(Long id);
 
     List<HongCouponGroupHistVO> couponAndUserHist();
-
-    List<HongCouponGroupRequestVO> couponAndRequest();
 }

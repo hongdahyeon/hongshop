@@ -2,8 +2,8 @@ package hongshop.hongshop.domain.coupon;
 
 
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponChkUserVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
-import hongshop.hongshop.domain.coupon.vo.HongCouponGroupRequestVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -62,14 +62,6 @@ public class HongCouponRestController {
         return Response.ok("해당 쿠폰을 삭제하였습니다.");
     }
 
-    @GetMapping("/coupon-and-request")
-    @Operation(summary = "쿠폰 하위, 쿠폰 요청 리스트 조회", description = "쿠폰 하위, 쿠폰 요청 리스트 조회")
-    @ApiDocumentResponse
-    public Response couponAndRequest(){
-        List<HongCouponGroupRequestVO> list = hongCouponService.couponAndRequest();
-        return Response.ok(list);
-    }
-
     @GetMapping("/coupon-hist-user")
     @Operation(summary = "쿠폰 사용자 리스트 조회", description = "쿠폰 사용자 리스트 조회")
     @ApiDocumentResponse
@@ -82,7 +74,7 @@ public class HongCouponRestController {
     @Operation(summary = "쿠폰 리스트 조회 - 삭제 가능 여부 체킹", description = "쿠폰 리스트 조회 - 삭제 가능 여부 체킹")
     @ApiDocumentResponse
     public Response couponChkWithUser(){
-        List<HongCouponVO> list = hongCouponService.listWithChkUser();
+        List<HongCouponChkUserVO> list = hongCouponService.listWithChkUser();
         return Response.ok(list);
     }
 

@@ -7,15 +7,22 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 /**
-* @fileName HongCouponVO
+* @fileName HongCouponChkUserVO
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-12-28
-* @summary 기본적인 쿠폰 조회 VO
+* @summary (관리자) 쿠폰 리스트 조회를 위한 VO
+ *          -> 해당 쿠폰 사용여부 N : 삭제 가능 (== userIsEmpty is true)
+ *          -> 해당 쿠폰 사용여부 Y
+ *               => * 해당 쿠폰을 가지고 있는 사용자 중에..
+ *                          아직 쿠폰 사용여부가 N이고    (HONG-COUPON-HAS의 useAt == N)
+ *                          갖고 있는 쿠폰 삭제여부가 N인 (HONG-COUPON-HAS의 deleteYn == N)
+ *                   - 사용자가 없다면 '삭제 가능' (=== userEmpty is true)
+ *                   - 사용자가 있다면 '삭제 불가능' (=== userEmpty is false)
 **/
 
 @Getter @Setter
-public class HongCouponVO {
+public class HongCouponChkUserVO {
 
     private Long couponId;
     private String couponName;
@@ -24,8 +31,9 @@ public class HongCouponVO {
     private LocalDate endDate;
     private boolean canUse;
     private String useAt;
+    private boolean userIsEmpty;
 
-    public HongCouponVO(HongCoupon hongCoupon) {
+    public HongCouponChkUserVO(HongCoupon hongCoupon, boolean userIsEmpty) {
         this.couponId = hongCoupon.getId();
         this.couponName = hongCoupon.getCouponName();
         this.couponRate = hongCoupon.getCouponRate();
@@ -33,6 +41,7 @@ public class HongCouponVO {
         this.endDate = hongCoupon.getEndDate();
         this.canUse = this.isDateWithinRange();
         this.useAt = hongCoupon.getUseAt();
+        this.userIsEmpty = userIsEmpty;
     }
 
     private boolean isDateWithinRange(){

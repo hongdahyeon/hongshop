@@ -4,14 +4,12 @@ import hongshop.hongshop.domain.coupon.HongCoupon;
 import hongshop.hongshop.domain.coupon.HongCouponRepository;
 import hongshop.hongshop.domain.coupon.HongCouponService;
 import hongshop.hongshop.domain.coupon.dto.HongCouponDTO;
+import hongshop.hongshop.domain.coupon.vo.HongCouponChkUserVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponGroupHistVO;
-import hongshop.hongshop.domain.coupon.vo.HongCouponGroupRequestVO;
 import hongshop.hongshop.domain.coupon.vo.HongCouponVO;
 import hongshop.hongshop.domain.couponHas.HongCouponHasRepository;
 import hongshop.hongshop.domain.couponHist.HongCouponHistService;
 import hongshop.hongshop.domain.couponHist.vo.HongCouponHistUserVO;
-import hongshop.hongshop.domain.couponRequest.HongCouponRequestService;
-import hongshop.hongshop.domain.couponRequest.vo.HongCouponRequestVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +33,6 @@ import java.util.List;
  *              - 해당 쿠폰을 아직 사용하지 않고 갖고 있는 사람이 있는지 체크 (없다면 해당 쿠폰은 삭제 가능)
  *          (9) couponAndUserHist : 쿠폰 전체 조회 -> 삭제여부 N
  *              - 이떄, 해당 쿠폰을 사용한 사용자 이력 리스트도 함께 조회
- *          (10) couponAndRequest : 쿠폰 요청 전체 조회 -> 삭제여부 N
- *              - 이때, 해당 쿠폰을 요청한 사용자들 리스트도 함께 조회
 **/
 
 @Service
@@ -47,7 +43,6 @@ public class HongCouponServiceImpl implements HongCouponService {
     private final HongCouponRepository hongCouponRepository;
     private final HongCouponHasRepository hongCouponHasRepository;
     private final HongCouponHistService hongCouponHistService;
-    private final HongCouponRequestService hongCouponRequestService;
 
     @Override
     @Transactional(readOnly = false)
@@ -78,12 +73,12 @@ public class HongCouponServiceImpl implements HongCouponService {
     }
 
     @Override
-    public List<HongCouponVO> listWithChkUser() {
+    public List<HongCouponChkUserVO> listWithChkUser() {
         List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
         return all.stream().map(hongCoupon -> {
             boolean userIsEmpty = true;
             if("Y".equals(hongCoupon.getUseAt())) userIsEmpty = hongCouponHasRepository.findAllByUseAtAndDeleteYnAndHongCoupon_Id("N", "N", hongCoupon.getId()).isEmpty();
-            return new HongCouponVO(hongCoupon, userIsEmpty);
+            return new HongCouponChkUserVO(hongCoupon, userIsEmpty);
         }).toList();
     }
 
@@ -118,15 +113,6 @@ public class HongCouponServiceImpl implements HongCouponService {
         return all.stream().map(hongCoupon -> {
             List<HongCouponHistUserVO> hongCouponHistUserVOS = hongCouponHistService.listByCouponId(hongCoupon.getId());
             return new HongCouponGroupHistVO(hongCoupon, hongCouponHistUserVOS);
-        }).toList();
-    }
-
-    @Override
-    public List<HongCouponGroupRequestVO> couponAndRequest() {
-        List<HongCoupon> all = hongCouponRepository.findAllByDeleteYnIs("N");
-        return all.stream().map(hongCoupon -> {
-            List<HongCouponRequestVO> couponRequestVOS = hongCouponRequestService.listByCoupon(hongCoupon.getId());
-            return new HongCouponGroupRequestVO(hongCoupon, couponRequestVOS);
         }).toList();
     }
 }
