@@ -1,13 +1,11 @@
 package hongshop.hongshop.domain.order;
 
-import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
-import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
@@ -35,15 +33,6 @@ public class HongOrderRestController {
 
     private final HongOrderService hongOrderService;
 
-    @PostMapping("/order")
-    @Operation(summary = "insert order", description = "주문 저장")
-    @ApiDocumentResponse
-    public Response save(@RequestBody List<HongOrderDTO> hongOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        if(principalDetails == null) throw new IllegalArgumentException("you need to login first");
-        Long saveId = hongOrderService.save(hongOrderDTO, principalDetails.getUser());
-        return Response.ok(saveId);
-    }
-
     @PostMapping("/order-from-cart")
     @Operation(summary = "insert order", description = "주문 저장 - 결제하기 from 장바구니")
     @ApiDocumentResponse
@@ -58,22 +47,6 @@ public class HongOrderRestController {
     public Response saveFromShop(@RequestBody HongOrderFromShopDTO hongOrderFromShopDTO){
         Long saveId = hongOrderService.saveFromShop(hongOrderFromShopDTO);
         return Response.ok(saveId);
-    }
-
-    @GetMapping("/order")
-    @Operation(summary = "order list", description = "주문 정보 전체 조회")
-    @ApiDocumentResponse
-    public Response list(){
-        List<HongOrderVO> list = hongOrderService.list();
-        return Response.ok(list);
-    }
-
-    @GetMapping("/order/{id}")
-    @Operation(summary = "get view of order with details", description = "주문 & 상세 주문 정보 단건 조회")
-    @ApiDocumentResponse
-    public Response view(@PathVariable Long id){
-        HongOrderVO view = hongOrderService.view(id);
-        return Response.ok(view);
     }
 
     @PutMapping("/order-status/{id}")

@@ -12,11 +12,13 @@ import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.HongOrderRepository;
 import hongshop.hongshop.domain.order.HongOrderService;
 import hongshop.hongshop.domain.order.OrderStatus;
-import hongshop.hongshop.domain.order.dto.*;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromCartDetailsDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
+import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
-import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.orderDetail.HongOrderDetailService;
 import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import hongshop.hongshop.domain.product.HongProduct;
@@ -37,19 +39,16 @@ import java.util.List;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-18
-* @summary  (1) save
- *               한개의 order에 대해 여러개의 order-detail을 갖는다.
- *               만약 여러개의 order-detail 중에 'out of stock'이 있다면 -> throw와 함께 주문을 삭제 시킨다.
- *               ** 해당 물품이 재고가 있다면, 주문 저장 후, 재고값도 차감시켜준다.
- *          (2) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
- *          (3) saveFromShop : 상품 리스트 화면에서 선택 후 바로 주문
- *          (4) view : order-id에 대해 order-detail-list 값을 함께 불러온다.
- *          (5) listOfUserOrder : 현재 로그인한 user의 주문 정보를 불러온다.
- *          (6) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
- *          (7) list: 전체 주문 조회 with 주문 상세
- *          (8) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 배송 정보 불러오기
- *          (9) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
- *          (10) getOrderDetailReviews : 주문건 상세 주문건 상품들에 대한 정보와 그 주문상품의 리뷰가 달렸는지 여부 가져오기
+* @summary  (1) saveFromCart : 장바구니에서 정보 가져와 주문 (save와 로직은 비슷하지만 마지막에 해당 상품 정보를 장바구니에서 삭제함)
+ *          (2) saveFromShop : 상품 리스트 화면에서 선택 후 바로 주문
+ *          =>> 한개의 order에 대해 여러개의 order-detail을 갖는다.
+ *              만약 여러개의 order-detail 중에 'out of stock'이 있다면 -> throw와 함께 주문을 삭제 시킨다.
+ *              ** 해당 물품이 재고가 있다면, 주문 저장 후, 재고값도 차감시켜준다.
+
+ *          (3) updateStatus : 주문 상태값 변경   ->  주문 상태에 따른 배송 상태도 변경
+ *          (4) getOrderAndDeliverByUserId : 사용자 id를 통해 주문 정보 & 배송 정보 불러오기
+ *          (5) listWithChkReview : 전체 주문 조회 with 주문 상세 with review write boolean
+ *          (6) getOrderDetailReviews : 주문건 상세 주문건 상품들에 대한 정보와 그 주문상품의 리뷰가 달렸는지 여부 가져오기
 **/
 
 @Service
@@ -68,50 +67,15 @@ public class HongOrderServiceImpl implements HongOrderService {
 
     @Override
     @Transactional(readOnly = false)
-    public Long save(List<HongOrderDTO> listofOrders, HongUser hongUser) {
-
-        // 1. first you need to make order
-        HongOrder saveOrder = HongOrder.hongOrderInsertBuilder()
-                .hongUser(hongUser)
-                .orderStatus(OrderStatus.CHARGED)
-                .orderDate(TimeUtil.nowDate())
-                .build();
-        saveOrder = hongOrderRepository.save(saveOrder);
-
-        for(HongOrderDTO hongOrderDTO : listofOrders){
-            // 2. find product by productId first
-            HongProduct product = hongProductService.productInfo(hongOrderDTO.getHongProductId());
-
-            // ** if orderCnt is larger then stock throw error
-            if(product.getProductStock() < hongOrderDTO.getOrderCnt()) {
-                hongOrderRepository.delete(saveOrder);
-                throw new IllegalArgumentException("stock is smaller than order count");
-            }
-
-            // 3. then save order details
-            Integer orderPrice = hongOrderDTO.getOrderCnt() * product.getProductPrice();
-            hongOrderDetailService.saveOrderDetails(saveOrder, product, hongOrderDTO.getOrderCnt(), orderPrice);
-
-            // 4. update product removing stock
-            hongProductService.updateStockCnt(hongOrderDTO.getOrderCnt(), product);
-        }
-
-        // 5. finally save deliver
-        hongDeliverService.join(hongUser.getAddress(), saveOrder);
-
-        return saveOrder.getId();
-    }
-
-    @Override
-    @Transactional(readOnly = false)
     public Long saveFromCart(HongOrderFromCartDTO hongOrderFromCartDTO) {
 
         HongUser hongUser = hongUserService.getHongUser(hongOrderFromCartDTO.getUserId()).get();
 
-        // ** if user use coupon..
         HongOrder saveOrder = null;
-        if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
+        Integer couponRate = 0;
+        if(hongOrderFromCartDTO.getHongCouponHasId() != null) {                                                                 // ** 사용자가 쿠폰을 사용했다면 ...
             HongCouponHas hongCouponHas = hongCouponHasService.getHongCouponHas(hongOrderFromCartDTO.getHongCouponHasId());
+            couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
             saveOrder = HongOrder.hongOrderInsertBuilder()
                     .hongUser(hongUser)
                     .orderStatus(OrderStatus.CHARGED)
@@ -126,26 +90,21 @@ public class HongOrderServiceImpl implements HongOrderService {
                     .build();
         }
 
-        // 1. first you need to make order
+        // 1. 주문 정보 저장
         saveOrder = hongOrderRepository.save(saveOrder);
 
-        // ** if use coupon use it
-        Integer couponRate = 0;
-        if(hongOrderFromCartDTO.getHongCouponHasId() != null) {
-            couponRate = hongCouponHasService.useCoupon(hongOrderFromCartDTO.getHongCouponHasId());
-        }
 
         for(HongOrderFromCartDetailsDTO detailsDTO : hongOrderFromCartDTO.getOrders()){
-            // 2. find product by productId first
+            // 2. 상품 정보 찾기
             HongProduct product = hongProductService.productInfo(detailsDTO.getHongProductId());
 
-            // ** if orderCnt is larger then stock throw error
+            // ** 만약 주문개수가 상품 재고량보다 많다면 throw
             if(product.getProductStock() < detailsDTO.getOrderCnt()) {
                 hongOrderRepository.delete(saveOrder);
                 throw new IllegalArgumentException("stock is smaller than order count");
             }
 
-            // 3. then save order details
+            // 3. 주문 상세 정보 저장
             // - order from cart, user can order several product at once
             Integer orderPrice = 0;
             if(couponRate != 0) {
@@ -166,8 +125,7 @@ public class HongOrderServiceImpl implements HongOrderService {
             hongProductService.updateStockCnt(detailsDTO.getOrderCnt(), product);
 
             // 5. then you need to remove prdocut from cart
-            Long hongCartId = detailsDTO.getHongCartId();
-            hongCartService.delete(hongCartId);
+            hongCartService.delete(detailsDTO.getHongCartId());
         }
 
         // 6. finally save deliver
@@ -184,8 +142,10 @@ public class HongOrderServiceImpl implements HongOrderService {
 
         // ** if user use coupon..
         HongOrder saveOrder = null;
+        Integer couponRate = 0;
         if(hongOrderFromShopDTO.getHongCouponHasId() != null) {
             HongCouponHas hongCouponHas = hongCouponHasService.getHongCouponHas(hongOrderFromShopDTO.getHongCouponHasId());
+            couponRate = hongCouponHasService.useCoupon(hongOrderFromShopDTO.getHongCouponHasId());
             saveOrder = HongOrder.hongOrderInsertBuilder()
                     .hongUser(hongUser)
                     .orderStatus(OrderStatus.CHARGED)
@@ -213,12 +173,6 @@ public class HongOrderServiceImpl implements HongOrderService {
             throw new IllegalArgumentException("stock is smaller than order count");
         }
 
-        // ** if use coupon use it
-        Integer couponRate = 0;
-        if(hongOrderFromShopDTO.getHongCouponHasId() != null) {
-            couponRate = hongCouponHasService.useCoupon(hongOrderFromShopDTO.getHongCouponHasId());
-        }
-
         // 3. then save order details
         // -> order from shop, user can only order 1 product at once
         Integer orderPrice = hongOrderFromShopDTO.getOrderCnt() * product.getProductPrice() - couponRate;
@@ -232,15 +186,6 @@ public class HongOrderServiceImpl implements HongOrderService {
         hongDeliverService.join(address, saveOrder);
 
         return saveOrder.getId();
-    }
-
-    @Override
-    public List<HongOrderVO> list() {
-        List<HongOrder> orders = hongOrderRepository.findAll();
-        return orders.stream().map(order -> {
-            List<HongOrderDetailVO> orderDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
-            return new HongOrderVO(order, orderDetails);
-        }).toList();
     }
 
     @Override
@@ -259,22 +204,6 @@ public class HongOrderServiceImpl implements HongOrderService {
                 }
             }
             return new HongManagerOrderReviewVO(order, orderDetails, reviewEmpty);
-        }).toList();
-    }
-
-    @Override
-    public HongOrderVO view(Long id) {
-        HongOrder hongOrder = hongOrderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no order"));
-        List<HongOrderDetailVO> listofDetails = hongOrderDetailService.listOfDetailOrders(hongOrder.getId());
-        return new HongOrderVO(hongOrder, listofDetails);
-    }
-
-    @Override
-    public List<HongOrderVO> listOfUserOrder(Long id) {
-        List<HongOrder> listOfOrder = hongOrderRepository.findAllByHongUserId(id);
-        return listOfOrder.stream().map(order -> {
-            List<HongOrderDetailVO> listofDetails = hongOrderDetailService.listOfDetailOrders(order.getId());
-            return new HongOrderVO(order, listofDetails);
         }).toList();
     }
 

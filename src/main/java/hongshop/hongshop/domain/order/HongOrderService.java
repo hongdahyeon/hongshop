@@ -1,13 +1,11 @@
 package hongshop.hongshop.domain.order;
 
-import hongshop.hongshop.domain.order.dto.HongOrderDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromCartDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderFromShopDTO;
 import hongshop.hongshop.domain.order.dto.HongOrderStatusDTO;
 import hongshop.hongshop.domain.order.vo.HongManagerOrderReviewVO;
 import hongshop.hongshop.domain.order.vo.HongOrderDeliverVO;
 import hongshop.hongshop.domain.order.vo.HongUserOrderReviewVO;
-import hongshop.hongshop.domain.order.vo.HongOrderVO;
 import hongshop.hongshop.domain.user.HongUser;
 
 import java.util.List;
@@ -22,19 +20,11 @@ import java.util.List;
 
 public interface HongOrderService {
 
-    Long save(List<HongOrderDTO> hongOrderDTO, HongUser hongUser);
-
     Long saveFromCart(HongOrderFromCartDTO hongOrderDTO);
 
     Long saveFromShop(HongOrderFromShopDTO hongOrderFromShopDTO);
 
-    List<HongOrderVO> list();
-
     List<HongManagerOrderReviewVO> listWithChkReview();
-
-    HongOrderVO view(Long id);
-
-    List<HongOrderVO> listOfUserOrder(Long id);
 
     void updateStatus(Long id, HongOrderStatusDTO hongOrderStatusDTO);
 

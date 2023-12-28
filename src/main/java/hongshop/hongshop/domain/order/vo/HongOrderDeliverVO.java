@@ -5,18 +5,15 @@ import hongshop.hongshop.domain.deliver.DeliverStatus;
 import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
 import hongshop.hongshop.domain.order.HongOrder;
 import hongshop.hongshop.domain.order.OrderStatus;
-import hongshop.hongshop.domain.orderDetail.vo.HongOrderDetailVO;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
 * @fileName HongOrderDeliverVO
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-11-14
-* @summary  사용자 id를 통해 주문 정보 & 배송 정보 불러오기
+* @summary  (사용자) 사용자 id를 통해 주문 정보 & 배송 정보 불러오기
 **/
 
 @Getter @Setter
@@ -47,7 +44,6 @@ public class HongOrderDeliverVO {
         if(hongOrder.getHongCouponHas() != null) {
             this.useCoupon = true;
             this.couponRate = hongOrder.getHongCouponHas().getHongCoupon().getCouponRate();
-        }
-        else this.useCoupon = false;
+        } else this.useCoupon = false;
     }
 }
