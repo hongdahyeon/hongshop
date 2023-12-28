@@ -13,7 +13,7 @@ import java.util.List;
 * @version 1.0.0
 * @date 2023-11-15
 * @summary  (1) findDistinctSendersByReceiver : (ROLE_SUPER입장) 사용자들 중, 자기한테 메시지를 보낸 사용자들 조회
- *              -> ROLE_SUPER가 메시지를 받았기 때문에 receiver입장이다.
+ *              -> ROLE_SUPER가 메시지를 '받았기' 때문에 'receiver'입장이다.
  *          (2) findMessagesBetweenSenderAndReceiver : 2명의 사용자에 대해 각각 receiver이자 sender인 대화 내용을 모두 가져온다.
 **/
 
