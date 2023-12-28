@@ -2,6 +2,7 @@ package hongshop.hongshop.domain.category;
 
 import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
 import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.category.vo.HongCategoryWithProductVO;
 
 import java.util.List;
 
@@ -19,11 +20,11 @@ public interface HongCategoryService {
 
     List<HongCategoryVO> list();
 
-    List<HongCategoryVO> listWithProduct();
+    List<HongCategoryWithProductVO> listWithProduct();
 
     HongCategoryVO show(Long id);
 
-    HongCategoryVO showWithProduct(Long id);
+    HongCategoryWithProductVO showWithProduct(Long id);
 
     void update(HongCategoryDTO hongCategoryDTO, Long id);
 

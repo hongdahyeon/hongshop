@@ -1,6 +1,6 @@
 package hongshop.hongshop.domain.category;
 
-import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.category.vo.HongCategoryWithProductVO;
 import hongshop.hongshop.domain.postType.HongPostTypeService;
 import hongshop.hongshop.domain.postType.vo.HongPostTypeVO;
 import hongshop.hongshop.domain.product.HongProductService;
@@ -24,7 +24,7 @@ public class HongCategoryController {
     @GetMapping("/new")
     public String newCategory(Model model){
         List<HongProductVO> newProdcuts = hongProductService.getNewProducts();
-        List<HongCategoryVO> list = hongCategoryService.listWithProduct();
+        List<HongCategoryWithProductVO> list = hongCategoryService.listWithProduct();
         HongPostTypeVO qnaPost = hongPostTypeService.getQnaPost();
 
         model.addAttribute("newProdcuts", newProdcuts);

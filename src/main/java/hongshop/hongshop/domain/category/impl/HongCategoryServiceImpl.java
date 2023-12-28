@@ -5,6 +5,7 @@ import hongshop.hongshop.domain.category.HongCategoryRepository;
 import hongshop.hongshop.domain.category.HongCategoryService;
 import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
 import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.category.vo.HongCategoryWithProductVO;
 import hongshop.hongshop.domain.file.FileState;
 import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileGroup.vo.HongFileGroupVO;
@@ -22,10 +23,13 @@ import java.util.List;
  * @author dahyeon
  * @version 1.0.0
  * @date 2023-07-17
- * @summary     (1) listWithProduct : 카테고리 with 상품 전체 조회
+ * @summary     (1) listWithProduct : 카테고리 with 상품 전체 조회 (카테고리의 삭제여부 N, orderNum 정렬)
+ *                  -> 상품 정보도 함께 조회 (상품의 사진 정보도 조회 : 삭제여부 N, 상태 SAVED) (상품: 삭제여부 N)
  *              (2) showWithProduct : 카테고리 with 상품 단건 조회
+ *                  -> 상품 삭제여부 N
  *              (3) join : 카테고리 저장
  *              (4) list : 카테고리 리스트 조회
+ *                  -> 삭제여부 N , orderNum으로 정렬
  *              (5) show : 카테고리 단건 조회
  *              (6) update : 카테고리 정보 수정
  *              (7) delete : 카테고리 삭제
@@ -61,7 +65,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     }
 
     @Override
-    public List<HongCategoryVO> listWithProduct() {
+    public List<HongCategoryWithProductVO> listWithProduct() {
         List<HongCategory> all = hongCategoryRepository.findAllByDeleteYnIsOrderByOrderNum("N");
         return all.stream().map(category -> {
             List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(category.getId(), "N");
@@ -71,7 +75,7 @@ public class HongCategoryServiceImpl implements HongCategoryService {
                     return new HongProductVO(hongProduct, list);
                 } else return new HongProductVO(hongProduct);
             }).toList();
-            return new HongCategoryVO(category, productVOList);
+            return new HongCategoryWithProductVO(category, productVOList);
         }).toList();
     }
 
@@ -82,11 +86,11 @@ public class HongCategoryServiceImpl implements HongCategoryService {
     }
 
     @Override
-    public HongCategoryVO showWithProduct(Long id) {
+    public HongCategoryWithProductVO showWithProduct(Long id) {
         HongCategory hongCategory = hongCategoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no category"));
         List<HongProduct> productList = hongProductRepository.findAllByHongCategoryIdAndDeleteYnIs(id, "N");
         List<HongProductVO> list = productList.stream().map(HongProductVO::new).toList();
-        return new HongCategoryVO(hongCategory, list);
+        return new HongCategoryWithProductVO(hongCategory, list);
     }
 
     @Override

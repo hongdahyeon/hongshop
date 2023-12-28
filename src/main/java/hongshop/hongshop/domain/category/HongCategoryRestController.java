@@ -3,6 +3,7 @@ package hongshop.hongshop.domain.category;
 
 import hongshop.hongshop.domain.category.dto.HongCategoryDTO;
 import hongshop.hongshop.domain.category.vo.HongCategoryVO;
+import hongshop.hongshop.domain.category.vo.HongCategoryWithProductVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +42,7 @@ public class HongCategoryRestController {
     @Operation(summary = "get category list with product", description = "물품 카테고리 & 물품들 리스트 가져오기")
     @ApiDocumentResponse
     public Response listWithProduct(){
-        List<HongCategoryVO> list = hongCategoryService.listWithProduct();
+        List<HongCategoryWithProductVO> list = hongCategoryService.listWithProduct();
         return Response.ok(list);
     }
 
@@ -65,7 +66,7 @@ public class HongCategoryRestController {
     @Operation(summary = "get category&product view", description = "물품 카테고리&물품들 단건 조회")
     @ApiDocumentResponse
     public Response viewWithProduct(@PathVariable Long id){
-        HongCategoryVO show = hongCategoryService.showWithProduct(id);
+        HongCategoryWithProductVO show = hongCategoryService.showWithProduct(id);
         return Response.ok(show);
     }
 
