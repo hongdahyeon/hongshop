@@ -1,9 +1,8 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.deliver.dto.HongDeliverAddressDTO;
-import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
 import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
-import hongshop.hongshop.domain.deliver.vo.HongDeliverVO;
+import hongshop.hongshop.domain.deliver.vo.HongDeliverReviewChkVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,22 +28,6 @@ public class HongDeliverRestController {
 
     private final HongDeliverService hongDeliverService;
 
-    @GetMapping("/deliver/{id}")
-    @Operation(summary = "get deliver view", description = "배송 단건 조회")
-    @ApiDocumentResponse
-    public Response view(@PathVariable Long id){
-        HongDeliverVO view = hongDeliverService.view(id);
-        return Response.ok(view);
-    }
-
-    @PutMapping("/deliver/{id}")
-    @Operation(summary = "update deliver", description = "배송 정보 업데이트")
-    @ApiDocumentResponse
-    public Response update(@PathVariable Long id, @RequestBody HongDeliverDTO hongDeliverDTO){
-        hongDeliverService.update(hongDeliverDTO, id);
-        return Response.ok("updated");
-    }
-
     @PutMapping("/deliver-status/{id}")
     @Operation(summary = "update deliver status", description = "배송 상태 정보 업데이트")
     @ApiDocumentResponse
@@ -65,7 +48,7 @@ public class HongDeliverRestController {
     @Operation(summary = "deliver 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크", description = "deliver 리스트 조회, 해당 주문 건들에 대해 리뷰 작성 여부 체크")
     @ApiDocumentResponse
     public Response deliverWithReviewChk(){
-        List<HongDeliverVO> list = hongDeliverService.allWithChkReview();
+        List<HongDeliverReviewChkVO> list = hongDeliverService.allWithChkReview();
         return Response.ok(list);
     }
 

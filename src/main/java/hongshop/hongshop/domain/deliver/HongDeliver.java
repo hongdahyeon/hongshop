@@ -1,8 +1,6 @@
 package hongshop.hongshop.domain.deliver;
 
 import hongshop.hongshop.domain.base.Address;
-import hongshop.hongshop.domain.deliver.dto.HongDeliverDTO;
-import hongshop.hongshop.domain.deliver.dto.HongDeliverStatusDTO;
 import hongshop.hongshop.domain.order.HongOrder;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -45,10 +43,6 @@ public class HongDeliver {
         this.hongOrder = hongOrder;
         this.deliverStatus = deliverStatus;
         this.address = address;
-    }
-
-    public void updateDeliver(HongDeliverDTO hongDeliverDTO){
-        this.address = new Address(hongDeliverDTO.getCity(), hongDeliverDTO.getStreet(), hongDeliverDTO.getZipcode());
     }
 
     public void updateStatus(DeliverStatus deliverStatus){

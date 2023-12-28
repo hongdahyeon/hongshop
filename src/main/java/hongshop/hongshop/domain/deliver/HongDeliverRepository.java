@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-07-19
-* @summary
+* @summary  (1) findByHongOrder_Id : 주문-uid로 배송 정보 조회
 **/
 
 public interface HongDeliverRepository extends JpaRepository<HongDeliver, Long> {
