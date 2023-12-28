@@ -9,12 +9,10 @@ import java.util.List;
  * @author dahyeon
  * @version 1.0.0
  * @date 2023-07-17
- * @summary
+ * @summary     (1) findAllByHongPostIdAndDeleteYnIs : 게시글 Id, 삭제여부 N 으로 답변 리스트 조회
  **/
 
 public interface HongAnswerRepository extends JpaRepository<HongAnswer, Long> {
 
-    public List<HongAnswer> findAllByHongPostId(Long hongPostId);
-
-    public List<HongAnswer> findAllByHongPostIdAndDeleteYnIs(Long hongPostId, String deleteYn);
+    List<HongAnswer> findAllByHongPostIdAndDeleteYnIs(Long hongPostId, String deleteYn);
 }

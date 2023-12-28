@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * @author dahyeon
  * @version 1.0.0
  * @date 2023-07-17
- * @summary
+ * @summary 답변 DTO (POST, PUT용)
  **/
 
 @Getter @Setter
