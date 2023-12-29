@@ -21,33 +21,42 @@ import java.util.Optional;
 
 public interface HongUserService {
 
+    // front
     Long joinUser(HongUserDTO hongUserDTO);
-
-    Optional<HongUser> getHongUser(String userId);
-
-    HongUserVO getHongUserByUserId(String userId);
 
     Boolean checkUserId(String userId);
 
     int checkUserEmail(String userEmail);
 
-    void updateHongUser(HongUserDTO hongUserDTO);
+    boolean initialPassword(String userEmail, String userName);
 
-    HongUserVO getHongUserById(Long id);
+    boolean findUserId(String userEmail, String userName);
+
+    void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO);
+
+    int sendEmail(String userId, String userEmail);
+
+
+    // not front
+    void updateHongUser(HongUserDTO hongUserDTO);
 
     List<HongUserVO> list();
 
     void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO);
 
-    boolean initialPassword(String userEmail, String userName);
-
-    boolean findUserId(String userEmail, String userName);
-
     void updateUserNonLocked(String userId);
 
-    Address getAddress(Long id);
-
     List<HongUserCouponVO> getUserListForCoupon();
+
+
+    // together
+    Optional<HongUser> getHongUser(String userId);
+
+    HongUserVO getHongUserByUserId(String userId);
+
+    HongUserVO getHongUserById(Long id);
+
+    Address getAddress(Long id);
 
     List<HongUserMessageVO> getMessageCanUser(HongUser itsMe);
 
@@ -55,7 +64,4 @@ public interface HongUserService {
 
     void changeDisableToEnable(Long id);
 
-    void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO);
-
-    int sendEmail(String userId, String userEmail);
 }

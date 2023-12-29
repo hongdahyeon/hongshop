@@ -4,14 +4,12 @@ import hongshop.hongshop.domain.user.dto.HongUserDTO;
 import hongshop.hongshop.domain.user.dto.HongUserRoleDTO;
 import hongshop.hongshop.domain.user.vo.HongUserCouponVO;
 import hongshop.hongshop.domain.user.vo.HongUserVO;
-import hongshop.hongshop.global.auth.PrincipalDetails;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,22 +31,6 @@ import java.util.List;
 public class HongUserRestController {
 
     private final HongUserService hongUserService;
-
-    @GetMapping("/user")
-    @Operation(summary = "get login user", description = "로그인한 회원 정보 가져오기")
-    @ApiDocumentResponse
-    public Response loginUser(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        HongUser user = principalDetails.getUser();
-        return Response.ok(user);
-    }
-
-    @GetMapping("/userById")
-    @Operation(summary = "get user info by userId", description = "회원 아이디로 정보 가져오기")
-    @ApiDocumentResponse
-    public Response getUserById(String userId){
-        HongUserVO hongUserByUserId = hongUserService.getHongUserByUserId(userId);
-        return Response.ok(hongUserByUserId);
-    }
 
     @PutMapping("/user")
     @Operation(summary = "update user", description = "로그인한 회원 정보 수정하기")

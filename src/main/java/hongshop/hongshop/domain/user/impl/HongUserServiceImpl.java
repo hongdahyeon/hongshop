@@ -29,25 +29,30 @@ import java.util.Optional;
  * @version 1.0.0
  * @date 2023-07-17
  * @summary  사용자 service Impl
+ *           <front>
  *           (1) joinUser : 사용자 회원가입
- *           (2) getHongUser : userId로 사용자 조회 -> return Optional (PrincipalDetailsService 에서 사용)
- *           (3) getHongUserByUserId : userId로 사용자 조회 -> return HongUserVO
- *           (4) checkUserId : userId로 사용자 있는지 조회 -> return boolean
- *           (5) checkUserEmail : 사용자 이메일 중복 확인
- *           (6) updateHongUser : 사용자 정보 수정
- *           (7) getHongUserById : id로 사용자 찾기 -> return HongUserVO
- *           (8) list : 사용자 리스트 조회
- *           (9) updateUserRole : 사용자 권한 수정
- *           (10) initialPassword : 사용자 비번 초기화 -> 이메일 전송
- *           (11) findUserId : 사용자 이름 & 이메일로 아이디 찾기 -> 이메일 전송
- *           (12) updateUserNonLocked : 사용자 계정 정지 초기화
- *           (13) getAddress : id를 통해 유저 주소 정보 가져오기
- *           (14) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
- *           (15) getMessageCanUser : 'ROLE_SUPER' 권한을 갖는 유저 리스트 가져오기 -> 이때 내 자신이 있다면 나는 빼고
- *           (16) getUserAndEnable : return entity and change enable to disable
- *           (17) changeDisableToEnable : change disable to enable
- *           (18) changePwdEndDate : 비밀번호 변경 및 비밀번호 만료일 90일 연장하기
- *           (19) sendEmail : userId & userEmail로 사용자 찾아서, 이메일로 인증번호 발송하기
+ *           (2) checkUserId : userId로 사용자 있는지 조회 -> return boolean
+ *           (3) checkUserEmail : 사용자 이메일 중복 확인
+ *           (4) initialPassword : 사용자 비번 초기화 -> 이메일 전송
+ *           (5) findUserId : 사용자 이름 & 이메일로 아이디 찾기 -> 이메일 전송
+ *           (6) changePwdEndDate : 비밀번호 변경 및 비밀번호 만료일 90일 연장하기
+ *           (7) sendEmail : userId & userEmail로 사용자 찾아서, 이메일로 인증번호 발송하기
+
+ *           <not front>
+ *           (8) updateHongUser : 사용자 정보 수정
+ *           (9) list : 사용자 리스트 조회
+ *           (10) updateUserRole : 사용자 권한 수정
+ *           (11) updateUserNonLocked : 사용자 계정 정지 초기화
+ *           (12) getUserListForCoupon : 쿠폰 발급을 위한 사용자 리스트 조회
+
+ *           <together>
+ *           (13) getHongUser : userId로 사용자 조회 -> return Optional (PrincipalDetailsService 에서 사용)
+ *           (14) getHongUserByUserId : userId로 사용자 조회 -> return HongUserVO
+ *           (15) getHongUserById : id로 사용자 찾기 -> return HongUserVO
+ *           (16) getAddress : id를 통해 유저 주소 정보 가져오기
+ *           (17) getMessageCanUser : 'ROLE_SUPER' 권한을 갖는 유저 리스트 가져오기 -> 이때 내 자신이 있다면 나는 빼고
+ *           (18) getUserAndEnable : return entity and change enable to disable
+ *           (19) changeDisableToEnable : change disable to enable
  **/
 
 @Service
@@ -60,6 +65,7 @@ public class HongUserServiceImpl implements HongUserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
+    // front
     @Override
     @Transactional(readOnly = false)
     public Long joinUser(HongUserDTO hongUserDTO) {
@@ -82,17 +88,6 @@ public class HongUserServiceImpl implements HongUserService {
     }
 
     @Override
-    public Optional<HongUser> getHongUser(String userId) {
-        return hongUserRepository.findByUserId(userId);
-    }
-
-    @Override
-    public HongUserVO getHongUserByUserId(String userId) {
-        HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        return new HongUserVO(hongUser);
-    }
-
-    @Override
     public Boolean checkUserId(String userId) {
         return hongUserRepository.findByUserId(userId).isEmpty();
     }
@@ -103,36 +98,6 @@ public class HongUserServiceImpl implements HongUserService {
         Optional<HongUser> byUserEmail = hongUserRepository.findByUserEmail(userEmail);
         if(byUserEmail.isPresent()) checkIt = 1;
         return checkIt;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateHongUser(HongUserDTO hongUserDTO) {
-        HongUser hongUser = hongUserRepository.findByUserId(hongUserDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        if(hongUserDTO.getPassword() != null) {
-            hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
-            hongUser.add90Days();                                                           // 비번 변경 -> 비번만료일 90연장 (오늘부터)
-        }
-        hongUser.updateHongUser(hongUserDTO);
-    }
-
-    @Override
-    public HongUserVO getHongUserById(Long id) {
-        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        return new HongUserVO(user);
-    }
-
-    @Override
-    public List<HongUserVO> list() {
-        List<HongUser> hongUsers = hongUserRepository.findAll();
-        return hongUsers.stream().map(HongUserVO::new).toList();
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO) {
-        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        user.updateUserRole(hongUserRoleDTO.getRole());
     }
 
     @Override
@@ -164,21 +129,87 @@ public class HongUserServiceImpl implements HongUserService {
 
     @Override
     @Transactional(readOnly = false)
+    public void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO) {
+        HongUser hongUser = hongUserRepository.findByUserId(hongUserPwdDateDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        hongUser.add90Days();
+
+        if(hongUserPwdDateDTO.getPassword() != null) {
+            String encodePassword = passwordEncoder.encode(hongUserPwdDateDTO.getPassword());
+            hongUser.updatePassword(encodePassword);
+        }
+    }
+
+    @Override
+    public int sendEmail(String userId, String userEmail) {
+        Optional<HongUser> findUser = hongUserRepository.findByUserIdAndUserEmail(userId, userEmail);
+        if(findUser.isEmpty()) return 1;
+        else {
+            emailService.sendVerification(userEmail);
+            return 2;
+        }
+    }
+
+
+    // not front
+    @Override
+    @Transactional(readOnly = false)
+    public void updateHongUser(HongUserDTO hongUserDTO) {
+        HongUser hongUser = hongUserRepository.findByUserId(hongUserDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        if(hongUserDTO.getPassword() != null) {
+            hongUserDTO.setPassword(passwordEncoder.encode(hongUserDTO.getPassword()));
+            hongUser.add90Days();                                                           // 비번 변경 -> 비번만료일 90연장 (오늘부터)
+        }
+        hongUser.updateHongUser(hongUserDTO);
+    }
+
+    @Override
+    public List<HongUserVO> list() {
+        List<HongUser> hongUsers = hongUserRepository.findAll();
+        return hongUsers.stream().map(HongUserVO::new).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void updateUserRole(Long id, HongUserRoleDTO hongUserRoleDTO) {
+        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        user.updateUserRole(hongUserRoleDTO.getRole());
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public void updateUserNonLocked(String userId) {
         HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         hongUser.resetPwdFailCntAndUserNonLocked();
     }
 
     @Override
-    public Address getAddress(Long id) {
-        HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        return hongUser.getAddress();
-    }
-
-    @Override
     public List<HongUserCouponVO> getUserListForCoupon() {
         List<HongUser> hongUsers = hongUserRepository.findAll();
         return hongUsers.stream().map(HongUserCouponVO::new).toList();
+    }
+
+
+    // together
+    @Override
+    public Optional<HongUser> getHongUser(String userId) {
+        return hongUserRepository.findByUserId(userId);
+    }
+
+    @Override
+    public HongUserVO getHongUserByUserId(String userId) {
+        HongUser hongUser = hongUserRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return new HongUserVO(hongUser);
+    }
+
+    @Override
+    public HongUserVO getHongUserById(Long id) {
+        HongUser user = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return new HongUserVO(user);
+    }
+    @Override
+    public Address getAddress(Long id) {
+        HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
+        return hongUser.getAddress();
     }
 
     @Override
@@ -204,27 +235,5 @@ public class HongUserServiceImpl implements HongUserService {
     public void changeDisableToEnable(Long id) {
         HongUser hongUser = hongUserRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("there is no user"));
         hongUser.changeDisableToEnable();
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void changePwdEndDate(HongUserPwdDateDTO hongUserPwdDateDTO) {
-        HongUser hongUser = hongUserRepository.findByUserId(hongUserPwdDateDTO.getUserId()).orElseThrow(() -> new IllegalArgumentException("there is no user"));
-        hongUser.add90Days();
-
-        if(hongUserPwdDateDTO.getPassword() != null) {
-            String encodePassword = passwordEncoder.encode(hongUserPwdDateDTO.getPassword());
-            hongUser.updatePassword(encodePassword);
-        }
-    }
-
-    @Override
-    public int sendEmail(String userId, String userEmail) {
-        Optional<HongUser> findUser = hongUserRepository.findByUserIdAndUserEmail(userId, userEmail);
-        if(findUser.isEmpty()) return 1;
-        else {
-            emailService.sendVerification(userEmail);
-            return 2;
-        }
     }
 }
