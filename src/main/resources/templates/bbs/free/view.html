@@ -20,8 +20,8 @@
                 </div>
                 <div class="text-end">
                     <button type="button" class="btn btn-outline-info" id="list-btn">목록</button>
-                    <button th:if="${post.regId == user.id}" type="button" class="btn btn-outline-secondary" id="edit-btn">수정</button>
-                    <button th:if="${post.regId == user.id}" type="button" class="btn btn-outline-danger" id="delete-btn">삭제</button>
+                    <button th:if="${post.regId == user.id or #authorization.expression('hasRole(''ROLE_SUPER, ROLE_ADMIN'')')}" type="button" class="btn btn-outline-secondary" id="edit-btn">수정</button>
+                    <button th:if="${post.regId == user.id or #authorization.expression('hasRole(''ROLE_SUPER, ROLE_ADMIN'')')}" type="button" class="btn btn-outline-danger" id="delete-btn">삭제</button>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                                     <p th:text="|답변 작성자: ${answer.userId}|"></p>
                                 </div>
                                 <div class="text-end">
-                                    <th:block th:if="${user.userId == answer.userId}">
+                                    <th:block th:if="${user.userId == answer.userId or #authorization.expression('hasRole(''ROLE_SUPER'')')}">
                                         <a href="#" th:onclick="'deleteAnswer(\'' + ${answer.id} + '\')'">
                                             <i data-feather="trash" class="front-medium-2"></i>
                                         </a>
