@@ -342,3 +342,4 @@
     - 주석 정리
 * commit201 : 자유게시판의 경우 슈퍼, 어드민 권한은 자신이 작성안한 게시글에 대해서도 삭제 및 수정 가능 (24/01/31)
 * commit202 : layout:fragment/data-layout-fragment warning 해결 (24/02/05)
+* commit203 : default.html 다시 원복 (24/02/05)
