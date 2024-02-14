@@ -63,7 +63,7 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
                 }
             }
         }
-        else if(exception instanceof DisabledException) sendMssgEnableAndRedirect(FailureException.DisabledException.message, userId, response);
+        else if(exception instanceof DisabledException) sendMssgDisableAndRedirect(FailureException.DisabledException.message, userId, response);
         else if(exception instanceof CredentialsExpiredException) sendMssgExpiredAndRedirect(FailureException.CredentialsExpiredException.message, userId, response);
         else if(exception instanceof  AccountExpiredException) sendMssgAccountExpiredAndRedirect(FailureException.AccountExpiredException.message, userId, response);
         else if(exception instanceof InternalAuthenticationServiceException) sendMssgAndRedirect(FailureException.InternalAuthenticationServiceException.message, response);
@@ -77,9 +77,9 @@ public class CustomFailureHandler implements AuthenticationFailureHandler {
     }
 
     /* 계정 비활성화 -> 비활성화 사유 alert */
-    public void sendMssgEnableAndRedirect(String message, String userId, HttpServletResponse response) throws IOException {
+    public void sendMssgDisableAndRedirect(String message, String userId, HttpServletResponse response) throws IOException {
         String sendMessage = URLEncoder.encode(message, "UTF-8");
-        response.sendRedirect("/login?enable="+sendMessage+"&userId="+userId);
+        response.sendRedirect("/login?disable="+sendMessage+"&userId="+userId);
     }
 
     /* 비밀번호 만료 -> 비번 변경 혹은 90일 연장  */

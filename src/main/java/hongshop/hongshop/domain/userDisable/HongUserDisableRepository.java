@@ -1,11 +1,11 @@
-package hongshop.hongshop.domain.userEnable;
+package hongshop.hongshop.domain.userDisable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
-* @fileName HongUserEnableRepository
+* @fileName HongUserDisableRepository
 * @author dahyeon
 * @version 1.0.0
 * @date 2023-12-29
@@ -15,11 +15,11 @@ import org.springframework.data.repository.query.Param;
 **/
 
 
-public interface HongUserEnableRepository extends JpaRepository<HongUserEnable, Long> {
+public interface HongUserDisableRepository extends JpaRepository<HongUserDisable, Long> {
 
-    @Query("SELECT m FROM HongUserEnable m WHERE m.hongUser.userId = :userId and m.deleteYn = 'N'")
-    HongUserEnable findByHongUserId(@Param("userId") String userId);
+    @Query("SELECT m FROM HongUserDisable m WHERE m.hongUser.userId = :userId and m.deleteYn = 'N'")
+    HongUserDisable findByHongUserId(@Param("userId") String userId);
 
-    @Query("SELECT m FROM HongUserEnable m WHERE m.hongUser.id = :userId and m.deleteYn = 'N'")
-    HongUserEnable findByHongUserIdLong(@Param("userId") Long userId);
+    @Query("SELECT m FROM HongUserDisable m WHERE m.hongUser.id = :userId and m.deleteYn = 'N'")
+    HongUserDisable findByHongUserIdLong(@Param("userId") Long userId);
 }

@@ -1,8 +1,8 @@
-package hongshop.hongshop.domain.userEnable;
+package hongshop.hongshop.domain.userDisable;
 
 
-import hongshop.hongshop.domain.userEnable.dto.HongUserEnableToDisableDTO;
-import hongshop.hongshop.domain.userEnable.vo.HongUserEnableVO;
+import hongshop.hongshop.domain.userDisable.dto.HongUserEnableToDisableDTO;
+import hongshop.hongshop.domain.userDisable.vo.HongUserDisableVO;
 import hongshop.hongshop.global.response.ApiDocumentResponse;
 import hongshop.hongshop.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,34 +14,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Slf4j
-@Tag(name = "hong user enable rest controller", description = "유저 계정 활성화에 대한 Rest 컨트롤러")
+@Tag(name = "hong user disable rest controller", description = "유저 계정 비활성화에 대한 Rest 컨트롤러")
 @RequiredArgsConstructor
-public class HongUserEnableRestController {
+public class HongUserDisableRestController {
 
-    private final HongUserEnableService hongUserEnableService;
+    private final HongUserDisableService hongUserDisableService;
 
-    @PostMapping("/user-enable")
+    @PostMapping("/user-disable")
     @Operation(summary = "user 사용자 계정 비활성화", description = "user 사용자 계정 비활성화")
     @ApiDocumentResponse
     public Response join(@RequestBody HongUserEnableToDisableDTO hongUserEnableToDisableDTO) {
-        Long joinId = hongUserEnableService.join(hongUserEnableToDisableDTO);
+        Long joinId = hongUserDisableService.join(hongUserEnableToDisableDTO);
         return Response.ok(joinId);
     }
 
-    @GetMapping("/user-enable/{id}")
+    @GetMapping("/user-disable/{id}")
     @Operation(summary = "user 사용자 계정 비활성화 정보", description = "user 사용자 계정 비활성화 정보")
     @ApiDocumentResponse
     public Response view(@PathVariable Long id){
-        HongUserEnableVO info = hongUserEnableService.getInfo(id);
+        HongUserDisableVO info = hongUserDisableService.getInfo(id);
         return Response.ok(info);
     }
 
 
     @PutMapping("/user-enable/{id}")
-    @Operation(summary = "user 사용자 계정 비활성화 정보", description = "user 사용자 계정 비활성화 정보")
+    @Operation(summary = "user 사용자 계정 비활성화 풀기", description = "user 사용자 계정 비활성화 풀기")
     @ApiDocumentResponse
     public Response update(@PathVariable Long id){
-        hongUserEnableService.updateDisableToEnable(id);
+        hongUserDisableService.updateDisableToEnable(id);
         return Response.ok("해당 계정 비활성화가 풀렸습니다.");
     }
 

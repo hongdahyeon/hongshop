@@ -56,9 +56,9 @@ $(document).ready(function(e){
             form.classList.add("was-validated");
         } else {
             const userId = $("#user-id").val()
-            const enableMsg = $("#userEnableToDisableModal-enableMsg").val()
-            const obj = {'userId': userId, 'enableMsg': enableMsg}
-            Http.post(`/api/user-enable`, obj).then((res) => {
+            const disableMsg = $("#userEnableToDisableModal-disableMsg").val()
+            const obj = {'userId': userId, 'disableMsg': disableMsg}
+            Http.post(`/api/user-disable`, obj).then((res) => {
                 if(res['httpStatus'] === 200) {
                     Util.alert("해당 사용자의 계정이 비활성화 되었습니다.").then(() => {
                         window.location.href = '/manager/user'
@@ -90,7 +90,7 @@ function userEnable(This) {
         $("#user-id").val(userId)
         $("#userEnableToDisableModal").modal('show')
     }else {
-        Http.get(`/api/user-enable/${userId}`).then((res) => {
+        Http.get(`/api/user-disable/${userId}`).then((res) => {
             if(res['httpStatus'] === 200) {
                 $("#enable-id").val(res.message['enableId'])
                 $("#enableMsgRead").val(res.message['enableMsg'])

@@ -1,4 +1,4 @@
-package hongshop.hongshop.domain.userEnable;
+package hongshop.hongshop.domain.userDisable;
 
 import hongshop.hongshop.domain.user.HongUser;
 import hongshop.hongshop.global.util.TimeUtil;
@@ -10,38 +10,38 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="hong_user_enable")
+@Table(name="hong_user_disable")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HongUserEnable {
+public class HongUserDisable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hong_user_enable_id")
+    @Column(name = "hong_user_disable_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hong_user_id")
     private HongUser hongUser;
 
-    @Column(name = "enable_msg")
-    private String enableMsg;
+    @Column(name = "disable_msg")
+    private String disableMsg;
 
-    @Column(name = "enable_date")
-    private String enableDate;
+    @Column(name = "disable_date")
+    private String disableDate;
 
     @Column(name = "delete_yn")
     private String deleteYn;
 
-    @Builder(builderMethodName = "hongUserEnableInsert")
-    public HongUserEnable(HongUser hongUser, String enableMsg) {
+    @Builder(builderMethodName = "hongUserDisableInsert")
+    public HongUserDisable(HongUser hongUser, String disableMsg) {
         this.hongUser = hongUser;
-        this.enableMsg = enableMsg;
-        this.enableDate = TimeUtil.nowDate();
+        this.disableMsg = disableMsg;
+        this.disableDate = TimeUtil.nowDate();
         this.deleteYn = "N";
     }
 
-    public void deleteUserEnable(){
+    public void deleteUserDisable(){
         this.deleteYn = "Y";
     }
 }

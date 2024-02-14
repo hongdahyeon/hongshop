@@ -10,14 +10,14 @@ $(document).ready(function(){
         $("#pwdError").html(errorMessage.replace("\n", "<br>"));
         history.replaceState({}, null, '/login');
 
-    } else if(params.has("enable")) {
+    } else if(params.has("disable")) {
 
         const userId = decodeURIComponent(params.get("userId"));
-        const errorMessage = decodeURIComponent(params.get("enable"));
+        const errorMessage = decodeURIComponent(params.get("disable"));
         $("#pwdError").html(errorMessage.replace("\n", "<br>"));
         history.replaceState({}, null, '/login');
 
-        Http.get(`/front/api/user-enable/${userId}`).then((res) => {
+        Http.get(`/front/api/user-disable/${userId}`).then((res) => {
             const data = res.message
             Util.alert(`현자 사용자의 계정은 비활성화 되었습니다. <br/> 사유: ${data['enableMsg']} <br/> 관리자에게 문의 바랍니다.`, 'w')
         })

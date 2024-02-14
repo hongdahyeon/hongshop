@@ -1,4 +1,4 @@
-package hongshop.hongshop.domain.userEnable.dto;
+package hongshop.hongshop.domain.userDisable.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,5 +7,5 @@ import lombok.Setter;
 public class HongUserEnableToDisableDTO {
 
     private Long userId;
-    private String enableMsg;
+    private String disableMsg;
 }
