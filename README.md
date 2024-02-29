@@ -343,3 +343,5 @@
 * commit201 : 자유게시판의 경우 슈퍼, 어드민 권한은 자신이 작성안한 게시글에 대해서도 삭제 및 수정 가능 (24/01/31)
 * commit202 : layout:fragment/data-layout-fragment warning 해결 (24/02/05)
 * commit203 : default.html 다시 원복 (24/02/05)
+* commit204 : js min파일로 묶기 (24/02/13)
+* commit205 : HONG_USER_ENABLE 테이블명 HONG_USER_DISABLE으로 변경 (테이블 자체가 사용자를 비활성화 시킬때 저장되는 테이블임)
