@@ -345,3 +345,4 @@
 * commit203 : default.html 다시 원복 (24/02/05)
 * commit204 : js min파일로 묶기 (24/02/13)
 * commit205 : HONG_USER_ENABLE 테이블명 HONG_USER_DISABLE으로 변경 (테이블 자체가 사용자를 비활성화 시킬때 저장되는 테이블임)
+* commit206 : js file min.js로 합치기 (24/02/29)
