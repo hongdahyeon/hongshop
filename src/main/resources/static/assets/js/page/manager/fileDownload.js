@@ -13,7 +13,7 @@ $(document).ready(function(e) {
     downloadLogTable
         .add(new Column("index").title("#").center().width("20%"))
         .add(new Column("userName").title("다운로드 사용자 이름").left().width("30%"))
-        .add(new Column("userId").title("다운로드 사용자 이름").left().width("30%"))
+        .add(new Column("userId").title("다운로드 사용자 ID").left().width("30%"))
 
     table.rowClick((data, row) => {
         const fileId = data.id
