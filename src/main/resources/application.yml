@@ -74,12 +74,19 @@ logging:
       hibernate:
         type:
           descriptor:
-            sql: trace
-# logging:
-  #   level:
-  #     org:
-  #       springframework:
-  #         security:
-  #           web: trace
-  #     com:
-  #       crow: debug
+#            sql: trace
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui/index.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /**
