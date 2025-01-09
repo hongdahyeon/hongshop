@@ -10,6 +10,7 @@ import hongshop.hongshop.domain.fileGroup.HongFileGroupService;
 import hongshop.hongshop.domain.fileLog.HongFileLogService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,19 +49,24 @@ public class HongFileServiceImpl implements HongFileService {
     private final HongFileGroupService hongFileGroupService;
     private final HongFileLogService hongFileLogService;
 
+    @Value("${hong.img.path}")
+    private String fileRoot;
+
+    @Value("${hong.ckImg.path}")
+    private String ckImgRoot;
+
     @Override
     @Transactional(readOnly = false)
     public Map<String, Object> saveFile(MultipartFile multipartFile, Long fileGroupId) {
         Map<String, Object> params = new HashMap<>();
 
-        String fileRoot = "D:/hongFile";
         String originalName = multipartFile.getOriginalFilename();
         String extension = originalName.substring(originalName.lastIndexOf(".")+1);
         UUID uuid = UUID.randomUUID();
         String savedFileName = uuid + "." + extension;
-        String filePath = fileRoot + "/" + savedFileName;
+        String filePath = fileRoot + savedFileName;
 
-        File targetFile = new File(String.format("%s%s%s", fileRoot, File.separator, savedFileName));
+        File targetFile = new File(String.format("%s%s", fileRoot, savedFileName));
 
         try{
             InputStream fileStream = multipartFile.getInputStream();
@@ -133,13 +139,11 @@ public class HongFileServiceImpl implements HongFileService {
 
         Map<String, Object> params = new HashMap<>();
 
-        String fileRoot = "D:/hongFile/ckImage";
         String originalName = multipartFile.getOriginalFilename();
         String extension = originalName.substring(originalName.lastIndexOf(".")+1);
         UUID uuid = UUID.randomUUID();
         String savedFileName = uuid + "." + extension;
-        String filePath = fileRoot + "/" + savedFileName;
-        File targetFile = new File(String.format("%s%s%s", fileRoot, File.separator, savedFileName));
+        File targetFile = new File(String.format("%s%s", ckImgRoot, savedFileName));
 
         try{
             InputStream fileStream = multipartFile.getInputStream();
