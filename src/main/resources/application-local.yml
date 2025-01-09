@@ -38,7 +38,7 @@ jasypt:
 
 hong:
   img:
-    path: 'D:\hongFile\'
+    path: 'D:\hongFileDir\hongShop\file\'
   ckImg:
     pattern: '/ckImage/**'
-    path: 'D:/hongFile/ckImage/'
+    path: 'D:/hongFileDir/hongShop/ckImage/'
